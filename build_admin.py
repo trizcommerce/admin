@@ -24,7 +24,24 @@ pwa_head = f'''<link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#F6F1EA">
 '''
 html = "<!doctype html>\n<html lang=\"ko\">\n<head>\n" + head.replace("<title>", pwa_head + "<title>", 1) + "\n</head>\n<body>\n" + body + install + f'''
-<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js?v={ver}").catch(() => {{}});</script>
+<script>
+// 항상 최신 화면: 서버 버전과 다르면(옛 화면이 남아 있으면) 저장해 둔 것을 지우고 새로 불러옴
+const APPVER = "{ver}";
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js?v={ver}").catch(() => {{}});
+async function checkVer() {{
+  try {{
+    const v = (await (await fetch("version.txt?t=" + Date.now(), {{cache: "no-store"}})).text()).trim();
+    if (v && v !== APPVER && sessionStorage.getItem("admReloaded") !== v) {{
+      sessionStorage.setItem("admReloaded", v);
+      if (window.caches) for (const k of await caches.keys()) await caches.delete(k);
+      if (navigator.serviceWorker) for (const r of await navigator.serviceWorker.getRegistrations()) await r.update();
+      location.reload();
+    }}
+  }} catch (e) {{}}
+}}
+checkVer();
+document.addEventListener("visibilitychange", () => {{ if (document.visibilityState === "visible") checkVer(); }});
+</script>
 </body>
 </html>
 '''
@@ -42,7 +59,8 @@ self.addEventListener("install", e => self.skipWaiting());
 self.addEventListener("activate", e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener("fetch", e => {{
   if (e.request.method !== "GET" || new URL(e.request.url).origin !== location.origin) return;
-  e.respondWith(fetch(e.request).then(r => {{ const c = r.clone(); caches.open(C).then(x => x.put(e.request, c)); return r; }}).catch(() => caches.match(e.request)));
+  e.respondWith(fetch(e.request, {{cache: "no-store"}}).then(r => {{ const c = r.clone(); caches.open(C).then(x => x.put(e.request, c)); return r; }}).catch(() => caches.match(e.request)));
 }});
 ''', encoding="utf-8")
+(HERE / "version.txt").write_text(ver, encoding="utf-8")
 print("built admin", ver, len(html))

@@ -879,6 +879,23 @@ setInterval(() => SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.no
 })();
 </script>
 
-<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js?v=6b3d1f0800").catch(() => {});</script>
+<script>
+// 항상 최신 화면: 서버 버전과 다르면(옛 화면이 남아 있으면) 저장해 둔 것을 지우고 새로 불러옴
+const APPVER = "6b3d1f0800";
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js?v=6b3d1f0800").catch(() => {});
+async function checkVer() {
+  try {
+    const v = (await (await fetch("version.txt?t=" + Date.now(), {cache: "no-store"})).text()).trim();
+    if (v && v !== APPVER && sessionStorage.getItem("admReloaded") !== v) {
+      sessionStorage.setItem("admReloaded", v);
+      if (window.caches) for (const k of await caches.keys()) await caches.delete(k);
+      if (navigator.serviceWorker) for (const r of await navigator.serviceWorker.getRegistrations()) await r.update();
+      location.reload();
+    }
+  } catch (e) {}
+}
+checkVer();
+document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkVer(); });
+</script>
 </body>
 </html>
