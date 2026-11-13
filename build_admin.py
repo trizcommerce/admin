@@ -59,6 +59,7 @@ async function checkVer() {{
 }}
 checkVer();
 document.addEventListener("visibilitychange", () => {{ if (document.visibilityState === "visible") checkVer(); }});
+setInterval(checkVer, 3 * 60 * 1000);   // 켜 둔 채로 있어도 3분마다 새 버전 확인
 </script>
 </body>
 </html>

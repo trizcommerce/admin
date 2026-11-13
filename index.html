@@ -815,11 +815,14 @@ async function reviewPanel(s, draft, live) {
   async function loadChecks() {
     if (!window.LOG_URL_ADM || !box.isConnected || Date.now() - dirtyAt < 8000) return;
     try {
-      const r = await fetch(`${window.LOG_URL_ADM}?action=opinion_check&repo=${encodeURIComponent(s.repo)}&t=${Date.now()}`);
-      const c = await r.json();
+      const q = a => fetch(`${window.LOG_URL_ADM}?action=${a}&repo=${encodeURIComponent(s.repo)}&t=${Date.now()}`).then(r => r.json());
+      const [c, y] = await Promise.all([q("opinion_check"), q("opinion_sync").catch(() => null)]);
       serverOK = true;
       if (Date.now() - dirtyAt < 8000) return;            // 불러오는 사이에 이 기기에서 바꿨으면 그대로 둠
-      if (c && Array.isArray(c.keys) && day(c.draftAt) === day(draft.at)) applyKeys(c.keys);
+      // 이 초안에 대한 '저장된 체크'와 '마지막 최종 연동' 중 더 최근 것을 보여 줌 (저장된 체크가 없으면 연동한 항목)
+      const sameDraft = x => x && Array.isArray(x.keys) && day(x.draftAt) === day(draft.at) && (x !== y || x.keys.length);
+      const pick = [c, y].filter(sameDraft).sort((a, b2) => new Date(b2.at) - new Date(a.at))[0];
+      if (pick) applyKeys(pick.keys);
     } catch (e) {}
   }
   await loadChecks();
@@ -835,6 +838,9 @@ async function reviewPanel(s, draft, live) {
     if (!keys.length) { alert("체크한 항목이 없어요. 셀러 캘린더에 보낼 항목을 먼저 체크해 주세요."); return; }
     if (!confirm(`${s.name}님 셀러 캘린더에 체크한 ${keys.length}개 항목을 연동할까요?\n(30분 안에 셀러 캘린더에 반영돼요)`)) return;
     if (!window.LOG_URL_ADM) { alert("연동 주소가 없어 보내지 못했어요."); return; }
+    clearTimeout(saveT); dirtyAt = Date.now();   // 연동한 체크 상태도 저장 → 다른 기기·다시 열어도 같게
+    fetch(window.LOG_URL_ADM, {method: "POST", mode: "no-cors", headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: JSON.stringify({type: "opinion_check", seller: "admin", repo: s.repo, draftAt: "at:" + draft.at, keys, name: VIEWER.name || ""})}).catch(() => {});
     fetch(window.LOG_URL_ADM, {method: "POST", mode: "no-cors", headers: {"Content-Type": "text/plain;charset=utf-8"},
       body: JSON.stringify({type: "opinion_sync", seller: "admin", repo: s.repo, draftAt: "at:" + draft.at, keys, name: VIEWER.name || ""})})
       .then(() => { box.querySelector("#rv-status").textContent = `연동 요청을 보냈어요 (${keys.length}개 항목). 셀러 캘린더에는 30분 안에 반영돼요.`; })
@@ -1088,8 +1094,8 @@ window.__admin = {SELLERS, loadSeller, unlock, route};
 
 <script>
 // 항상 최신 화면: 서버 버전과 다르면(옛 화면이 남아 있으면) 저장해 둔 것을 지우고 새로 불러옴
-const APPVER = "b5124db364";
-if ("serviceWorker" in navigator) navigator.serviceWorker.register(new URL("sw.js?v=b5124db364", location.href).href).catch(() => {});
+const APPVER = "b4b9f8b0df";
+if ("serviceWorker" in navigator) navigator.serviceWorker.register(new URL("sw.js?v=b4b9f8b0df", location.href).href).catch(() => {});
 async function checkVer() {
   try {
     const v = (await (await fetch(new URL("version.txt?t=" + Date.now(), location.href).href, {cache: "no-store"})).text()).trim();
@@ -1103,6 +1109,7 @@ async function checkVer() {
 }
 checkVer();
 document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") checkVer(); });
+setInterval(checkVer, 3 * 60 * 1000);   // 켜 둔 채로 있어도 3분마다 새 버전 확인
 </script>
 </body>
 </html>
