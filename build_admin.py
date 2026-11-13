@@ -31,6 +31,7 @@ install = (HERE / "master/install_prompt.html").read_text(encoding="utf-8")
 install = install.replace('id="inst-apk" hidden', 'id="inst-apk" hidden data-off').replace(
     'if (isAndroid) document.getElementById("inst-apk").hidden = false;', "")
 install = install.replace('document.getElementById("inst-prof").hidden = false;', "")
+install = install.replace('document.getElementById("inst-alt").hidden = false;', "")   # admin 은 APK·프로필 없음: '앱으로 설치하기' 칸을 숨김
 install = install.replace('getElementById("who")', 'getElementById("admgate")')
 
 ver = hashlib.sha256((head + body + install + TBODY + TJS).encode()).hexdigest()[:10]
