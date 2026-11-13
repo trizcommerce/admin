@@ -244,6 +244,22 @@ function route() {
   $("#adm").hidden = false;
   admLog("open", "전체 보기");
   start();
+  // 휴대폰 뒤로가기: 설치 창이 떠 있으면 닫고, 아니면 '한 번 더 누르면 나가요' 후 두 번째에 나감
+  let armed = 0;
+  const guard = () => { try { history.pushState({admGuard: 1}, ""); } catch (e) {} };
+  try { history.replaceState({admBase: 1}, ""); } catch (e) {}
+  guard();
+  window.addEventListener("popstate", () => {
+    const inst = document.getElementById("inst");
+    if (inst && !inst.hidden) { inst.hidden = true; return guard(); }
+    if (Date.now() - armed < 2000) { history.back(); return; }
+    armed = Date.now(); admToast("뒤로 버튼을 한 번 더 누르면 나가요"); guard();
+  });
+}
+function admToast(msg) {
+  let el = document.getElementById("adm-toast");
+  if (!el) { el = document.createElement("div"); el.id = "adm-toast"; el.style.cssText = "position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;z-index:99;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap"; document.body.appendChild(el); }
+  el.textContent = msg; el.style.opacity = "1"; clearTimeout(el._t); el._t = setTimeout(() => { el.style.opacity = "0"; }, 1800);
 }
 async function loadSeller(s) {
   const base = new URL(`../${s.repo}/`, location.href).href;
