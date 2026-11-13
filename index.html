@@ -446,6 +446,7 @@ details.fold,.op-card,.op-post,.op-hl li{border-radius:18px}
 <style>
 /* ---- admin 전용 ---- */
 html,body{margin:0}
+.who[hidden],.app[hidden]{display:none!important}
 .filters{display:flex;gap:6px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none}
 .filters::-webkit-scrollbar{display:none}
 .chip{flex:none;height:32px;padding:0 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
@@ -878,6 +879,6 @@ setInterval(() => SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.no
 })();
 </script>
 
-<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js?v=af9a5f103b").catch(() => {});</script>
+<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js?v=6b3d1f0800").catch(() => {});</script>
 </body>
 </html>
