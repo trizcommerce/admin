@@ -341,7 +341,7 @@ async function reviewPanel(s, draft, live) {
   try {
     const r = await fetch(`${window.LOG_URL_ADM}?action=opinion_sync&repo=${encodeURIComponent(s.repo)}`);
     const last = await r.json();
-    if (last && last.keys && last.keys.length) box.querySelector("#rv-status").textContent = `마지막 연동: ${String(last.at || "").slice(0, 16).replace("T", " ")} · ${last.keys.length}개 항목${String(last.draftAt) === String(draft.at) ? " (이 초안)" : " (이전 초안)"}`;
+    if (last && last.keys && last.keys.length) box.querySelector("#rv-status").textContent = `마지막 연동: ${String(last.at || "").slice(0, 16).replace("T", " ")} · ${last.keys.length}개 항목${String(last.draftAt).replace("at:", "").slice(0, 10) === String(draft.at).slice(0, 10) || new Date(last.draftAt).toDateString() === new Date(draft.at).toDateString() ? " (이 초안)" : " (이전 초안)"}`;
   } catch (e) {}
   box.querySelector("#rv-go").onclick = () => {
     const keys = boxes().filter(b => b.checked).map(b => b.dataset.k);
@@ -349,7 +349,7 @@ async function reviewPanel(s, draft, live) {
     if (!confirm(`${s.name}님 셀러 캘린더에 체크한 ${keys.length}개 항목을 연동할까요?\n(30분 안에 셀러 캘린더에 반영돼요)`)) return;
     if (!window.LOG_URL_ADM) { alert("연동 주소가 없어 보내지 못했어요."); return; }
     fetch(window.LOG_URL_ADM, {method: "POST", mode: "no-cors", headers: {"Content-Type": "text/plain;charset=utf-8"},
-      body: JSON.stringify({type: "opinion_sync", seller: "admin", repo: s.repo, draftAt: draft.at, keys, name: VIEWER.name || ""})})
+      body: JSON.stringify({type: "opinion_sync", seller: "admin", repo: s.repo, draftAt: "at:" + draft.at, keys, name: VIEWER.name || ""})})
       .then(() => { box.querySelector("#rv-status").textContent = `연동 요청을 보냈어요 (${keys.length}개 항목). 셀러 캘린더에는 30분 안에 반영돼요.`; })
       .catch(() => { box.querySelector("#rv-status").textContent = "연동 요청을 보내지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요."; });
   };
