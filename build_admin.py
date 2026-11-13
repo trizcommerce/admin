@@ -81,4 +81,8 @@ self.addEventListener("fetch", e => {{
 }});
 ''', encoding="utf-8")
 (HERE / "version.txt").write_text(ver, encoding="utf-8")
+# 검토 대기 댓글 여론 목록 (drafts/<저장소>/opinion.json 이 있는 셀러)
+(HERE / "drafts").mkdir(exist_ok=True)
+pending = sorted(d.name for d in (HERE / "drafts").iterdir() if (d / "opinion.json").exists())
+(HERE / "drafts/index.json").write_text(json.dumps(pending), encoding="utf-8")
 print("built admin", ver, len(html))

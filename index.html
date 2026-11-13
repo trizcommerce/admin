@@ -451,6 +451,11 @@ window.ADM_TJS = "\nconst DATA = window.__ADM.data;\nconst IDEAS = window.__ADM.
 window.LOG_URL_ADM = "https://script.google.com/macros/s/AKfycbxJOcpnkYX3SmMaJK03qEev2jVj8h1Mc6rwisc00nmQVPV92RP3CBVdgdw0wRbH20LXDg/exec";</script>
 <style>
 /* ---- admin 전용 ---- */
+.adm-draft{margin:0 16px 10px;background:#FFF4E5;border:1.5px solid #F0B46A;border-radius:16px;padding:12px 14px;font-size:13px;line-height:1.5;color:#3a2a14}
+#adm .adm-draft{margin:0 0 10px}
+.adm-draft b{display:block;font-size:14.5px;margin-bottom:2px}
+.adm-draft-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.adm-draft[hidden]{display:none}
 #sellerUI{height:100%}
 .adm-bar{position:fixed;top:6px;right:8px;z-index:60;display:flex;gap:6px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 10px;box-shadow:var(--shadow);font-size:12.5px}
 .adm-bar a{color:var(--accent);font-weight:700;text-decoration:none}
@@ -511,6 +516,7 @@ html,body{margin:0}
     <div class="filters" id="sellers"></div>
     <div class="filters" id="opens"></div>
     <div class="scroll" id="scroll" style="padding-bottom:40px">
+      <div class="adm-draft" id="drafts" hidden></div>
       <div class="sales-wrap" id="sales"></div>
       <div class="cal-card">
         <div class="wk"><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span><span>일</span></div>
@@ -717,7 +723,10 @@ async function loadSeller(s) {
   const get = async f => { try { const r = await fetch(base + f + "?t=" + Date.now(), {cache: "no-store"}); return r.ok ? await r.json() : null; } catch (e) { return null; } };
   const ui = $("#sellerUI"); ui.hidden = false;
   ui.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--muted)">${esc(s.name)}님 캘린더를 불러오는 중이에요…</div>`;
-  const [cfg, data, ideas, opinion] = await Promise.all([get("config.json"), get("data.json"), get("ideas.json"), get("opinion.json")]);
+  const draftUrl = new URL(`drafts/${s.repo}/opinion.json?t=${Date.now()}`, location.href).href;   // admin 주소 기준
+  const getDraft = async () => { try { const r = await fetch(draftUrl, {cache: "no-store"}); return r.ok ? await r.json() : null; } catch (e) { return null; } };
+  const [cfg, data, ideas, liveOpinion, draft] = await Promise.all([get("config.json"), get("data.json"), get("ideas.json"), get("opinion.json"), getDraft()]);
+  const opinion = draft || liveOpinion;
   if (!data) { ui.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--muted)">${esc(s.name)}님 캘린더를 불러오지 못했어요. <a href="./">전체 보기로</a></div>`; return; }
   window.__ADM = {data, ideas, opinion};
   const seller = (cfg && cfg.seller) || (s.name + "님");
@@ -731,11 +740,28 @@ async function loadSeller(s) {
   bar.querySelector("select").onchange = ev => { location.href = new URL("./?s=" + ev.target.value, location.href.split("?")[0]).href; };
   document.body.appendChild(bar);
   const sc = document.createElement("script"); sc.textContent = fill(window.ADM_TJS); document.body.appendChild(sc);
+  if (draft) {   // 검토 대기 안내 (셀러 캘린더에는 아직 안 나간 내용)
+    const box = document.createElement("div"); box.className = "adm-draft";
+    const liveAt = liveOpinion && liveOpinion.at ? `${liveOpinion.at} 정리본` : "아직 없음";
+    box.innerHTML = `<b>검토 대기 중인 새 댓글 여론이에요</b><span>${esc(draft.from || "")}~${esc(draft.to || "")} · ${esc(draft.at || "")} 정리. 셀러 캘린더에는 아직 적용되지 않았어요 (지금 셀러 화면: ${esc(liveAt)}). 확인 후 적용을 요청해 주세요.</span>`;
+    const op = document.querySelector("#sellerUI #op-scroll"); if (op) op.parentNode.insertBefore(box, op);
+  }
 }
 
 var started = false;
+async function showDrafts() {
+  try {
+    const r = await fetch(new URL("drafts/index.json?t=" + Date.now(), location.href).href, {cache: "no-store"});
+    const list = r.ok ? await r.json() : [];
+    const ss = list.map(repo => SELLERS.find(s => s.repo === repo)).filter(Boolean);
+    if (!ss.length) return;
+    $("#drafts").innerHTML = `<b>검토 대기 댓글 여론 ${ss.length}</b><span>셀러 캘린더에는 아직 적용되지 않았어요. 눌러서 확인하세요.</span><div class="adm-draft-links">${ss.map(s => `<a class="chip" href="?s=${s.repo}#opinion" style="--c:${s.c};text-decoration:none;color:inherit"><i></i>${esc(s.name)} →</a>`).join("")}</div>`;
+    $("#drafts").hidden = false;
+  } catch (e) {}
+}
 function start() {
 if (started) return; started = true;
+showDrafts();
 renderAll();
 let done = 0, failed = [];
 SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.now()}`, {cache: "no-store"})
@@ -968,8 +994,8 @@ window.__admin = {SELLERS, loadSeller, unlock, route};
 
 <script>
 // 항상 최신 화면: 서버 버전과 다르면(옛 화면이 남아 있으면) 저장해 둔 것을 지우고 새로 불러옴
-const APPVER = "2ae86e51cf";
-if ("serviceWorker" in navigator) navigator.serviceWorker.register(new URL("sw.js?v=2ae86e51cf", location.href).href).catch(() => {});
+const APPVER = "c00a6b4b5e";
+if ("serviceWorker" in navigator) navigator.serviceWorker.register(new URL("sw.js?v=c00a6b4b5e", location.href).href).catch(() => {});
 async function checkVer() {
   try {
     const v = (await (await fetch(new URL("version.txt?t=" + Date.now(), location.href).href, {cache: "no-store"})).text()).trim();
