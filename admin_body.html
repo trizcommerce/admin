@@ -5,6 +5,19 @@
 .adm-draft b{display:block;font-size:14.5px;margin-bottom:2px}
 .adm-draft-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .adm-draft[hidden]{display:none}
+.rv{margin-top:8px}
+.rv summary{cursor:pointer;font-weight:700;color:#8a4b12;padding:4px 0}
+.rv summary em{font-style:normal;font-weight:600;color:#a0703a;margin-left:4px}
+.rv-help{margin:4px 0 8px;font-size:12px;color:#6b5434}
+.rv-sec{background:#fff;border-radius:12px;padding:8px 10px;margin-bottom:6px}
+.rv-all{display:flex;align-items:center;gap:6px;font-size:13.5px}
+.rv-all small{color:#9a8a76;font-weight:500}
+.rv-items{margin:6px 0 2px 4px;display:flex;flex-direction:column;gap:4px;max-height:260px;overflow:auto}
+.rv-it{display:flex;gap:6px;align-items:flex-start;font-size:12.5px;line-height:1.45;color:#3a2a14}
+.rv-it input,.rv-all input{width:17px;height:17px;flex:none;margin-top:1px;accent-color:var(--accent)}
+.rv-same{color:#9a8a76;font-size:11px}
+.rv-go{display:block;width:100%;margin-top:10px;padding:12px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:15px}
+.rv-status{margin:6px 0 0;font-size:12.5px;color:#6b5434;min-height:16px}
 #sellerUI{height:100%}
 .adm-bar{position:fixed;top:6px;right:8px;z-index:60;display:flex;gap:6px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 10px;box-shadow:var(--shadow);font-size:12.5px}
 .adm-bar a{color:var(--accent);font-weight:700;text-decoration:none}
@@ -289,12 +302,57 @@ async function loadSeller(s) {
   bar.querySelector("select").onchange = ev => { location.href = new URL("./?s=" + ev.target.value, location.href.split("?")[0]).href; };
   document.body.appendChild(bar);
   const sc = document.createElement("script"); sc.textContent = fill(window.ADM_TJS); document.body.appendChild(sc);
-  if (draft) {   // 검토 대기 안내 (셀러 캘린더에는 아직 안 나간 내용)
-    const box = document.createElement("div"); box.className = "adm-draft";
-    const liveAt = liveOpinion && liveOpinion.at ? `${liveOpinion.at} 정리본` : "아직 없음";
-    box.innerHTML = `<b>검토 대기 중인 새 댓글 여론이에요</b><span>${esc(draft.from || "")}~${esc(draft.to || "")} · ${esc(draft.at || "")} 정리. 셀러 캘린더에는 아직 적용되지 않았어요 (지금 셀러 화면: ${esc(liveAt)}). 확인 후 적용을 요청해 주세요.</span>`;
-    const op = document.querySelector("#sellerUI #op-scroll"); if (op) op.parentNode.insertBefore(box, op);
-  }
+  if (draft) reviewPanel(s, draft, liveOpinion);
+}
+
+// ---- 댓글 여론 검토: 항목마다 체크 → '최종 연동'을 누르면 체크한 것만 셀러 캘린더에 반영 ----
+const SEC_LABEL = {headline: "한눈에 보기", mood: "댓글 분위기", loves: "팔로워가 좋아하는 것", asks: "자주 묻는 질문", wants: "바라는 것",
+  warns: "주의할 점", kinds: "반응 좋은 콘텐츠", who: "어떤 팔로워인지", flavors: "인기 맛", ideas: "콘텐츠 아이디어",
+  posts: "게시물별 요약", changes: "지난달 대비 달라진 여론", iq: "답을 기다리는 질문·소통"};
+function itemLabel(sec, it) {
+  if (typeof it === "string") return it;
+  if (sec === "posts") return `${it.d || ""} ${it.t || ""} — ${it.s || ""}`;
+  if (sec === "mood") return `${it.k} ${it.v}% · ${it.ex || ""}`;
+  return [it.t || it.k || "", it.d || it.r || it.ex || ""].filter(Boolean).join(" — ");
+}
+async function reviewPanel(s, draft, live) {
+  const same = (sec, it) => Array.isArray(live && live[sec]) && live[sec].some(x => JSON.stringify(x) === JSON.stringify(it));
+  const secs = Object.entries(draft).filter(([k, v]) => (Array.isArray(v) && v.length) || (v && typeof v === "object" && !Array.isArray(v) && Object.keys(v).length));
+  const liveAt = live && live.at ? `${live.at} 정리본` : "아직 없음";
+  const box = document.createElement("div"); box.className = "adm-draft adm-review";
+  box.innerHTML = `<b>검토 대기 중인 새 댓글 여론이에요</b>
+    <span>${esc(draft.from || "")}~${esc(draft.to || "")} · ${esc(draft.at || "")} 정리. 아래 화면은 새 내용 전체예요. 셀러 캘린더에는 아직 적용되지 않았어요 (지금 셀러 화면: ${esc(liveAt)}).</span>
+    <details class="rv"><summary>셀러 캘린더에 보낼 항목 고르기 <em id="rv-count"></em></summary>
+      <p class="rv-help">체크한 항목만 셀러 캘린더에 들어가요. 체크가 하나도 없는 묶음은 지금 셀러 화면 내용을 그대로 둬요.</p>
+      ${secs.map(([sec, v]) => Array.isArray(v)
+        ? `<div class="rv-sec"><label class="rv-all"><input type="checkbox" data-all="${sec}" checked> <b>${esc(SEC_LABEL[sec] || sec)}</b> <small>${v.length}개</small></label>
+            <div class="rv-items">${v.map((it, i) => `<label class="rv-it"><input type="checkbox" data-k="${sec}:${i}" checked><span>${esc(itemLabel(sec, it).slice(0, 160))}${same(sec, it) ? ` <small class="rv-same">지금과 같음</small>` : ""}</span></label>`).join("")}</div></div>`
+        : `<div class="rv-sec"><label class="rv-all"><input type="checkbox" data-k="${sec}" checked> <b>${esc(SEC_LABEL[sec] || sec)}</b> <small>묶음 1개</small></label></div>`).join("")}
+    </details>
+    <button type="button" class="rv-go" id="rv-go">최종 연동</button>
+    <p class="rv-status" id="rv-status"></p>`;
+  const op = document.querySelector("#sellerUI #op-scroll"); if (op) op.parentNode.insertBefore(box, op);
+  const boxes = () => [...box.querySelectorAll("input[data-k]")];
+  const count = () => { const on = boxes().filter(b => b.checked).length; box.querySelector("#rv-count").textContent = `${on}/${boxes().length}개 체크`; };
+  box.querySelectorAll("input[data-all]").forEach(a => a.onchange = () => { box.querySelectorAll(`input[data-k^="${a.dataset.all}:"]`).forEach(b => b.checked = a.checked); count(); });
+  box.addEventListener("change", ev => { const k = ev.target.dataset.k; if (k && k.includes(":")) { const sec = k.split(":")[0]; const all = box.querySelector(`input[data-all="${sec}"]`); const its = [...box.querySelectorAll(`input[data-k^="${sec}:"]`)]; if (all) all.checked = its.some(b => b.checked); } count(); });
+  count();
+  // 마지막 연동 상태
+  try {
+    const r = await fetch(`${window.LOG_URL_ADM}?action=opinion_sync&repo=${encodeURIComponent(s.repo)}`);
+    const last = await r.json();
+    if (last && last.keys && last.keys.length) box.querySelector("#rv-status").textContent = `마지막 연동: ${String(last.at || "").slice(0, 16).replace("T", " ")} · ${last.keys.length}개 항목${String(last.draftAt) === String(draft.at) ? " (이 초안)" : " (이전 초안)"}`;
+  } catch (e) {}
+  box.querySelector("#rv-go").onclick = () => {
+    const keys = boxes().filter(b => b.checked).map(b => b.dataset.k);
+    if (!keys.length) { alert("체크한 항목이 없어요. 셀러 캘린더에 보낼 항목을 먼저 체크해 주세요."); return; }
+    if (!confirm(`${s.name}님 셀러 캘린더에 체크한 ${keys.length}개 항목을 연동할까요?\n(30분 안에 셀러 캘린더에 반영돼요)`)) return;
+    if (!window.LOG_URL_ADM) { alert("연동 주소가 없어 보내지 못했어요."); return; }
+    fetch(window.LOG_URL_ADM, {method: "POST", mode: "no-cors", headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: JSON.stringify({type: "opinion_sync", seller: "admin", repo: s.repo, draftAt: draft.at, keys, name: VIEWER.name || ""})})
+      .then(() => { box.querySelector("#rv-status").textContent = `연동 요청을 보냈어요 (${keys.length}개 항목). 셀러 캘린더에는 30분 안에 반영돼요.`; })
+      .catch(() => { box.querySelector("#rv-status").textContent = "연동 요청을 보내지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요."; });
+  };
 }
 
 var started = false;
