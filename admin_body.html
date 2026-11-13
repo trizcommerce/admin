@@ -1,5 +1,6 @@
 <style>
 /* ---- admin 전용 ---- */
+html,body{margin:0}
 .filters{display:flex;gap:6px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none}
 .filters::-webkit-scrollbar{display:none}
 .chip{flex:none;height:32px;padding:0 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
@@ -22,13 +23,22 @@
 .mini .fmt{width:40px;height:40px;font-size:10.5px}
 .e-prod{display:inline-flex;align-items:center;gap:5px}
 .load-note{margin:10px 2px;font-size:12px;color:var(--muted)}
-.sale-row .who{font-size:11px;font-weight:700;color:var(--muted);margin-right:4px}
+.sale-row .sname{font-size:11px;font-weight:700;color:var(--muted);margin-right:4px}
 .sales-wrap{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
 .sales-wrap h4{margin:6px 2px 0;font-size:12.5px;color:var(--muted)}
 .empty-day{padding:18px;text-align:center;color:var(--muted);background:var(--surface);border-radius:16px;font-size:14px}
 </style>
 
-<div class="app" id="app">
+<div class="who" id="who" role="dialog" aria-modal="true" aria-labelledby="pw-title" style="background:var(--bg)">
+  <form class="who-card" id="pw-form" autocomplete="off">
+    <h3 id="pw-title">비밀번호를 입력해 주세요</h3>
+    <input id="pw" type="password" inputmode="text" placeholder="비밀번호" aria-label="비밀번호">
+    <p id="pw-err" style="margin:8px 2px 0;font-size:13px;color:var(--sun);min-height:18px"></p>
+    <button type="submit" style="width:100%;height:48px;margin-top:6px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px">확인</button>
+  </form>
+</div>
+
+<div class="app" id="app" hidden>
   __BRAND__
   <section class="view" aria-label="전체 셀러 캘린더">
     <div class="topbar">
@@ -124,7 +134,7 @@ function renderSales() {
   soon.sort((a, b) => a.r.s.localeCompare(b.r.s));
   const row = ({s, r}, isLive) => {
     const dd = Math.round((parse(r.s) - parse(today)) / 864e5);
-    return `<a class="sale-row${isLive ? " live" : ""}" href="../${s.repo}/" style="--c:${s.c};text-decoration:none;color:inherit"><div class="t"><div class="k"><span class="who">${esc(s.name)}</span>${isLive ? "진행 중 공구" : "다음 공구"}</div><div class="nm">${esc(r.name)}</div></div><div class="v"><b>${isLive ? "~" + md(r.e) : "D-" + dd}</b><small>${md(r.s)}–${md(r.e)}</small></div></a>`;
+    return `<a class="sale-row${isLive ? " live" : ""}" href="../${s.repo}/" style="--c:${s.c};text-decoration:none;color:inherit"><div class="t"><div class="k"><span class="sname">${esc(s.name)}</span>${isLive ? "진행 중 공구" : "다음 공구"}</div><div class="nm">${esc(r.name)}</div></div><div class="v"><b>${isLive ? "~" + md(r.e) : "D-" + dd}</b><small>${md(r.s)}–${md(r.e)}</small></div></a>`;
   };
   $("#sales").innerHTML = (live.length ? `<h4>진행 중 공구 ${live.length}</h4>` + live.map(x => row(x, true)).join("") : "")
     + (soon.length ? `<h4>2주 안에 열리는 공구 ${soon.length}</h4>` + soon.map(x => row(x, false)).join("") : "");
@@ -184,6 +194,22 @@ $("#prev").onclick = () => { cur.setMonth(cur.getMonth() - 1); renderGrid(); };
 $("#next").onclick = () => { cur.setMonth(cur.getMonth() + 1); renderGrid(); };
 $("#today").onclick = () => { cur = new Date(); cur.setDate(1); sel = today; renderGrid(); renderAgenda(); };
 
+// ---- 비밀번호 (해시로만 비교; 맞히면 이 기기에서는 다시 묻지 않음) ----
+const PW_HASH = "e581acc52af1a4d99f19a45731f3dc4eaaa8e3a7cb940bbd117480ad40907e29";
+async function sha(s) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
+function unlock() { $("#who").hidden = true; $("#app").hidden = false; start(); }
+if (load("adm.ok", "") === PW_HASH) unlock();
+else setTimeout(() => $("#pw").focus(), 50);
+$("#pw-form").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const h = await sha($("#pw").value.trim());
+  if (h === PW_HASH) { save("adm.ok", PW_HASH); unlock(); }
+  else { $("#pw-err").textContent = "비밀번호가 맞지 않아요. 다시 입력해 주세요."; $("#pw").select(); }
+});
+
+let started = false;
+function start() {
+if (started) return; started = true;
 renderAll();
 let done = 0, failed = [];
 SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.now()}`, {cache: "no-store"})
@@ -198,4 +224,5 @@ SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.now()}`, {cache: "no
   }));
 // 5분마다 새로 불러오기 (셀러 시트가 바뀌면 반영)
 setInterval(() => SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.now()}`, {cache: "no-store"}).then(r => r.json()).then(D => { ALL[s.repo] = digest(s, D); renderAll(); }).catch(() => {})), 5 * 60 * 1000);
+}
 </script>
