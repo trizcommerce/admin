@@ -209,7 +209,7 @@ const PW_HASH = "e581acc52af1a4d99f19a45731f3dc4eaaa8e3a7cb940bbd117480ad40907e2
 async function sha(s) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
 function unlock() { $("#admgate").hidden = true; route(); }
 const VIEWER = load("viewer", {});            // 셀러 캘린더와 같은 이름 기록(같은 기기면 같이 씀)
-if (load("adm.ok", "") === PW_HASH && VIEWER.name) unlock();
+if (load("adm.ok", "") === PW_HASH && VIEWER.name) setTimeout(unlock, 0);   // 아래 코드가 다 읽힌 뒤에 열기
 else {
   if (load("adm.ok", "") === PW_HASH) { $("#pw").hidden = true; $("#pw-title").textContent = "이름을 입력해 주세요"; }
   if (!VIEWER.name) $("#adm-name").hidden = false;
@@ -266,7 +266,7 @@ async function loadSeller(s) {
   const sc = document.createElement("script"); sc.textContent = fill(window.ADM_TJS); document.body.appendChild(sc);
 }
 
-let started = false;
+var started = false;
 function start() {
 if (started) return; started = true;
 renderAll();

@@ -657,7 +657,7 @@ const PW_HASH = "e581acc52af1a4d99f19a45731f3dc4eaaa8e3a7cb940bbd117480ad40907e2
 async function sha(s) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
 function unlock() { $("#admgate").hidden = true; route(); }
 const VIEWER = load("viewer", {});            // 셀러 캘린더와 같은 이름 기록(같은 기기면 같이 씀)
-if (load("adm.ok", "") === PW_HASH && VIEWER.name) unlock();
+if (load("adm.ok", "") === PW_HASH && VIEWER.name) setTimeout(unlock, 0);   // 아래 코드가 다 읽힌 뒤에 열기
 else {
   if (load("adm.ok", "") === PW_HASH) { $("#pw").hidden = true; $("#pw-title").textContent = "이름을 입력해 주세요"; }
   if (!VIEWER.name) $("#adm-name").hidden = false;
@@ -714,7 +714,7 @@ async function loadSeller(s) {
   const sc = document.createElement("script"); sc.textContent = fill(window.ADM_TJS); document.body.appendChild(sc);
 }
 
-let started = false;
+var started = false;
 function start() {
 if (started) return; started = true;
 renderAll();
@@ -944,8 +944,8 @@ window.__admin = {SELLERS, loadSeller, unlock, route};
 
 <script>
 // 항상 최신 화면: 서버 버전과 다르면(옛 화면이 남아 있으면) 저장해 둔 것을 지우고 새로 불러옴
-const APPVER = "b92ea7f5bd";
-if ("serviceWorker" in navigator) navigator.serviceWorker.register(new URL("sw.js?v=b92ea7f5bd", location.href).href).catch(() => {});
+const APPVER = "7a151597d7";
+if ("serviceWorker" in navigator) navigator.serviceWorker.register(new URL("sw.js?v=7a151597d7", location.href).href).catch(() => {});
 async function checkVer() {
   try {
     const v = (await (await fetch(new URL("version.txt?t=" + Date.now(), location.href).href, {cache: "no-store"})).text()).trim();

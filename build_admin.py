@@ -5,7 +5,7 @@ import json, hashlib, re
 from pathlib import Path
 
 HERE = Path(__file__).parent
-SRC = (HERE.parent / "berberlog_test_calendar_app/template.html").read_text(encoding="utf-8")
+SRC = (HERE / "master/template.html").read_text(encoding="utf-8")
 head = SRC[:SRC.index("</style>") + len("</style>")]
 head = head.replace("__APP_NAME__", "admin · 셀러 전체 캘린더")
 brand = next(l for l in SRC.splitlines() if 'class="brand"' in l)
@@ -26,7 +26,7 @@ tpl_vars = ("<script>window.ADM_TBODY = " + json.dumps(TBODY, ensure_ascii=False
             + ";\nwindow.ADM_TJS = " + json.dumps(TJS, ensure_ascii=False).replace("</", "<\\/")
             + ";\nwindow.LOG_URL_ADM = " + json.dumps(LOG_URL) + ";</script>\n")
 body = (HERE / "admin_body.html").read_text(encoding="utf-8").replace("__BRAND__", brand)
-install = (HERE.parent / "berberlog_test_calendar_app/install_prompt.html").read_text(encoding="utf-8")
+install = (HERE / "master/install_prompt.html").read_text(encoding="utf-8")
 # admin 은 APK·아이폰 프로필이 없으니 바로가기만
 install = install.replace('id="inst-apk" hidden', 'id="inst-apk" hidden data-off').replace(
     'if (isAndroid) document.getElementById("inst-apk").hidden = false;', "")

@@ -1,0 +1,1827 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>__APP_NAME__</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="color-scheme" content="only light">
+<script>document.documentElement.setAttribute("data-theme","light")</script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --bg:#F4F6FA; --surface:#FFFFFF; --surface-2:#EEF2F8; --ink:#1A2233; --muted:#6B7486; --line:#E3E8F0;
+  --accent:#3D7BF7; --accent-ink:#FFFFFF; --accent-soft:#E8F0FE; --today:#3D7BF7;
+  --sun:#E5484D; --sat:#3D7BF7; --chip-ink:#1A2233; --shadow:0 1px 2px rgba(26,34,51,.04),0 4px 16px rgba(26,34,51,.06);
+  --scrim:rgba(17,24,39,.42); --link:#2F6BE0;
+  --hero-grad:linear-gradient(180deg,#E6EFFF 0%,rgba(230,239,255,0) 100%);
+  /* 글꼴: 컴퓨터에서는 프리텐다드, 휴대폰에서는 그 휴대폰이 쓰는 기본 글꼴(아래 pointer:coarse) */
+  --font:"Pretendard","Pretendard Variable",-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif;
+  --display:var(--font);
+  --body:var(--font);
+  --nav-h:62px;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#0F141D; --surface:#182030; --surface-2:#212A3B; --ink:#E7ECF5; --muted:#9AA4B8; --line:#2A3446;
+    --accent:#6EA0FF; --accent-ink:#0B1426; --accent-soft:#1E2B45; --today:#6EA0FF;
+    --sun:#FF8A8E; --sat:#8DB4FF; --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3); --scrim:rgba(0,0,0,.6);
+    --link:#8AB4F8; --hero-grad:linear-gradient(180deg,#1A2740 0%,rgba(26,39,64,0) 100%);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#0F141D; --surface:#182030; --surface-2:#212A3B; --ink:#E7ECF5; --muted:#9AA4B8; --line:#2A3446;
+  --accent:#6EA0FF; --accent-ink:#0B1426; --accent-soft:#1E2B45; --today:#6EA0FF;
+  --sun:#FF8A8E; --sat:#8DB4FF; --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3); --scrim:rgba(0,0,0,.6);
+  --link:#8AB4F8; --hero-grad:linear-gradient(180deg,#1A2740 0%,rgba(26,39,64,0) 100%);
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-tap-highlight-color:transparent;overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+a{color:var(--accent)}
+.app{height:100%;max-width:600px;margin:0 auto;display:flex;flex-direction:column;position:relative;background:var(--bg)}
+.view{flex:1;min-height:0;display:flex;flex-direction:column}
+.view[hidden]{display:none!important}
+.brand{display:flex;align-items:center;gap:5.5px;padding:10px 17px 0;height:28px;flex:none}
+.brand img{height:18px;width:auto;display:block}
+.brand i{height:18px;width:54.8px;background:var(--ink);
+  -webkit-mask:url(data:image/png;base64,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) center/contain no-repeat;mask:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAANsAAABICAYAAAB/cYCtAAAQ0klEQVR42u2dabAcVRWAv+6ZlxeSkBBIgJCwSACDgUBYZBG3EoK4RQSiFIqWIoggREB2KQqQLQhisVUBCpYsMWylsm+ySVjCogGlMCBJ2DcDCeTlzfT4457DXPrNTN+e1z0zPa9v1fDCez197z337OfccyAf+chHPvKRj24annyG8qhEwKdTz8yz1h9E7COtdaQF9yydRxr77Hqmk/VRkE+ae/ETfr8vn24fRf3Pn4H1hTt6DahSOagCqRA6YPu7AbAKKFmIEJcbePKzLPP1yMcLPVeRecryqYQOslIHQUryvnnA6bLGsjXvn4AdgD7gA3m+0fui9lAAhkUQRKP9FOTf7wPvAC8Dz8pnofzOJrwkpZ3C5svAocDawFhgWWifngMsPGCMrPcN4BzgXmuOWgQZADsBF1n40EiCBBY+K44Wre+5nl9Zzr/SxHf1ZxH4LrCwCGwHTGjyEFYKwPsFQQLZ2AhgfMLcoSyH02fNUwR6gTWUezQxnqgDxL8Ci4EtgN0T2sMKQbJSHWTU/YwVRuA63gDmAzfJut8MEUkSsAe4B3gK2BjYD/hJk+87H7gW+C/wbmiOelrHGsDWg9jD/yymWQq9u1JjviKwJjBykLC7XRhiAeB52ajNTUsimQKL2/4LuAw4CNgFmCwAqCW1eoCNgFnA3fL9VaE5Gn0UIBXgD8BuwDp1OFqPEPYUYAZwpEilJdba+2V+e44++XmRLerrjCnAAoFHv+Me+mXud4FThamNdpQiawGfFCI/BviLEJDup0/2029JP/28CswBNrCQJy1VbT8LV0oR59kv657ZhFRFcKBcA/46v+5/meDcqcBewFbARGB4EyrwGGBnYK6FR674u0q0kMn2PhaFjOzAOsAVwKXA50QFanacYonlSsRH518J7DOIOccA3xJOb6tnNgFWgIvrEJtKTpUwmwLLLRWl0R7K8syLIhmTGOsCB4gEC+8nCDGoCvCWMB7PUseSsm99Cy531YBt+KN/u0m+MyyG/afENqMGDtn/XggcJkw+jXGrwz7DuHVG2Iyyic1GpLnC0cOGXlG+7Ic8Y+GPbz2LANplsfr3Y62DKUTM5Vl2ZLGGtP0i8Ejo/VHEFpaehDhcFLGVRAOIs4d6+/FDyL6vdW6lGszKXt9dwKQmbecoo98DDnaAif5tfwsv4kq2MLHpvt8GDhH124aRjad+TNjbn175uX+Msw+ApaL5fYypLLIeUiQ5OEEvlx7KTg7STQn9NWD1Qc5rG8eK8BdaAItDbLqHgxwArkhwp8N74+6naMFjHHBdg/UElnr1IjA1YYLT93wpxrnu2ISUrUVsCuPHgc1C5+Sn4En0RKtwITZd2w9rwXtRSB+dlfDCFTlWE4dDo4PRhd6YAmLoOs6UOVbGIDZdx64OiKWHcaRFIKm4kmVcEoEE+vulwCYJqpT6jukOZoH+nJIAsSkDeVQkBynBODz/ZTEY7aP1hNQi6+FfhNQmEo5j3RehSupGzkwBUe333WDN6UJsihxbhJCnEcD3TBkRfAsR5jnC9SnxFCcRL/Mt51G5AUwCy6mzUUKS7VVLNS62IIFgdQm1RDFa9ch/vpaw8C2X6/3ixSrWcE0nRWwrYrhpk468V6zYy8GiqsaN8H8oiOuy17dTziAIrJDBj0RV9K1YaFgS9otn7jR5xm9DJkUlISbzc5HUaeBqeK4KJk62XoMYH1Ys9ToRKgPCLjaHOz5hoNRCwCAGIqWFoAXgdeDciPgOdQLhAZ0zdD/vAUdZgeN6qmcZ+JnYb+WMZW8o3B/CxOgKKROawnIscIJj0H6F0FHNc/DFRf6kbMJPKAjayUOzRH4vh9XbhDTppKGZLTeKw6BeINuzMhqOyGCamsL9ghatXbWEYzFxukbMSTWF3wL/sTJ4BrywiHFp0wJOV+mQQ/MxcagHiJchEHSYZAurO5dHwFltiJmY7IhyhgiuF5MBcnsTGkmzhLapaAJBA2edEtrLwNmNBJYvXrn7U1bf6NDM+TswmQVZH3put4ldWaxDcJ48uxYmFEOGVMnRwNOYjJxCC/CjApyF8aK7qJC/FF9DXVXelwN6bohdB1B18AHgn12wd3X8vIRJq2u0H937thlRJXUfy4DrLUZZSdHVX8bED/e0HB+NnCKPYdIKG5phRarBt6FGbGpsPySHl3VbVQ/6GWCbCI+jh0kmzsKZ21L7VstOTZO4ezCeedfnj44gykypEPkFP3eP72LH50bkZ1RTqgUigKY7SrV5wN9cbljkxNZ94x1HpO3LQVXTybQWcHKd+52xXP05sXX/6MdNSizpolvqSWkGgRDPuhFquP7tfEwGlu/iXMyJrfsQZqyjJ3ZBXiNjgKt/CvBTR1f/Uqqu/iBOfls+usPurACfaiCxKoJEyzCe2KEU7nF19Q93dPWfKHB09ozmxNY9yFLGBOh3aXC2Zetu4RtWXZOhPNSxsTvwDUenyKPAH+NmXOXE1j0I42FKB0yskxmiHLmEKbKTj6pU6hGp5mLD6u2Y2Nk3ObF1lwo5m8Y5oQVMbuHCBIsBdYOtdiDmRoRLVv9cTMZVbPjlxNY9atDXMPeoahn3ZUwCw7Nia/i5rfaRq38ccFKMrP4Tms1gyYmtOwLZI4Ff10EA+xrOt607hZUcdgTCfNZ2dPWfB7zQLLPKiY3MV9otY262b1YDYfT/V2EqlS2U7+RSzcBtKqb2pQuhLSamqz8ntu4itH7gO5gqxaWQ+qj2x4eYkn53tOBmc9Y0grMwV3dcs/rfH0wSdE5s2bXTSpjM/Utr2GlKeG8AewA354Q2wMbdA/iqo6t/Pk24+nNi6x7V8ROYeNmokBu7JM88gSmue19OaANc/cOacPUHg01ty4ktmxJtgkirSZa6WLIqiF2O8Uw+14JaHVl09R8EbOno6r8WeDCJUElObNlTfyZg7nZtbhFYIET2OqYS1AGYUul+Hksb4OofL/aXS1b/cgbh6s+JLfuq413ANCu7X8trzwW2B66yMkryvMeBrv6ThOBcXf0vJhWXzIktG4RWEgK7F5No3IdJMdJA9Z4Yr+QSSwLm2fwDtYItMdkiZYes/sWY29qJJQAU83PoaE6s9tYM4BqqFbF6MZdEzwV+gwlUF6yKvfmoPc4S50ijvEZVyU/EuPoLObF1v32BENqBmHqEvRYyXIYJsL4Qkn75qC/Vvo5x90e5+ovA3y11vJxGg4Z8dJba6GNSsI6wjPargV9RraBFKK7mhert59qBgUMv1YYqnkOBoaMjLpDmxNZFhDYJuAJTTk1LuF2IqZs4FtOV1MOkYS2v0TrYy7P6PxYqOVhsXZcA9tWYimuJwy8nts5TG3cTNXE9zFWOx4Qjz8F00RlpNUkMMOlYrwH/FiS5E9OtpmyVQAiGcExtHbG/XF39J6Zcl7IlHAZMb2iX1kZHdxgzUGKYKAfSqGWUegI/59hjzt7j8aGOmm85NN+rNf+9wN4pM9W4LaNWAhu20AuucL8oRl+1k1Po0JpLtg6xJzTzY0NMjuNu8rdHMLUIH8dk6mtZ6xGY+vM7YOr1T6daUcu3Gmd8QT73iM339BBTK3WvW2MC/C6u/pfERs78Xb9cstWGB5g7Zh/Kd64APhMDprMY2Fs73Mx+OfCDFDh2J0s23ecdDn3c9W/7pSnVcmJrPbF51v+vKcSlTeanRzRg90NN7dX+GC/frwXXUo2ussUuJza7U48roT0Y6uSaE1vGic0+yK9gsj0qmDqFNpziIGKPVUp8fh3Yli24HpggXDuR2FQ1X00cRoFDW94y1Y4+hVYgUT7SzwQpizS7AJOx7wGfFgPet54JYlY/LmD6lu1bp2WR/e4LgR1rXDTtNg/kIZjwSOCQ1X8N8HA32bRDVbLZCD0Tc+WlIoe7XoJ71Hcc1QC++rtnhfMPtol9p0k23c8ETNyx3OCMVOK9B2xgSURyyZbtOhcTgN9hLnpuBtwiXsdXErxrpveyLraSkYM6Ad7NgcPa1MS+FdkiJ2MC/5WI/EcfUz9zcbdVGxtKkk1bAe+Aqf2x1PrbzVQ7nRZSCuOc2iCupNz+dUy3Fm8Q0q2TJJvCchvZdylC8wgweaWjEpDwuWTrgFLgF2PSrCbK7+djXPUrU7rUqRkS1zWIKykHXxtzybTSZbbb2RbTcanVv7yV2SI5sZFajqM20yuLyrg31aswaags+s6FmETlRmlaFeD7XeIU0D3shckldcl/fBBT7qCl+8+JjdTb0xYwnSxftm5cp414jTrUKCJuhbmQWskwHqhUGgGc0URWf1tskXyQSv39AnAlcHuL75w95uhQmZHxrAnVEg7FpLG5uPqvpk2u/pzY0iM0H+NaPrGFmfdqezwbQUTK/T+b4R5tavdOBI6LIDSVeO+RYAGfnNg6Y+j1lqsw3shWuZZ1jiViH9ZDKiW2LTDe0XIG2/3q3k4B1ohQIcsd4Or3c2JLT73RxGKvTU3s32rQQMOzQhkbZbC3tkq17YH9HbL6C5gqWee1MaYW5MSWjnTxgOeBJ1uspil3Xwm8GkFsWthmUgaJTeODcxxisQqT42mxqz8E1+NyYktPlXuYj98za/XhLnNc54YZIzZ1bOyDqfrs4up/AFNXs9VFa5WwVwdm58SW3ni6TUis8y13fH6djLr6T3foPmO7+ittOAvNTpkGrJUTW3rI/mqb1/GBY9PDURnM6p8NTHaoalzAdJ+Z36YAvjKHbwKFnNjSI7Y329ThU+df5fj8qIwR2gbAMY6u/mW0r4CP2sWrI7fAc2JLD9n72ryOvphJvFly9Y+OqJalhDiH+rcgaEHKXgAcjrn5UfJb6CWLk8VfyHhAuxNuLPgdWPTJG6RTZAdMAnXQYN2qPi7BVJJuRycf7Qo7jWrAveVq5DDH54Z3AbGNafM6RsZ8rlk1a7hF2F5ECYfhgyTUc6wYZhT8z8PU6m+1N7jH6qE3D+PMAfD8DkXA8R3qivYdO1UCjGuTN1LVpTUi5veswkPNEJt+f2xELNGz0tfGDEKqzQJ2iXD1V6wyEde3ME3Os8q/92Pu+N2JuSz8UcNFv4Wqw5rAxhEqjmddSKx0WM6eJ86EXsfnN2+jZC0CmzgS22R5vtJkcZ1NHQL3gTWXHwPvlFBH4ZbVX7EyaN5MidF51t6Loe5BHqZO5UPA1AjGkMrCemOUFtNbzssxqUSeiGWvzZkKuoeDiK6uq7eWn+HjJem8FqxV1fTpETU4wvDezlLzPUci07luiVEybq41j4uWoIh6ksMc9n4+tJiAZxU9Guyn3nrXBL5HtcJZpU5Vr5aMUVTrz5csoNT6KCJf2WEq5HqY/DqXPShSHN6mtd5mwTIK1oGoPM1oOTOtgrCBA0z6qFZ9dnXwrI9x4ZcsBuIC+4eFiaRRfmKcvPvHmDje0hrl8QaszUuZy44HdhbONLWJ99yMafj3D8z1iP4WcoiCGPQTgF0xVzMmNfGe8zEJyS+KxC6nAOse4a7bAMdSvToTZzwkqtoC4N0aoQOVECMxKV6zZK5iEyGJ04AbBElX1IGJ2mpzZa5mxyJMafEVMWBvx+V8ge8wsU/HYeq3jGyVKzZqkeMwnVgmY4KQFTFafYeEUVvPHy0qwWLMVfbZLSA2PeQZmOTVCcJdV1KtHxJnjBb7YSkm7nNTQtkMCuse4BJgW4F10eqYiSO8y5jga0lgvUBU5pJFZNpQ8BhR8dcViRMnDUodJaMxpSJewVTDujsEEw1gT8OUEA+aKE6k9tJqliniDdLBV7YkeX9ovZF48X/MgCGzVnaq1QAAAABJRU5ErkJggg==) center/contain no-repeat}
+@media (forced-colors:active){.brand i{background:CanvasText}}
+.topbar{padding:8px 16px 10px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.eyebrow{font-size:12px;letter-spacing:.06em;color:var(--muted);font-weight:500}
+.h-title{font-family:var(--display);font-weight:700;font-size:26px;line-height:1.15;letter-spacing:-.01em}
+.scroll{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 16px calc(var(--nav-h) + 28px)}
+
+/* ---- bottom nav ---- */
+.nav{position:absolute;left:0;right:0;bottom:0;height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
+  display:grid;grid-template-columns:repeat(3,1fr);background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);z-index:20}
+.nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11.5px;color:var(--muted);font-weight:500}
+.nav button svg{width:23px;height:23px}
+.nav button[aria-current="page"]{color:var(--accent)}
+
+/* ---- calendar ---- */
+.cal-head{display:flex;align-items:center;gap:6px}
+.icon-btn{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;color:var(--ink)}
+.icon-btn:active{background:var(--surface-2)}
+.today-btn{height:32px;padding:0 12px;border-radius:999px;border:1px solid var(--line);font-size:13px;font-weight:500;background:var(--surface)}
+.sale{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.sale:empty{display:none}
+.sale-row{display:flex;align-items:center;gap:10px;background:var(--surface);border-radius:14px;padding:9px 12px 9px 10px;box-shadow:var(--shadow);border-left:5px solid var(--c,var(--line))}
+.sale-row .t{flex:1;min-width:0}
+.sale-row .k{font-size:11px;font-weight:600;color:var(--muted)}
+.sale-row.live .k{color:var(--sun)}
+.sale-row .nm{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sale-row .v{text-align:right;white-space:nowrap}
+.sale-row .v b{display:block;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.sale-row .v small{display:block;font-size:10.5px;color:var(--muted)}
+.sale-row .v small.pay{margin-top:2px;font-variant-numeric:tabular-nums}
+.sale-row .v small.pay span{font-weight:600;color:var(--ink)}
+.cal-card{background:var(--surface);border-radius:20px;padding:10px 8px 4px;box-shadow:var(--shadow);touch-action:pan-y}
+.wk{display:grid;grid-template-columns:repeat(7,1fr);text-align:center;font-size:11.5px;color:var(--muted);font-weight:500;padding-bottom:6px}
+.wk span:nth-child(6){color:var(--sat)} .wk span:nth-child(7){color:var(--sun)}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);row-gap:2px}
+.day{position:relative;height:max(58px,calc(49px + var(--lanes,0)*16px));display:flex;flex-direction:column;align-items:center;padding-top:5px;border-radius:12px;font-variant-numeric:tabular-nums}
+.day .n{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;font-size:14px;font-weight:500;position:relative;z-index:1}
+.day.out .n{color:var(--muted);opacity:.45}
+.day.sat .n{color:var(--sat)} .day.sun .n,.day.hol .n{color:var(--sun)}
+.day.today .n{background:var(--today);color:var(--accent-ink)!important}
+.day.sel{background:var(--accent-soft)}
+.marks{display:flex;gap:3px;margin-top:4px;height:8px;align-items:center;position:relative;z-index:1}
+.mk{display:inline-block;flex:none;width:8px;height:8px;border-radius:50%;background:var(--c,var(--muted))}
+.mk.feed{width:11px;height:11px;margin:-1.5px -1px;border-radius:0;clip-path:polygon(50% 0,61.8% 35.4%,100% 38.2%,69.1% 61.8%,79.4% 100%,50% 76.4%,20.6% 100%,30.9% 61.8%,0 38.2%,38.2% 35.4%)}
+.mk.story{border-radius:1.5px}
+.mk.other{background:transparent;box-shadow:inset 0 0 0 1.5px var(--muted)}
+.mk-legend{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;padding:8px 4px 4px;font-size:11px;color:var(--muted)}
+.mk-legend span{display:inline-flex;align-items:center;gap:5px}
+.mk-legend .mk{--c:var(--muted)}
+.mk.more{width:auto;height:auto;background:none;font-size:9px;line-height:1;color:var(--muted)}
+.pbar{align-self:end;height:14px;margin-bottom:calc(2px + var(--lane,0)*16px);padding:0 5px;background:var(--c);color:var(--chip-ink);font-style:normal;font-size:10px;font-weight:600;line-height:14px;letter-spacing:-.02em;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none;position:relative;z-index:2;min-width:0}
+.pbar.s{margin-left:3px;border-top-left-radius:5px;border-bottom-left-radius:5px}
+.pbar.e{margin-right:3px;border-top-right-radius:5px;border-bottom-right-radius:5px}
+.pbar.plain{background:var(--surface-2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.open-tag{position:absolute;top:2px;right:2px;font-size:8.5px;font-weight:600;letter-spacing:.04em;color:var(--sun);z-index:1}
+
+.agenda{margin-top:12px}
+.ag-date{display:flex;align-items:baseline;gap:10px;margin-bottom:4px}
+.ag-date .big{font-family:var(--display);font-size:22px;font-weight:700}
+.ag-date .dow{color:var(--muted);font-size:14px}
+.ag-sub{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 14px}
+.pill{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font-size:12px;font-weight:500;background:var(--c,var(--surface-2));color:var(--chip-ink);white-space:nowrap}
+.pill.ghost{background:var(--surface-2);color:var(--ink)}
+.pill.line{background:transparent;box-shadow:inset 0 0 0 1px var(--line);color:var(--muted)}
+.up-head{margin:28px 0 2px;font-family:var(--display);font-size:17px;font-weight:700}
+.up-date{margin:14px 2px 8px;font-size:13.5px;color:var(--muted)}
+.up-date b{color:var(--ink);font-weight:600;margin-right:4px}
+.idea-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.idea-head .today-btn{font-family:var(--body)}
+.idea-intro{margin:4px 2px 0;font-size:11.5px;line-height:1.5;color:var(--muted);word-break:keep-all}
+.idea-intro .idea-at{font-size:10.5px;opacity:.85;white-space:nowrap}
+.mk.idea{background:transparent;border-radius:1px;width:7px;height:7px;transform:rotate(45deg);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.plan-head{margin:16px 2px 8px;font-size:13.5px;font-weight:700;color:var(--accent)}
+.entry.plan{box-shadow:var(--shadow),inset 0 0 0 1.5px var(--accent-soft)}
+.srcs{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px}
+.srcs.big{margin:10px 0 2px}
+.src{display:inline-flex;align-items:center;gap:2px;height:20px;padding:0 7px;border-radius:999px;font-size:11px;font-weight:600;white-space:nowrap}
+.src.trend{background:#FDE2D6;color:#A3330B}
+.src.search{background:#DCE8FB;color:#1D4E9E}
+.src.fan{background:#F6E1EF;color:#8A2468}
+.src.perf{background:#F6E7C8;color:#7A4E00}
+:root[data-theme="dark"] .src.trend{background:#43231A;color:#FFB59A}
+:root[data-theme="dark"] .src.search{background:#1B2B44;color:#A9C8FF}
+:root[data-theme="dark"] .src.fan{background:#3A1E32;color:#F2A9DA}
+:root[data-theme="dark"] .src.perf{background:#3A2E14;color:#F2C877}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .src.trend{background:#43231A;color:#FFB59A}
+:root:not([data-theme="light"]) .src.search{background:#1B2B44;color:#A9C8FF}
+:root:not([data-theme="light"]) .src.fan{background:#3A1E32;color:#F2A9DA}
+:root:not([data-theme="light"]) .src.perf{background:#3A2E14;color:#F2C877}}
+.idea-brief{display:grid;gap:8px;margin:12px 0 4px;padding:12px 14px;border-radius:14px;background:var(--surface-2);font-size:13.5px;line-height:1.5}
+.idea-brief b{display:block;font-size:12px;color:var(--muted);font-weight:700;margin-bottom:1px}
+.idea-learn{display:block;margin:-2px 2px 8px;font-size:11.5px;color:var(--muted)}
+.idea-card{display:flex;flex-direction:column;gap:0}
+.idea-card .entry{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.votes{display:flex;gap:6px;padding:7px 12px 9px;background:var(--surface);border-radius:0 0 16px 16px;box-shadow:var(--shadow);margin-top:-1px}
+.vote{flex:1;height:30px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--muted);background:transparent;box-shadow:inset 0 0 0 1px var(--line, rgba(127,127,127,.25))}
+.vote.up.on{background:#DFF3E4;color:#1E6B34;box-shadow:none}
+.vote.down.on{background:#F8E0E0;color:#9B2C2C;box-shadow:none}
+:root[data-theme="dark"] .vote.up.on{background:#183A23;color:#9EE2B0}
+:root[data-theme="dark"] .vote.down.on{background:#3E1D1D;color:#F3A9A9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .vote.up.on{background:#183A23;color:#9EE2B0}
+:root:not([data-theme="light"]) .vote.down.on{background:#3E1D1D;color:#F3A9A9}}
+.sheet-votes .votes{box-shadow:none;background:transparent;padding:10px 0 0}
+.e-make{display:block;margin-top:4px;font-size:12px;color:var(--accent)}
+.src.season{background:#E4EFD9;color:#3D6420}
+:root[data-theme="dark"] .src.season{background:#24331A;color:#B9DD98}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .src.season{background:#24331A;color:#B9DD98}}
+.idea-ctx{margin:4px 2px 12px;font-size:13px;color:var(--muted)}
+.fmt.idea-g{font-size:10.5px}
+.fmt.idea-g.image{background:var(--accent-soft);color:var(--accent)}
+.fmt.idea-g.grow{background:var(--ink);color:var(--bg)}
+.fmt.idea-g.bench{background:#F6E7C8;color:#7A4E00}
+:root[data-theme="dark"] .fmt.idea-g.bench{background:#3A2E14;color:#F2C877}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .fmt.idea-g.bench{background:#3A2E14;color:#F2C877}}
+.fmt.idea-g.talk{background:transparent;box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent);border-radius:50%}
+.empty.sm{margin-top:10px;padding:16px}
+.empty{padding:28px 16px;text-align:center;color:var(--muted);background:var(--surface);border-radius:16px;border:1px dashed var(--line)}
+
+.list{display:flex;flex-direction:column;gap:10px}
+.entry{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;text-align:left;width:100%;background:var(--surface);border-radius:16px;padding:13px 14px;box-shadow:var(--shadow)}
+.entry:active{transform:scale(.99)}
+.fmt{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:11px;font-weight:600;letter-spacing:-.01em;background:var(--surface-2);color:var(--ink)}
+.fmt.reel{background:var(--ink);color:var(--bg)}
+.fmt.post{box-shadow:inset 0 0 0 1.5px var(--ink);background:transparent}
+.fmt.story{border-radius:50%}
+.fmt.meeting{background:var(--accent-soft);color:var(--accent)}
+.e-body{min-width:0}
+.e-title{font-weight:600;font-size:15px;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:keep-all}
+.e-meta{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;margin-top:5px;font-size:12px;color:var(--muted)}
+.dotc{width:8px;height:8px;border-radius:50%;background:var(--c);display:inline-block}
+.chev{color:var(--muted);width:18px;height:18px}
+.e-prev{font-size:13px;color:var(--muted);margin-top:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* ---- pager (products / months) ---- */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 12px;scrollbar-width:none;scroll-snap-type:x proximity}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;height:36px;padding:0 14px;border-radius:999px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);font-size:14px;font-weight:500;display:inline-flex;align-items:center;gap:7px;scroll-snap-align:start;white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);box-shadow:none}
+.tab .dotc{width:9px;height:9px}
+.pager{flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}
+.pager::-webkit-scrollbar{display:none}
+.page{flex:0 0 100%;scroll-snap-align:start;scroll-snap-stop:always;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px calc(var(--nav-h) + 28px);overscroll-behavior-y:contain}
+
+.hero{background:var(--surface);border-radius:20px;padding:18px 18px 16px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero .swatch{position:absolute;inset:0 0 auto 0;height:6px;background:var(--c)}
+.hero h2{font-family:var(--display);font-size:24px;font-weight:700;line-height:1.2;margin:6px 0 2px;word-break:keep-all;text-wrap:balance}
+.hero .full{font-size:13px;color:var(--muted)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin-top:14px;font-size:14px}
+.kv dt{color:var(--muted);max-width:6.5em;word-break:keep-all}
+.kv dd{margin:0;white-space:pre-line;word-break:keep-all}
+.status{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:600}
+.status.live{background:var(--sun);color:#fff}
+.status.soon{background:var(--accent);color:var(--accent-ink)}
+.status.done{background:var(--surface-2);color:var(--muted)}
+details.fold{background:var(--surface);border-radius:16px;margin-top:12px;box-shadow:var(--shadow)}
+details.fold summary{list-style:none;padding:14px 16px;font-weight:600;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+details.fold summary::-webkit-details-marker{display:none}
+details.fold summary::after{content:"";width:9px;height:9px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);margin-top:-4px;transition:transform .2s}
+details.fold[open] summary::after{transform:rotate(-135deg);margin-top:4px}
+.fold-body{padding:0 16px 16px;white-space:pre-line;font-size:14px;line-height:1.7;word-break:keep-all}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:26px 2px 10px}
+.sec-h h3{font-family:var(--display);font-size:18px;font-weight:700;margin:0}
+.sec-h small{color:var(--muted);font-size:12.5px}
+.sec-sub{font-size:12.5px;color:var(--muted);margin:-6px 2px 12px;white-space:pre-line}
+
+.tl{display:flex;flex-direction:column}
+.tl-row{display:grid;grid-template-columns:62px 1fr;gap:10px;position:relative;padding-bottom:12px}
+.tl-row::before{content:"";position:absolute;left:30px;top:44px;bottom:0;width:1px;background:var(--line)}
+.tl-row:last-child::before{display:none}
+.tl-d{text-align:center;padding-top:6px;font-variant-numeric:tabular-nums}
+.tl-d b{display:block;font-size:13px;font-weight:600;letter-spacing:.02em}
+.tl-d span{display:block;font-size:12px;color:var(--muted)}
+.tl-d.open b{color:var(--sun)}
+.tl-d.today b{color:var(--accent)}
+.tl-items{display:flex;flex-direction:column;gap:8px}
+
+.check{width:20px;height:20px;border-radius:6px;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px var(--line);flex:none}
+.check.on{background:var(--accent);box-shadow:none;color:var(--accent-ink)}
+
+/* ---- sheet ---- */
+.scrim{position:fixed;inset:0;background:var(--scrim);z-index:40;opacity:0;transition:opacity .2s}
+.scrim.show{opacity:1}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-width:600px;margin:0 auto;max-height:88%;background:var(--surface);border-radius:22px 22px 0 0;z-index:41;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .25s cubic-bezier(.2,.8,.2,1);padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet.show{transform:none}
+.grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:9px auto 0;flex:none}
+.sheet-head{padding:12px 18px 12px;border-bottom:1px solid var(--line);flex:none;display:flex;gap:10px;align-items:flex-start}
+.sheet-head .t{flex:1;min-width:0}
+.sheet-head h3{font-family:var(--display);font-size:20px;line-height:1.3;margin:6px 0 0;word-break:keep-all;text-wrap:balance}
+.sheet-body{overflow-y:auto;padding:6px 18px 28px;overscroll-behavior:contain}
+.field{padding:14px 0;border-bottom:1px solid var(--line)}
+.field:last-child{border-bottom:0}
+.field .lb{font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--accent);margin-bottom:6px}
+.field .tx{white-space:pre-line;font-size:14.5px;line-height:1.75;word-break:keep-all;overflow-wrap:anywhere}
+.cut{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--surface-2)}
+.cut .lb{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px}
+.foot{margin-top:28px;font-size:12px;color:var(--muted);text-align:center}
+.cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:48px;border-radius:14px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px;text-decoration:none;margin-top:10px}
+.cta.alt{background:var(--surface-2);color:var(--ink)}
+.steps{margin:6px 0 0;padding-left:20px;font-size:14px;line-height:1.75}
+.steps li{margin:2px 0}
+.url-box{display:block;width:100%;margin-top:8px;padding:10px 12px;border-radius:10px;background:var(--surface-2);font-size:12.5px;overflow-wrap:anywhere;color:var(--muted);font-variant-numeric:tabular-nums}
+.shots{display:flex;gap:6px;overflow-x:auto;margin:8px 0 14px;scrollbar-width:none}
+.shots::-webkit-scrollbar{display:none}
+.shots .inline-shot{flex:0 0 auto;width:min(78%,260px);margin:0}
+.shots .inline-shot:only-child{width:min(100%,320px)}
+.inline-shot{display:block;width:min(100%,320px);margin:8px 0 14px;border-radius:12px;overflow:hidden;background:var(--surface-2);position:relative}
+.inline-shot img{width:100%;height:auto;display:block}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;padding:12px 0}
+.gallery .lb{grid-column:1/-1;font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--accent)}
+.gallery button{display:block;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--surface-2);max-width:100%}
+.gallery img{width:100%;height:100%;object-fit:cover;display:block}
+.hero .gallery{padding-bottom:0}
+.fx-b{font-weight:700}
+.fx-i{font-style:italic}
+.fx-u{text-decoration:underline;text-underline-offset:2px}
+.fx-s{text-decoration:line-through}
+.fx-u.fx-s{text-decoration:underline line-through}
+.fx-c{color:var(--fc)}
+.fx-z1{font-size:1.14em} .fx-z2{font-size:1.3em;line-height:1.45} .fx-zm{font-size:.88em}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .fx-c{color:color-mix(in srgb,var(--fc) 55%,#fff)}}
+:root[data-theme="dark"] .fx-c{color:color-mix(in srgb,var(--fc) 55%,#fff)}
+.tx a.ref{color:var(--link);text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}
+.tx .fx-c a.ref{color:inherit}
+.cap-tools{display:flex;gap:8px;margin-top:10px}
+.cap-btn{height:34px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:600;background:var(--surface-2);color:var(--ink)}
+.cap-btn[data-cap-edit]{background:var(--accent-soft);color:var(--accent)}
+.editor{position:fixed;inset:0;z-index:70;background:var(--bg);display:flex;flex-direction:column;max-width:600px;margin:0 auto}
+.editor[hidden]{display:none!important}
+.editor .bar{display:flex;align-items:center;gap:8px;padding:calc(12px + env(safe-area-inset-top,0px)) 12px 10px 16px;border-bottom:1px solid var(--line)}
+.editor .bar h3{flex:1;margin:0;font-family:var(--display);font-size:18px}
+.editor .hint{padding:10px 16px 0;font-size:13px;color:var(--muted)}
+.editor textarea{flex:1;min-height:0;margin:10px 16px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;font-size:15px;line-height:1.7;resize:none}
+.editor textarea:focus{outline:2px solid var(--accent);outline-offset:1px}
+.editor .foot-bar{display:flex;align-items:center;gap:8px;padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line)}
+.editor .count{flex:1;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.editor .count.over{color:var(--sun);font-weight:600}
+.editor .cta{width:auto;margin:0;padding:0 18px;min-height:44px}
+.spell{margin:0 16px 8px;max-height:34vh;overflow-y:auto;border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:10px 12px}
+.spell-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.spell-head b{flex:1;font-size:14px}
+.spell-naver{display:inline-flex;align-items:center;text-decoration:none}
+.spell-result{font-size:13.5px;line-height:1.6}
+.spell-result:not(:empty){margin-top:8px}
+.spell-item{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line)}
+.spell-item .w{flex:1;min-width:0}
+.spell-item del{color:var(--sun);text-decoration:line-through}
+.spell-item ins{color:var(--accent);text-decoration:none;font-weight:600}
+.spell-item small{display:block;color:var(--muted);font-size:12px}
+.spell-ok{color:var(--muted)}
+.who{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:24px;background:var(--scrim)}
+.who-card{width:100%;max-width:340px;background:var(--surface);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
+.who-card h3{margin:2px 0 14px;font-family:var(--display);font-size:22px;line-height:1.3}
+.who-card input{width:100%;height:48px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;padding:0 14px}
+.who-card input:focus{outline:2px solid var(--accent);outline-offset:1px}
+.toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:80;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.toast.big{bottom:auto;top:45%;z-index:95;padding:16px 24px;border-radius:18px;font-size:18px;max-width:86vw;text-align:center;white-space:nowrap}
+.viewer{position:fixed;inset:0;z-index:60;background:rgba(8,10,8,.94);display:flex;flex-direction:column}
+.viewer[hidden]{display:none!important}
+.viewer .bar{display:flex;justify-content:space-between;align-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) 12px 10px;color:#fff;font-size:14px;font-variant-numeric:tabular-nums}
+.viewer .bar button{color:#fff;width:40px;height:40px;display:grid;place-items:center;border-radius:12px}
+.viewer .stage{flex:1;min-height:0;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+.viewer .stage::-webkit-scrollbar{display:none}
+.viewer .stage div{flex:0 0 100%;scroll-snap-align:center;display:grid;place-items:center;padding:0 8px calc(16px + env(safe-area-inset-bottom,0px))}
+.viewer .stage img{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px}
+.help-btn{color:var(--muted)}
+.cal-head{gap:2px;flex:none}.cal-head .icon-btn{width:34px}.cal-head .today-btn{margin:0 2px;white-space:nowrap}
+#v-cal .topbar>div:first-child{min-width:0}#cal-year{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.help-intro{font-size:14.5px;line-height:1.7;word-break:keep-all;margin:10px 0 4px}
+.help details.fold{background:var(--surface-2);box-shadow:none;margin-top:8px}
+.help .fold-body{white-space:normal}
+.help ul{margin:0;padding-left:18px}.help li{margin:5px 0}
+.help li b{font-weight:600}
+.help .lg{display:inline-flex;align-items:center;gap:5px;margin-right:4px}
+.help .lg .mk{--c:var(--accent)}
+.help .kbd{display:inline-block;padding:0 7px;border-radius:7px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);font-size:12.5px;font-weight:600;line-height:20px}
+.help .note{margin-top:14px;font-size:12.5px;color:var(--muted);line-height:1.6;word-break:keep-all}
+/* ---- 댓글 여론 ---- */
+.op-sec{margin-top:26px}
+.op-sec>h3{font-family:var(--display);font-size:17px;font-weight:700;margin:0 2px 10px}
+.op-sec>h3 small{display:block;font-family:inherit;font-size:12px;font-weight:500;color:var(--muted);margin-top:3px}
+.op-card{background:var(--surface);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow)}
+.op-card+.op-card{margin-top:10px}
+.op-card b{display:block;font-size:15px;font-weight:600;margin-bottom:4px;word-break:keep-all}
+.op-card p{margin:0;font-size:14px;line-height:1.65;word-break:keep-all;color:var(--ink)}
+.op-card .src2{display:block;margin-top:6px;font-size:11.5px;color:var(--muted)}
+.op-card .tip{display:block;margin-top:8px;padding:7px 10px;border-radius:10px;background:var(--accent-soft);font-size:12.5px;line-height:1.5;word-break:keep-all}
+.op-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.op-head span{flex:none;font-size:11.5px;color:var(--muted)}
+.op-hl{margin:0;padding:0;list-style:none;counter-reset:hl}
+.op-hl li{position:relative;padding:12px 14px 12px 40px;background:var(--surface);border-radius:14px;box-shadow:var(--shadow);font-size:14px;line-height:1.65;word-break:keep-all;counter-increment:hl}
+.op-hl li+li{margin-top:8px}
+.op-hl li::before{content:counter(hl);position:absolute;left:13px;top:13px;width:19px;height:19px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-size:11.5px;font-weight:700;display:grid;place-items:center}
+.op-stack{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:4px 0 12px}
+.op-stack i{display:block;background:var(--c)}
+.op-legend{display:grid;gap:8px}
+.op-legend div{display:grid;grid-template-columns:auto 1fr auto;gap:2px 8px;align-items:baseline;font-size:13.5px}
+.op-legend i{width:10px;height:10px;border-radius:3px;background:var(--c);align-self:center}
+.op-legend em{font-style:normal;font-weight:700;font-variant-numeric:tabular-nums}
+.op-legend small{grid-column:2/4;font-size:12px;color:var(--muted);line-height:1.5}
+.op-lv{flex:none;height:20px;padding:0 8px;border-radius:999px;font-size:11px!important;font-weight:600;display:inline-flex;align-items:center}
+.op-lv.high{background:color-mix(in srgb,var(--sun) 18%,transparent);color:var(--sun)!important}
+.op-lv.mid{background:color-mix(in srgb,#E3B04B 24%,transparent);color:#8A5F0A!important}
+.op-lv.low{background:var(--surface-2);color:var(--muted)}
+:root[data-theme="dark"] .op-lv.mid{color:#F0C46A!important}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .op-lv.mid{color:#F0C46A!important}}
+.op-bars{display:grid;gap:9px;margin-top:4px}
+.op-bars div{display:grid;grid-template-columns:100px 1fr 28px;gap:8px;align-items:center;font-size:13px}
+.op-bars span.b{height:10px;border-radius:5px;background:var(--accent);opacity:.85}
+.op-bars em{font-style:normal;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right}
+.op-upd{margin:2px 2px 8px;font-size:11.5px;color:var(--muted)}
+.op-tag{flex:none;height:20px;padding:0 8px;border-radius:999px;font-size:11px!important;font-weight:700;display:inline-flex;align-items:center}
+.op-tag.new{background:var(--accent);color:var(--accent-ink)!important}
+.op-tag.up{background:color-mix(in srgb,var(--sun) 18%,transparent);color:var(--sun)!important}
+.op-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.op-stats div{background:var(--surface-2);border-radius:12px;padding:10px 8px;text-align:center}
+.op-stats b{display:block;font-size:20px;font-weight:700;margin:0;font-variant-numeric:tabular-nums}
+.op-stats span{font-size:11.5px;color:var(--muted)}
+.op-who{margin:0;padding-left:18px;font-size:14px;line-height:1.7;word-break:keep-all}
+.op-who li+li{margin-top:4px}
+.op-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.op-chips button{height:30px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:500;background:var(--surface);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink)}
+.op-chips button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.op-post{background:var(--surface);border-radius:14px;box-shadow:var(--shadow)}
+.op-post+.op-post{margin-top:8px}
+.op-post summary{list-style:none;cursor:pointer;padding:12px 14px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center}
+.op-post summary::-webkit-details-marker{display:none}
+.op-post .dt{font-size:12px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.op-post .tt{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.op-post .nn{font-size:11.5px;color:var(--muted);white-space:nowrap}
+.op-post .bd{padding:0 14px 14px;font-size:13.5px;line-height:1.7;word-break:keep-all}
+.op-post .bd .meta{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.op-post .bd a{display:inline-block;margin-top:8px;font-size:13px;font-weight:600;color:var(--accent)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+/* ===== 새 디자인 (테스트): 밝은 파랑, 둥근 카드, 반듯한 글꼴 ===== */
+@media (pointer:coarse){:root{--font:-apple-system,BlinkMacSystemFont,system-ui,"Apple SD Gothic Neo","Noto Sans KR","Pretendard","Pretendard Variable",sans-serif}}
+body{letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+.app{background:var(--hero-grad) top/100% 220px no-repeat,var(--bg)}
+.h-title,.hero h2,.sec-h h3,.sheet-head h3,.ag-date .big,.up-head,.op-sec>h3,.who-card h3,.editor .bar h3{font-weight:700;letter-spacing:-.03em}
+.h-title{font-size:25px}
+.eyebrow{letter-spacing:0;font-weight:600;color:var(--accent)}
+.icon-btn{background:var(--surface);box-shadow:var(--shadow);border-radius:50%;width:36px;height:36px}
+.today-btn{border:0;background:var(--accent-soft);color:var(--accent);font-weight:600}
+.cal-card,.hero{border-radius:22px;box-shadow:var(--shadow)}
+.sale-row{border-radius:16px;border-left:0;box-shadow:var(--shadow),inset 4px 0 0 var(--c,var(--line))}
+.day{border-radius:14px}
+.day.sel{background:var(--accent-soft)}
+.day.today .n{box-shadow:0 3px 8px color-mix(in srgb,var(--today) 35%,transparent)}
+.entry{border-radius:18px;padding:14px 15px}
+.fmt{border-radius:14px;background:var(--accent-soft);color:var(--accent)}
+.fmt.reel{background:var(--accent);color:var(--accent-ink)}
+.fmt.post{box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--accent);background:transparent}
+.pill.ghost{background:var(--surface-2)}
+.tab{box-shadow:none;background:var(--surface);border:1px solid var(--line)}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+details.fold,.op-card,.op-post,.op-hl li{border-radius:18px}
+.empty{border-radius:18px}
+.nav{background:var(--surface);border-top:0;box-shadow:0 -4px 20px rgba(26,34,51,.06);border-radius:22px 22px 0 0}
+.nav button{font-weight:600}
+.nav button svg{width:24px;height:24px}
+.nav button[aria-current="page"] svg{filter:drop-shadow(0 2px 4px color-mix(in srgb,var(--accent) 35%,transparent))}
+.sheet{border-radius:26px 26px 0 0}
+.op-chips button[aria-pressed="true"]{background:var(--accent)}
+
+/* ===== 초겨울 테마 (테스트) ===== */
+:root{--bg:#F6F1EA;--surface:#FFFDF9;--surface-2:#F0E8DE;--ink:#2E2520;--muted:#80736A;--line:#E8DED2;
+  --accent:#B5523B;--accent-ink:#FFFFFF;--accent-soft:#F5E4DB;--today:#B5523B;--sun:#C9463D;--sat:#4F6F96;--chip-ink:#2E2520;
+  --shadow:0 1px 2px rgba(60,40,30,.05),0 4px 16px rgba(60,40,30,.07);--link:#3F6A9E;
+  --hero-grad:linear-gradient(180deg,#EADFD3 0%,rgba(246,241,234,0) 100%);
+  --winter-items:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='30' viewBox='0 0 160 30'><g transform='translate(6 6)'><rect x='0' y='6' width='14' height='14' rx='3' fill='%23C46A4E'/><path d='M14 9h2.5a3 3 0 0 1 0 6H14' fill='none' stroke='%23C46A4E' stroke-width='2'/><path d='M4 4c-1.5-1.5 1.5-2.5 0-4M9 4c-1.5-1.5 1.5-2.5 0-4' fill='none' stroke='%23B8A89A' stroke-width='1.4' stroke-linecap='round'/></g><g transform='translate(40 4) rotate(-12)'><path d='M3 8a6 6 0 0 1 12 0v9H3z' fill='%23B6473A'/><path d='M3 11a3 3 0 0 1-3-3 2.2 2.2 0 0 1 4-1.2' fill='%23B6473A'/><rect x='2' y='16' width='14' height='5' rx='2' fill='%23F1E6DA'/></g><g transform='translate(78 2)'><path d='M10 0l7 10h-4l6 8H1l6-8H3z' fill='%235E7F67'/><rect x='8.5' y='18' width='3' height='5' fill='%238A6A55'/></g><g stroke='%239DB4C8' stroke-width='1.6' stroke-linecap='round'><line x1='120.0' y1='13.0' x2='136.0' y2='13.0'/><line x1='132.8' y1='13.0' x2='134.9' y2='14.2'/><line x1='132.8' y1='13.0' x2='134.9' y2='11.8'/><line x1='123.2' y1='13.0' x2='121.1' y2='11.8'/><line x1='123.2' y1='13.0' x2='121.1' y2='14.2'/><line x1='124.0' y1='6.1' x2='132.0' y2='19.9'/><line x1='130.4' y1='17.2' x2='130.5' y2='19.6'/><line x1='130.4' y1='17.2' x2='132.4' y2='18.4'/><line x1='125.6' y1='8.8' x2='125.5' y2='6.4'/><line x1='125.6' y1='8.8' x2='123.6' y2='7.6'/><line x1='132.0' y1='6.1' x2='124.0' y2='19.9'/><line x1='125.6' y1='17.2' x2='123.6' y2='18.4'/><line x1='125.6' y1='17.2' x2='125.5' y2='19.6'/><line x1='130.4' y1='8.8' x2='132.4' y2='7.6'/><line x1='130.4' y1='8.8' x2='130.5' y2='6.4'/></g><g stroke='%239DB4C8' stroke-width='1.3' stroke-linecap='round'><line x1='145.5' y1='22.0' x2='154.5' y2='22.0'/><line x1='152.7' y1='22.0' x2='153.9' y2='22.6'/><line x1='152.7' y1='22.0' x2='153.9' y2='21.4'/><line x1='147.3' y1='22.0' x2='146.1' y2='21.4'/><line x1='147.3' y1='22.0' x2='146.1' y2='22.6'/><line x1='147.8' y1='18.1' x2='152.2' y2='25.9'/><line x1='151.3' y1='24.3' x2='151.4' y2='25.7'/><line x1='151.3' y1='24.3' x2='152.5' y2='25.0'/><line x1='148.7' y1='19.7' x2='148.6' y2='18.3'/><line x1='148.7' y1='19.7' x2='147.5' y2='19.0'/><line x1='152.2' y1='18.1' x2='147.8' y2='25.9'/><line x1='148.7' y1='24.3' x2='147.5' y2='25.0'/><line x1='148.7' y1='24.3' x2='148.6' y2='25.7'/><line x1='151.3' y1='19.7' x2='152.5' y2='19.0'/><line x1='151.3' y1='19.7' x2='151.4' y2='18.3'/></g><g stroke='%239DB4C8' stroke-width='1.2' stroke-linecap='round'><line x1='108.5' y1='25.0' x2='115.5' y2='25.0'/><line x1='114.1' y1='25.0' x2='115.0' y2='25.5'/><line x1='114.1' y1='25.0' x2='115.0' y2='24.5'/><line x1='109.9' y1='25.0' x2='109.0' y2='24.5'/><line x1='109.9' y1='25.0' x2='109.0' y2='25.5'/><line x1='110.2' y1='22.0' x2='113.8' y2='28.0'/><line x1='113.0' y1='26.8' x2='113.1' y2='27.9'/><line x1='113.0' y1='26.8' x2='113.9' y2='27.4'/><line x1='111.0' y1='23.2' x2='110.9' y2='22.1'/><line x1='111.0' y1='23.2' x2='110.1' y2='22.6'/><line x1='113.8' y1='22.0' x2='110.2' y2='28.0'/><line x1='111.0' y1='26.8' x2='110.1' y2='27.4'/><line x1='111.0' y1='26.8' x2='110.9' y2='27.9'/><line x1='113.0' y1='23.2' x2='113.9' y2='22.6'/><line x1='113.0' y1='23.2' x2='113.1' y2='22.1'/></g></svg>");--winter-snow:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='375' height='220' viewBox='0 0 375 220'><g stroke='%239DB4C8' stroke-width='1.1' stroke-linecap='round'><line x1='35.0' y1='30.0' x2='45.0' y2='30.0'/><line x1='43.0' y1='30.0' x2='44.3' y2='30.7'/><line x1='43.0' y1='30.0' x2='44.3' y2='29.3'/><line x1='37.0' y1='30.0' x2='35.7' y2='29.3'/><line x1='37.0' y1='30.0' x2='35.7' y2='30.7'/><line x1='37.5' y1='25.7' x2='42.5' y2='34.3'/><line x1='41.5' y1='32.6' x2='41.5' y2='34.1'/><line x1='41.5' y1='32.6' x2='42.8' y2='33.4'/><line x1='38.5' y1='27.4' x2='38.5' y2='25.9'/><line x1='38.5' y1='27.4' x2='37.2' y2='26.6'/><line x1='42.5' y1='25.7' x2='37.5' y2='34.3'/><line x1='38.5' y1='32.6' x2='37.2' y2='33.4'/><line x1='38.5' y1='32.6' x2='38.5' y2='34.1'/><line x1='41.5' y1='27.4' x2='42.8' y2='26.6'/><line x1='41.5' y1='27.4' x2='41.5' y2='25.9'/></g><g stroke='%239DB4C8' stroke-width='1.1' stroke-linecap='round'><line x1='146.5' y1='70.0' x2='153.5' y2='70.0'/><line x1='152.1' y1='70.0' x2='153.0' y2='70.5'/><line x1='152.1' y1='70.0' x2='153.0' y2='69.5'/><line x1='147.9' y1='70.0' x2='147.0' y2='69.5'/><line x1='147.9' y1='70.0' x2='147.0' y2='70.5'/><line x1='148.2' y1='67.0' x2='151.8' y2='73.0'/><line x1='151.1' y1='71.8' x2='151.1' y2='72.9'/><line x1='151.1' y1='71.8' x2='151.9' y2='72.4'/><line x1='148.9' y1='68.2' x2='148.9' y2='67.1'/><line x1='148.9' y1='68.2' x2='148.1' y2='67.6'/><line x1='151.8' y1='67.0' x2='148.2' y2='73.0'/><line x1='148.9' y1='71.8' x2='148.1' y2='72.4'/><line x1='148.9' y1='71.8' x2='148.9' y2='72.9'/><line x1='151.1' y1='68.2' x2='151.9' y2='67.6'/><line x1='151.1' y1='68.2' x2='151.1' y2='67.1'/></g><g stroke='%239DB4C8' stroke-width='1.1' stroke-linecap='round'><line x1='246.0' y1='22.0' x2='254.0' y2='22.0'/><line x1='252.4' y1='22.0' x2='253.5' y2='22.6'/><line x1='252.4' y1='22.0' x2='253.5' y2='21.4'/><line x1='247.6' y1='22.0' x2='246.5' y2='21.4'/><line x1='247.6' y1='22.0' x2='246.5' y2='22.6'/><line x1='248.0' y1='18.5' x2='252.0' y2='25.5'/><line x1='251.2' y1='24.1' x2='251.2' y2='25.3'/><line x1='251.2' y1='24.1' x2='252.2' y2='24.7'/><line x1='248.8' y1='19.9' x2='248.8' y2='18.7'/><line x1='248.8' y1='19.9' x2='247.8' y2='19.3'/><line x1='252.0' y1='18.5' x2='248.0' y2='25.5'/><line x1='248.8' y1='24.1' x2='247.8' y2='24.7'/><line x1='248.8' y1='24.1' x2='248.8' y2='25.3'/><line x1='251.2' y1='19.9' x2='252.2' y2='19.3'/><line x1='251.2' y1='19.9' x2='251.2' y2='18.7'/></g><g stroke='%239DB4C8' stroke-width='1.1' stroke-linecap='round'><line x1='327.0' y1='95.0' x2='333.0' y2='95.0'/><line x1='331.8' y1='95.0' x2='332.6' y2='95.4'/><line x1='331.8' y1='95.0' x2='332.6' y2='94.6'/><line x1='328.2' y1='95.0' x2='327.4' y2='94.6'/><line x1='328.2' y1='95.0' x2='327.4' y2='95.4'/><line x1='328.5' y1='92.4' x2='331.5' y2='97.6'/><line x1='330.9' y1='96.6' x2='330.9' y2='97.5'/><line x1='330.9' y1='96.6' x2='331.7' y2='97.0'/><line x1='329.1' y1='93.4' x2='329.1' y2='92.5'/><line x1='329.1' y1='93.4' x2='328.3' y2='93.0'/><line x1='331.5' y1='92.4' x2='328.5' y2='97.6'/><line x1='329.1' y1='96.6' x2='328.3' y2='97.0'/><line x1='329.1' y1='96.6' x2='329.1' y2='97.5'/><line x1='330.9' y1='93.4' x2='331.7' y2='93.0'/><line x1='330.9' y1='93.4' x2='330.9' y2='92.5'/></g><g stroke='%239DB4C8' stroke-width='1.1' stroke-linecap='round'><line x1='92.0' y1='120.0' x2='98.0' y2='120.0'/><line x1='96.8' y1='120.0' x2='97.6' y2='120.4'/><line x1='96.8' y1='120.0' x2='97.6' y2='119.6'/><line x1='93.2' y1='120.0' x2='92.4' y2='119.6'/><line x1='93.2' y1='120.0' x2='92.4' y2='120.4'/><line x1='93.5' y1='117.4' x2='96.5' y2='122.6'/><line x1='95.9' y1='121.6' x2='95.9' y2='122.5'/><line x1='95.9' y1='121.6' x2='96.7' y2='122.0'/><line x1='94.1' y1='118.4' x2='94.1' y2='117.5'/><line x1='94.1' y1='118.4' x2='93.3' y2='118.0'/><line x1='96.5' y1='117.4' x2='93.5' y2='122.6'/><line x1='94.1' y1='121.6' x2='93.3' y2='122.0'/><line x1='94.1' y1='121.6' x2='94.1' y2='122.5'/><line x1='95.9' y1='118.4' x2='96.7' y2='118.0'/><line x1='95.9' y1='118.4' x2='95.9' y2='117.5'/></g><g stroke='%239DB4C8' stroke-width='1.1' stroke-linecap='round'><line x1='202.5' y1='150.0' x2='207.5' y2='150.0'/><line x1='206.5' y1='150.0' x2='207.2' y2='150.4'/><line x1='206.5' y1='150.0' x2='207.2' y2='149.6'/><line x1='203.5' y1='150.0' x2='202.8' y2='149.6'/><line x1='203.5' y1='150.0' x2='202.8' y2='150.4'/><line x1='203.8' y1='147.8' x2='206.2' y2='152.2'/><line x1='205.8' y1='151.3' x2='205.8' y2='152.0'/><line x1='205.8' y1='151.3' x2='206.4' y2='151.7'/><line x1='204.2' y1='148.7' x2='204.2' y2='148.0'/><line x1='204.2' y1='148.7' x2='203.6' y2='148.3'/><line x1='206.2' y1='147.8' x2='203.8' y2='152.2'/><line x1='204.2' y1='151.3' x2='203.6' y2='151.7'/><line x1='204.2' y1='151.3' x2='204.2' y2='152.0'/><line x1='205.8' y1='148.7' x2='206.4' y2='148.3'/><line x1='205.8' y1='148.7' x2='205.8' y2='148.0'/></g><g stroke='%239DB4C8' stroke-width='1.1' stroke-linecap='round'><line x1='296.5' y1='170.0' x2='303.5' y2='170.0'/><line x1='302.1' y1='170.0' x2='303.0' y2='170.5'/><line x1='302.1' y1='170.0' x2='303.0' y2='169.5'/><line x1='297.9' y1='170.0' x2='297.0' y2='169.5'/><line x1='297.9' y1='170.0' x2='297.0' y2='170.5'/><line x1='298.2' y1='167.0' x2='301.8' y2='173.0'/><line x1='301.1' y1='171.8' x2='301.1' y2='172.9'/><line x1='301.1' y1='171.8' x2='301.9' y2='172.4'/><line x1='298.9' y1='168.2' x2='298.9' y2='167.1'/><line x1='298.9' y1='168.2' x2='298.1' y2='167.6'/><line x1='301.8' y1='167.0' x2='298.2' y2='173.0'/><line x1='298.9' y1='171.8' x2='298.1' y2='172.4'/><line x1='298.9' y1='171.8' x2='298.9' y2='172.9'/><line x1='301.1' y1='168.2' x2='301.9' y2='167.6'/><line x1='301.1' y1='168.2' x2='301.1' y2='167.1'/></g><g stroke='%239DB4C8' stroke-width='1.1' stroke-linecap='round'><line x1='17.5' y1='180.0' x2='22.5' y2='180.0'/><line x1='21.5' y1='180.0' x2='22.2' y2='180.4'/><line x1='21.5' y1='180.0' x2='22.2' y2='179.6'/><line x1='18.5' y1='180.0' x2='17.8' y2='179.6'/><line x1='18.5' y1='180.0' x2='17.8' y2='180.4'/><line x1='18.8' y1='177.8' x2='21.2' y2='182.2'/><line x1='20.8' y1='181.3' x2='20.8' y2='182.0'/><line x1='20.8' y1='181.3' x2='21.4' y2='181.7'/><line x1='19.2' y1='178.7' x2='19.2' y2='178.0'/><line x1='19.2' y1='178.7' x2='18.6' y2='178.3'/><line x1='21.2' y1='177.8' x2='18.8' y2='182.2'/><line x1='19.2' y1='181.3' x2='18.6' y2='181.7'/><line x1='19.2' y1='181.3' x2='19.2' y2='182.0'/><line x1='20.8' y1='178.7' x2='21.4' y2='178.3'/><line x1='20.8' y1='178.7' x2='20.8' y2='178.0'/></g></svg>")}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171210;--surface:#221B18;--surface-2:#2C2420;--ink:#F1E8E1;--muted:#ADA096;--line:#3A302B;
+  --accent:#E59A82;--accent-ink:#2A120B;--accent-soft:#3A2620;--today:#E59A82;--sun:#F08E86;--sat:#9AB6DA;--chip-ink:#2E2520;
+  --hero-grad:linear-gradient(180deg,#2A201C 0%,rgba(23,18,16,0) 100%);
+  --winter-items:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='30' viewBox='0 0 160 30'><g transform='translate(6 6)'><rect x='0' y='6' width='14' height='14' rx='3' fill='%23E0957C'/><path d='M14 9h2.5a3 3 0 0 1 0 6H14' fill='none' stroke='%23E0957C' stroke-width='2'/><path d='M4 4c-1.5-1.5 1.5-2.5 0-4M9 4c-1.5-1.5 1.5-2.5 0-4' fill='none' stroke='%237D7068' stroke-width='1.4' stroke-linecap='round'/></g><g transform='translate(40 4) rotate(-12)'><path d='M3 8a6 6 0 0 1 12 0v9H3z' fill='%23D7705F'/><path d='M3 11a3 3 0 0 1-3-3 2.2 2.2 0 0 1 4-1.2' fill='%23D7705F'/><rect x='2' y='16' width='14' height='5' rx='2' fill='%234A3C35'/></g><g transform='translate(78 2)'><path d='M10 0l7 10h-4l6 8H1l6-8H3z' fill='%238FB39A'/><rect x='8.5' y='18' width='3' height='5' fill='%23A88670'/></g><g stroke='%237F98AE' stroke-width='1.6' stroke-linecap='round'><line x1='120.0' y1='13.0' x2='136.0' y2='13.0'/><line x1='132.8' y1='13.0' x2='134.9' y2='14.2'/><line x1='132.8' y1='13.0' x2='134.9' y2='11.8'/><line x1='123.2' y1='13.0' x2='121.1' y2='11.8'/><line x1='123.2' y1='13.0' x2='121.1' y2='14.2'/><line x1='124.0' y1='6.1' x2='132.0' y2='19.9'/><line x1='130.4' y1='17.2' x2='130.5' y2='19.6'/><line x1='130.4' y1='17.2' x2='132.4' y2='18.4'/><line x1='125.6' y1='8.8' x2='125.5' y2='6.4'/><line x1='125.6' y1='8.8' x2='123.6' y2='7.6'/><line x1='132.0' y1='6.1' x2='124.0' y2='19.9'/><line x1='125.6' y1='17.2' x2='123.6' y2='18.4'/><line x1='125.6' y1='17.2' x2='125.5' y2='19.6'/><line x1='130.4' y1='8.8' x2='132.4' y2='7.6'/><line x1='130.4' y1='8.8' x2='130.5' y2='6.4'/></g><g stroke='%237F98AE' stroke-width='1.3' stroke-linecap='round'><line x1='145.5' y1='22.0' x2='154.5' y2='22.0'/><line x1='152.7' y1='22.0' x2='153.9' y2='22.6'/><line x1='152.7' y1='22.0' x2='153.9' y2='21.4'/><line x1='147.3' y1='22.0' x2='146.1' y2='21.4'/><line x1='147.3' y1='22.0' x2='146.1' y2='22.6'/><line x1='147.8' y1='18.1' x2='152.2' y2='25.9'/><line x1='151.3' y1='24.3' x2='151.4' y2='25.7'/><line x1='151.3' y1='24.3' x2='152.5' y2='25.0'/><line x1='148.7' y1='19.7' x2='148.6' y2='18.3'/><line x1='148.7' y1='19.7' x2='147.5' y2='19.0'/><line x1='152.2' y1='18.1' x2='147.8' y2='25.9'/><line x1='148.7' y1='24.3' x2='147.5' y2='25.0'/><line x1='148.7' y1='24.3' x2='148.6' y2='25.7'/><line x1='151.3' y1='19.7' x2='152.5' y2='19.0'/><line x1='151.3' y1='19.7' x2='151.4' y2='18.3'/></g><g stroke='%237F98AE' stroke-width='1.2' stroke-linecap='round'><line x1='108.5' y1='25.0' x2='115.5' y2='25.0'/><line x1='114.1' y1='25.0' x2='115.0' y2='25.5'/><line x1='114.1' y1='25.0' x2='115.0' y2='24.5'/><line x1='109.9' y1='25.0' x2='109.0' y2='24.5'/><line x1='109.9' y1='25.0' x2='109.0' y2='25.5'/><line x1='110.2' y1='22.0' x2='113.8' y2='28.0'/><line x1='113.0' y1='26.8' x2='113.1' y2='27.9'/><line x1='113.0' y1='26.8' x2='113.9' y2='27.4'/><line x1='111.0' y1='23.2' x2='110.9' y2='22.1'/><line x1='111.0' y1='23.2' x2='110.1' y2='22.6'/><line x1='113.8' y1='22.0' x2='110.2' y2='28.0'/><line x1='111.0' y1='26.8' x2='110.1' y2='27.4'/><line x1='111.0' y1='26.8' x2='110.9' y2='27.9'/><line x1='113.0' y1='23.2' x2='113.9' y2='22.6'/><line x1='113.0' y1='23.2' x2='113.1' y2='22.1'/></g></svg>");--winter-snow:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='375' height='220' viewBox='0 0 375 220'><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='35.0' y1='30.0' x2='45.0' y2='30.0'/><line x1='43.0' y1='30.0' x2='44.3' y2='30.7'/><line x1='43.0' y1='30.0' x2='44.3' y2='29.3'/><line x1='37.0' y1='30.0' x2='35.7' y2='29.3'/><line x1='37.0' y1='30.0' x2='35.7' y2='30.7'/><line x1='37.5' y1='25.7' x2='42.5' y2='34.3'/><line x1='41.5' y1='32.6' x2='41.5' y2='34.1'/><line x1='41.5' y1='32.6' x2='42.8' y2='33.4'/><line x1='38.5' y1='27.4' x2='38.5' y2='25.9'/><line x1='38.5' y1='27.4' x2='37.2' y2='26.6'/><line x1='42.5' y1='25.7' x2='37.5' y2='34.3'/><line x1='38.5' y1='32.6' x2='37.2' y2='33.4'/><line x1='38.5' y1='32.6' x2='38.5' y2='34.1'/><line x1='41.5' y1='27.4' x2='42.8' y2='26.6'/><line x1='41.5' y1='27.4' x2='41.5' y2='25.9'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='146.5' y1='70.0' x2='153.5' y2='70.0'/><line x1='152.1' y1='70.0' x2='153.0' y2='70.5'/><line x1='152.1' y1='70.0' x2='153.0' y2='69.5'/><line x1='147.9' y1='70.0' x2='147.0' y2='69.5'/><line x1='147.9' y1='70.0' x2='147.0' y2='70.5'/><line x1='148.2' y1='67.0' x2='151.8' y2='73.0'/><line x1='151.1' y1='71.8' x2='151.1' y2='72.9'/><line x1='151.1' y1='71.8' x2='151.9' y2='72.4'/><line x1='148.9' y1='68.2' x2='148.9' y2='67.1'/><line x1='148.9' y1='68.2' x2='148.1' y2='67.6'/><line x1='151.8' y1='67.0' x2='148.2' y2='73.0'/><line x1='148.9' y1='71.8' x2='148.1' y2='72.4'/><line x1='148.9' y1='71.8' x2='148.9' y2='72.9'/><line x1='151.1' y1='68.2' x2='151.9' y2='67.6'/><line x1='151.1' y1='68.2' x2='151.1' y2='67.1'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='246.0' y1='22.0' x2='254.0' y2='22.0'/><line x1='252.4' y1='22.0' x2='253.5' y2='22.6'/><line x1='252.4' y1='22.0' x2='253.5' y2='21.4'/><line x1='247.6' y1='22.0' x2='246.5' y2='21.4'/><line x1='247.6' y1='22.0' x2='246.5' y2='22.6'/><line x1='248.0' y1='18.5' x2='252.0' y2='25.5'/><line x1='251.2' y1='24.1' x2='251.2' y2='25.3'/><line x1='251.2' y1='24.1' x2='252.2' y2='24.7'/><line x1='248.8' y1='19.9' x2='248.8' y2='18.7'/><line x1='248.8' y1='19.9' x2='247.8' y2='19.3'/><line x1='252.0' y1='18.5' x2='248.0' y2='25.5'/><line x1='248.8' y1='24.1' x2='247.8' y2='24.7'/><line x1='248.8' y1='24.1' x2='248.8' y2='25.3'/><line x1='251.2' y1='19.9' x2='252.2' y2='19.3'/><line x1='251.2' y1='19.9' x2='251.2' y2='18.7'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='327.0' y1='95.0' x2='333.0' y2='95.0'/><line x1='331.8' y1='95.0' x2='332.6' y2='95.4'/><line x1='331.8' y1='95.0' x2='332.6' y2='94.6'/><line x1='328.2' y1='95.0' x2='327.4' y2='94.6'/><line x1='328.2' y1='95.0' x2='327.4' y2='95.4'/><line x1='328.5' y1='92.4' x2='331.5' y2='97.6'/><line x1='330.9' y1='96.6' x2='330.9' y2='97.5'/><line x1='330.9' y1='96.6' x2='331.7' y2='97.0'/><line x1='329.1' y1='93.4' x2='329.1' y2='92.5'/><line x1='329.1' y1='93.4' x2='328.3' y2='93.0'/><line x1='331.5' y1='92.4' x2='328.5' y2='97.6'/><line x1='329.1' y1='96.6' x2='328.3' y2='97.0'/><line x1='329.1' y1='96.6' x2='329.1' y2='97.5'/><line x1='330.9' y1='93.4' x2='331.7' y2='93.0'/><line x1='330.9' y1='93.4' x2='330.9' y2='92.5'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='92.0' y1='120.0' x2='98.0' y2='120.0'/><line x1='96.8' y1='120.0' x2='97.6' y2='120.4'/><line x1='96.8' y1='120.0' x2='97.6' y2='119.6'/><line x1='93.2' y1='120.0' x2='92.4' y2='119.6'/><line x1='93.2' y1='120.0' x2='92.4' y2='120.4'/><line x1='93.5' y1='117.4' x2='96.5' y2='122.6'/><line x1='95.9' y1='121.6' x2='95.9' y2='122.5'/><line x1='95.9' y1='121.6' x2='96.7' y2='122.0'/><line x1='94.1' y1='118.4' x2='94.1' y2='117.5'/><line x1='94.1' y1='118.4' x2='93.3' y2='118.0'/><line x1='96.5' y1='117.4' x2='93.5' y2='122.6'/><line x1='94.1' y1='121.6' x2='93.3' y2='122.0'/><line x1='94.1' y1='121.6' x2='94.1' y2='122.5'/><line x1='95.9' y1='118.4' x2='96.7' y2='118.0'/><line x1='95.9' y1='118.4' x2='95.9' y2='117.5'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='202.5' y1='150.0' x2='207.5' y2='150.0'/><line x1='206.5' y1='150.0' x2='207.2' y2='150.4'/><line x1='206.5' y1='150.0' x2='207.2' y2='149.6'/><line x1='203.5' y1='150.0' x2='202.8' y2='149.6'/><line x1='203.5' y1='150.0' x2='202.8' y2='150.4'/><line x1='203.8' y1='147.8' x2='206.2' y2='152.2'/><line x1='205.8' y1='151.3' x2='205.8' y2='152.0'/><line x1='205.8' y1='151.3' x2='206.4' y2='151.7'/><line x1='204.2' y1='148.7' x2='204.2' y2='148.0'/><line x1='204.2' y1='148.7' x2='203.6' y2='148.3'/><line x1='206.2' y1='147.8' x2='203.8' y2='152.2'/><line x1='204.2' y1='151.3' x2='203.6' y2='151.7'/><line x1='204.2' y1='151.3' x2='204.2' y2='152.0'/><line x1='205.8' y1='148.7' x2='206.4' y2='148.3'/><line x1='205.8' y1='148.7' x2='205.8' y2='148.0'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='296.5' y1='170.0' x2='303.5' y2='170.0'/><line x1='302.1' y1='170.0' x2='303.0' y2='170.5'/><line x1='302.1' y1='170.0' x2='303.0' y2='169.5'/><line x1='297.9' y1='170.0' x2='297.0' y2='169.5'/><line x1='297.9' y1='170.0' x2='297.0' y2='170.5'/><line x1='298.2' y1='167.0' x2='301.8' y2='173.0'/><line x1='301.1' y1='171.8' x2='301.1' y2='172.9'/><line x1='301.1' y1='171.8' x2='301.9' y2='172.4'/><line x1='298.9' y1='168.2' x2='298.9' y2='167.1'/><line x1='298.9' y1='168.2' x2='298.1' y2='167.6'/><line x1='301.8' y1='167.0' x2='298.2' y2='173.0'/><line x1='298.9' y1='171.8' x2='298.1' y2='172.4'/><line x1='298.9' y1='171.8' x2='298.9' y2='172.9'/><line x1='301.1' y1='168.2' x2='301.9' y2='167.6'/><line x1='301.1' y1='168.2' x2='301.1' y2='167.1'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='17.5' y1='180.0' x2='22.5' y2='180.0'/><line x1='21.5' y1='180.0' x2='22.2' y2='180.4'/><line x1='21.5' y1='180.0' x2='22.2' y2='179.6'/><line x1='18.5' y1='180.0' x2='17.8' y2='179.6'/><line x1='18.5' y1='180.0' x2='17.8' y2='180.4'/><line x1='18.8' y1='177.8' x2='21.2' y2='182.2'/><line x1='20.8' y1='181.3' x2='20.8' y2='182.0'/><line x1='20.8' y1='181.3' x2='21.4' y2='181.7'/><line x1='19.2' y1='178.7' x2='19.2' y2='178.0'/><line x1='19.2' y1='178.7' x2='18.6' y2='178.3'/><line x1='21.2' y1='177.8' x2='18.8' y2='182.2'/><line x1='19.2' y1='181.3' x2='18.6' y2='181.7'/><line x1='19.2' y1='181.3' x2='19.2' y2='182.0'/><line x1='20.8' y1='178.7' x2='21.4' y2='178.3'/><line x1='20.8' y1='178.7' x2='20.8' y2='178.0'/></g></svg>")}}
+:root[data-theme="dark"]{--bg:#171210;--surface:#221B18;--surface-2:#2C2420;--ink:#F1E8E1;--muted:#ADA096;--line:#3A302B;
+  --accent:#E59A82;--accent-ink:#2A120B;--accent-soft:#3A2620;--today:#E59A82;--sun:#F08E86;--sat:#9AB6DA;--chip-ink:#2E2520;
+  --hero-grad:linear-gradient(180deg,#2A201C 0%,rgba(23,18,16,0) 100%);
+  --winter-items:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='30' viewBox='0 0 160 30'><g transform='translate(6 6)'><rect x='0' y='6' width='14' height='14' rx='3' fill='%23E0957C'/><path d='M14 9h2.5a3 3 0 0 1 0 6H14' fill='none' stroke='%23E0957C' stroke-width='2'/><path d='M4 4c-1.5-1.5 1.5-2.5 0-4M9 4c-1.5-1.5 1.5-2.5 0-4' fill='none' stroke='%237D7068' stroke-width='1.4' stroke-linecap='round'/></g><g transform='translate(40 4) rotate(-12)'><path d='M3 8a6 6 0 0 1 12 0v9H3z' fill='%23D7705F'/><path d='M3 11a3 3 0 0 1-3-3 2.2 2.2 0 0 1 4-1.2' fill='%23D7705F'/><rect x='2' y='16' width='14' height='5' rx='2' fill='%234A3C35'/></g><g transform='translate(78 2)'><path d='M10 0l7 10h-4l6 8H1l6-8H3z' fill='%238FB39A'/><rect x='8.5' y='18' width='3' height='5' fill='%23A88670'/></g><g stroke='%237F98AE' stroke-width='1.6' stroke-linecap='round'><line x1='120.0' y1='13.0' x2='136.0' y2='13.0'/><line x1='132.8' y1='13.0' x2='134.9' y2='14.2'/><line x1='132.8' y1='13.0' x2='134.9' y2='11.8'/><line x1='123.2' y1='13.0' x2='121.1' y2='11.8'/><line x1='123.2' y1='13.0' x2='121.1' y2='14.2'/><line x1='124.0' y1='6.1' x2='132.0' y2='19.9'/><line x1='130.4' y1='17.2' x2='130.5' y2='19.6'/><line x1='130.4' y1='17.2' x2='132.4' y2='18.4'/><line x1='125.6' y1='8.8' x2='125.5' y2='6.4'/><line x1='125.6' y1='8.8' x2='123.6' y2='7.6'/><line x1='132.0' y1='6.1' x2='124.0' y2='19.9'/><line x1='125.6' y1='17.2' x2='123.6' y2='18.4'/><line x1='125.6' y1='17.2' x2='125.5' y2='19.6'/><line x1='130.4' y1='8.8' x2='132.4' y2='7.6'/><line x1='130.4' y1='8.8' x2='130.5' y2='6.4'/></g><g stroke='%237F98AE' stroke-width='1.3' stroke-linecap='round'><line x1='145.5' y1='22.0' x2='154.5' y2='22.0'/><line x1='152.7' y1='22.0' x2='153.9' y2='22.6'/><line x1='152.7' y1='22.0' x2='153.9' y2='21.4'/><line x1='147.3' y1='22.0' x2='146.1' y2='21.4'/><line x1='147.3' y1='22.0' x2='146.1' y2='22.6'/><line x1='147.8' y1='18.1' x2='152.2' y2='25.9'/><line x1='151.3' y1='24.3' x2='151.4' y2='25.7'/><line x1='151.3' y1='24.3' x2='152.5' y2='25.0'/><line x1='148.7' y1='19.7' x2='148.6' y2='18.3'/><line x1='148.7' y1='19.7' x2='147.5' y2='19.0'/><line x1='152.2' y1='18.1' x2='147.8' y2='25.9'/><line x1='148.7' y1='24.3' x2='147.5' y2='25.0'/><line x1='148.7' y1='24.3' x2='148.6' y2='25.7'/><line x1='151.3' y1='19.7' x2='152.5' y2='19.0'/><line x1='151.3' y1='19.7' x2='151.4' y2='18.3'/></g><g stroke='%237F98AE' stroke-width='1.2' stroke-linecap='round'><line x1='108.5' y1='25.0' x2='115.5' y2='25.0'/><line x1='114.1' y1='25.0' x2='115.0' y2='25.5'/><line x1='114.1' y1='25.0' x2='115.0' y2='24.5'/><line x1='109.9' y1='25.0' x2='109.0' y2='24.5'/><line x1='109.9' y1='25.0' x2='109.0' y2='25.5'/><line x1='110.2' y1='22.0' x2='113.8' y2='28.0'/><line x1='113.0' y1='26.8' x2='113.1' y2='27.9'/><line x1='113.0' y1='26.8' x2='113.9' y2='27.4'/><line x1='111.0' y1='23.2' x2='110.9' y2='22.1'/><line x1='111.0' y1='23.2' x2='110.1' y2='22.6'/><line x1='113.8' y1='22.0' x2='110.2' y2='28.0'/><line x1='111.0' y1='26.8' x2='110.1' y2='27.4'/><line x1='111.0' y1='26.8' x2='110.9' y2='27.9'/><line x1='113.0' y1='23.2' x2='113.9' y2='22.6'/><line x1='113.0' y1='23.2' x2='113.1' y2='22.1'/></g></svg>");--winter-snow:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='375' height='220' viewBox='0 0 375 220'><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='35.0' y1='30.0' x2='45.0' y2='30.0'/><line x1='43.0' y1='30.0' x2='44.3' y2='30.7'/><line x1='43.0' y1='30.0' x2='44.3' y2='29.3'/><line x1='37.0' y1='30.0' x2='35.7' y2='29.3'/><line x1='37.0' y1='30.0' x2='35.7' y2='30.7'/><line x1='37.5' y1='25.7' x2='42.5' y2='34.3'/><line x1='41.5' y1='32.6' x2='41.5' y2='34.1'/><line x1='41.5' y1='32.6' x2='42.8' y2='33.4'/><line x1='38.5' y1='27.4' x2='38.5' y2='25.9'/><line x1='38.5' y1='27.4' x2='37.2' y2='26.6'/><line x1='42.5' y1='25.7' x2='37.5' y2='34.3'/><line x1='38.5' y1='32.6' x2='37.2' y2='33.4'/><line x1='38.5' y1='32.6' x2='38.5' y2='34.1'/><line x1='41.5' y1='27.4' x2='42.8' y2='26.6'/><line x1='41.5' y1='27.4' x2='41.5' y2='25.9'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='146.5' y1='70.0' x2='153.5' y2='70.0'/><line x1='152.1' y1='70.0' x2='153.0' y2='70.5'/><line x1='152.1' y1='70.0' x2='153.0' y2='69.5'/><line x1='147.9' y1='70.0' x2='147.0' y2='69.5'/><line x1='147.9' y1='70.0' x2='147.0' y2='70.5'/><line x1='148.2' y1='67.0' x2='151.8' y2='73.0'/><line x1='151.1' y1='71.8' x2='151.1' y2='72.9'/><line x1='151.1' y1='71.8' x2='151.9' y2='72.4'/><line x1='148.9' y1='68.2' x2='148.9' y2='67.1'/><line x1='148.9' y1='68.2' x2='148.1' y2='67.6'/><line x1='151.8' y1='67.0' x2='148.2' y2='73.0'/><line x1='148.9' y1='71.8' x2='148.1' y2='72.4'/><line x1='148.9' y1='71.8' x2='148.9' y2='72.9'/><line x1='151.1' y1='68.2' x2='151.9' y2='67.6'/><line x1='151.1' y1='68.2' x2='151.1' y2='67.1'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='246.0' y1='22.0' x2='254.0' y2='22.0'/><line x1='252.4' y1='22.0' x2='253.5' y2='22.6'/><line x1='252.4' y1='22.0' x2='253.5' y2='21.4'/><line x1='247.6' y1='22.0' x2='246.5' y2='21.4'/><line x1='247.6' y1='22.0' x2='246.5' y2='22.6'/><line x1='248.0' y1='18.5' x2='252.0' y2='25.5'/><line x1='251.2' y1='24.1' x2='251.2' y2='25.3'/><line x1='251.2' y1='24.1' x2='252.2' y2='24.7'/><line x1='248.8' y1='19.9' x2='248.8' y2='18.7'/><line x1='248.8' y1='19.9' x2='247.8' y2='19.3'/><line x1='252.0' y1='18.5' x2='248.0' y2='25.5'/><line x1='248.8' y1='24.1' x2='247.8' y2='24.7'/><line x1='248.8' y1='24.1' x2='248.8' y2='25.3'/><line x1='251.2' y1='19.9' x2='252.2' y2='19.3'/><line x1='251.2' y1='19.9' x2='251.2' y2='18.7'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='327.0' y1='95.0' x2='333.0' y2='95.0'/><line x1='331.8' y1='95.0' x2='332.6' y2='95.4'/><line x1='331.8' y1='95.0' x2='332.6' y2='94.6'/><line x1='328.2' y1='95.0' x2='327.4' y2='94.6'/><line x1='328.2' y1='95.0' x2='327.4' y2='95.4'/><line x1='328.5' y1='92.4' x2='331.5' y2='97.6'/><line x1='330.9' y1='96.6' x2='330.9' y2='97.5'/><line x1='330.9' y1='96.6' x2='331.7' y2='97.0'/><line x1='329.1' y1='93.4' x2='329.1' y2='92.5'/><line x1='329.1' y1='93.4' x2='328.3' y2='93.0'/><line x1='331.5' y1='92.4' x2='328.5' y2='97.6'/><line x1='329.1' y1='96.6' x2='328.3' y2='97.0'/><line x1='329.1' y1='96.6' x2='329.1' y2='97.5'/><line x1='330.9' y1='93.4' x2='331.7' y2='93.0'/><line x1='330.9' y1='93.4' x2='330.9' y2='92.5'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='92.0' y1='120.0' x2='98.0' y2='120.0'/><line x1='96.8' y1='120.0' x2='97.6' y2='120.4'/><line x1='96.8' y1='120.0' x2='97.6' y2='119.6'/><line x1='93.2' y1='120.0' x2='92.4' y2='119.6'/><line x1='93.2' y1='120.0' x2='92.4' y2='120.4'/><line x1='93.5' y1='117.4' x2='96.5' y2='122.6'/><line x1='95.9' y1='121.6' x2='95.9' y2='122.5'/><line x1='95.9' y1='121.6' x2='96.7' y2='122.0'/><line x1='94.1' y1='118.4' x2='94.1' y2='117.5'/><line x1='94.1' y1='118.4' x2='93.3' y2='118.0'/><line x1='96.5' y1='117.4' x2='93.5' y2='122.6'/><line x1='94.1' y1='121.6' x2='93.3' y2='122.0'/><line x1='94.1' y1='121.6' x2='94.1' y2='122.5'/><line x1='95.9' y1='118.4' x2='96.7' y2='118.0'/><line x1='95.9' y1='118.4' x2='95.9' y2='117.5'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='202.5' y1='150.0' x2='207.5' y2='150.0'/><line x1='206.5' y1='150.0' x2='207.2' y2='150.4'/><line x1='206.5' y1='150.0' x2='207.2' y2='149.6'/><line x1='203.5' y1='150.0' x2='202.8' y2='149.6'/><line x1='203.5' y1='150.0' x2='202.8' y2='150.4'/><line x1='203.8' y1='147.8' x2='206.2' y2='152.2'/><line x1='205.8' y1='151.3' x2='205.8' y2='152.0'/><line x1='205.8' y1='151.3' x2='206.4' y2='151.7'/><line x1='204.2' y1='148.7' x2='204.2' y2='148.0'/><line x1='204.2' y1='148.7' x2='203.6' y2='148.3'/><line x1='206.2' y1='147.8' x2='203.8' y2='152.2'/><line x1='204.2' y1='151.3' x2='203.6' y2='151.7'/><line x1='204.2' y1='151.3' x2='204.2' y2='152.0'/><line x1='205.8' y1='148.7' x2='206.4' y2='148.3'/><line x1='205.8' y1='148.7' x2='205.8' y2='148.0'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='296.5' y1='170.0' x2='303.5' y2='170.0'/><line x1='302.1' y1='170.0' x2='303.0' y2='170.5'/><line x1='302.1' y1='170.0' x2='303.0' y2='169.5'/><line x1='297.9' y1='170.0' x2='297.0' y2='169.5'/><line x1='297.9' y1='170.0' x2='297.0' y2='170.5'/><line x1='298.2' y1='167.0' x2='301.8' y2='173.0'/><line x1='301.1' y1='171.8' x2='301.1' y2='172.9'/><line x1='301.1' y1='171.8' x2='301.9' y2='172.4'/><line x1='298.9' y1='168.2' x2='298.9' y2='167.1'/><line x1='298.9' y1='168.2' x2='298.1' y2='167.6'/><line x1='301.8' y1='167.0' x2='298.2' y2='173.0'/><line x1='298.9' y1='171.8' x2='298.1' y2='172.4'/><line x1='298.9' y1='171.8' x2='298.9' y2='172.9'/><line x1='301.1' y1='168.2' x2='301.9' y2='167.6'/><line x1='301.1' y1='168.2' x2='301.1' y2='167.1'/></g><g stroke='%237F98AE' stroke-width='1.1' stroke-linecap='round'><line x1='17.5' y1='180.0' x2='22.5' y2='180.0'/><line x1='21.5' y1='180.0' x2='22.2' y2='180.4'/><line x1='21.5' y1='180.0' x2='22.2' y2='179.6'/><line x1='18.5' y1='180.0' x2='17.8' y2='179.6'/><line x1='18.5' y1='180.0' x2='17.8' y2='180.4'/><line x1='18.8' y1='177.8' x2='21.2' y2='182.2'/><line x1='20.8' y1='181.3' x2='20.8' y2='182.0'/><line x1='20.8' y1='181.3' x2='21.4' y2='181.7'/><line x1='19.2' y1='178.7' x2='19.2' y2='178.0'/><line x1='19.2' y1='178.7' x2='18.6' y2='178.3'/><line x1='21.2' y1='177.8' x2='18.8' y2='182.2'/><line x1='19.2' y1='181.3' x2='18.6' y2='181.7'/><line x1='19.2' y1='181.3' x2='19.2' y2='182.0'/><line x1='20.8' y1='178.7' x2='21.4' y2='178.3'/><line x1='20.8' y1='178.7' x2='20.8' y2='178.0'/></g></svg>")}
+.app{background:var(--winter-snow) top center/375px 220px no-repeat,var(--hero-grad) top/100% 230px no-repeat,var(--bg)}
+.brand{padding-top:12px}
+.brand::after{content:"";margin-left:auto;width:160px;height:30px;background:var(--winter-items) right center/contain no-repeat;opacity:.95;pointer-events:none}
+.topbar{padding-top:20px}
+
+/* 휴대폰 다크 모드와 상관없이 항상 설정한 디자인으로 보이게 */
+:root,:root[data-theme]{color-scheme:light only}
+</style>
+
+<div class="app" id="app">
+  <div class="brand" role="img" aria-label="TRIZ"><img src="data:image/png;base64,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" alt=""><i></i></div>
+  <section class="view" id="v-cal" aria-label="캘린더">
+    <div class="topbar">
+      <div>
+        <div class="eyebrow" id="cal-year">2026</div>
+        <div class="h-title" id="cal-title">9월</div>
+      </div>
+      <div class="cal-head">
+        <button class="icon-btn help-btn" type="button" aria-label="사용 설명서"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.2-2.4 3.7"/><path d="M12 17.2h.01"/></svg></button>
+        <button class="icon-btn" id="btn-alarm" type="button" aria-label="휴대폰 캘린더로 알림 받기"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10.3 20a1.9 1.9 0 0 0 3.4 0"/></svg></button>
+        <button class="today-btn" id="btn-today" type="button">오늘</button>
+        <button class="icon-btn" id="btn-prev" type="button" aria-label="이전 달"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <button class="icon-btn" id="btn-next" type="button" aria-label="다음 달"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    <div class="scroll" id="cal-scroll">
+      <div class="sale" id="sale" aria-live="off"></div>
+      <div class="cal-card" id="cal-card">
+        <div class="wk"><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span><span>일</span></div>
+        <div class="grid" id="cal-grid"></div>
+        <div class="mk-legend" aria-hidden="true"><span><i class="mk feed"></i>커머스 피드(릴스, 캐러셀)</span><span><i class="mk story"></i>커머스 스토리</span><span><i class="mk other"></i>그 외 일정</span></div>
+      </div>
+      <div class="agenda" id="agenda"></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-prod" aria-label="제품" hidden>
+    <div class="topbar"><div><div class="eyebrow">공구 콘텐츠 기획</div><div class="h-title">제품별</div></div><button class="icon-btn help-btn" type="button" aria-label="사용 설명서"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.2-2.4 3.7"/><path d="M12 17.2h.01"/></svg></button></div>
+    <div class="tabs" id="prod-tabs" role="tablist"></div>
+    <div class="pager" id="prod-pager"></div>
+  </section>
+
+  <section class="view" id="v-month" aria-label="월별" hidden>
+    <div class="topbar"><div><div class="eyebrow">월간 콘텐츠 캘린더</div><div class="h-title">월별</div></div><button class="icon-btn help-btn" type="button" aria-label="사용 설명서"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.2-2.4 3.7"/><path d="M12 17.2h.01"/></svg></button></div>
+    <div class="tabs" id="month-tabs" role="tablist"></div>
+    <div class="pager" id="month-pager"></div>
+  </section>
+
+  <section class="view" id="v-op" aria-label="댓글 여론" hidden>
+    <div class="topbar"><div><div class="eyebrow">최근 3개월 팔로워 댓글</div><div class="h-title">댓글 여론</div></div><button class="icon-btn help-btn" type="button" aria-label="사용 설명서"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.2"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8 1c0 1.7-2.4 2.2-2.4 3.7"/><path d="M12 17.2h.01"/></svg></button></div>
+    <div class="scroll" id="op-scroll"></div>
+  </section>
+
+  <nav class="nav" aria-label="메뉴">
+    <button type="button" data-view="v-cal" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>캘린더</button>
+    <button type="button" data-view="v-prod"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 8l8-4 8 4v8l-8 4-8-4z"/><path d="M4 8l8 4 8-4M12 12v8"/></svg>제품별</button>
+    <button type="button" data-view="v-month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 5h14M5 10h14M5 15h9M5 20h6"/></svg>월별</button>
+    <button type="button" data-view="v-op" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5.5h16v10H9.5L5.5 19v-3.5H4z"/><path d="M8 9.5h8M8 12.5h5" stroke-linecap="round"/></svg>댓글 여론</button>
+  </nav>
+</div>
+
+<div class="scrim" id="scrim" hidden></div>
+<div class="editor" id="editor" role="dialog" aria-modal="true" aria-labelledby="editor-title" hidden>
+  <div class="bar"><h3 id="editor-title">캡션 수정</h3>
+    <button type="button" class="icon-btn" id="editor-close" aria-label="닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="hint" id="editor-hint">내 말투에 맞게 고친 뒤 복사해서 인스타에 붙여넣으세요. 고친 내용은 이 휴대폰에 저장돼요.</div>
+  <label for="editor-text" class="hint" style="padding-top:0;position:absolute;left:-9999px">캡션 내용</label>
+  <textarea id="editor-text" spellcheck="true" lang="ko"></textarea>
+  <div class="spell" id="spell">
+    <div class="spell-head"><b>맞춤법</b>
+      <button type="button" class="cap-btn" id="spell-run">검사하기</button>
+      <button type="button" class="cap-btn" id="spell-naver">네이버 검사기로 더 검사</button></div>
+    <div id="spell-result" class="spell-result"></div>
+  </div>
+  <div class="foot-bar"><span class="count" id="editor-count"></span>
+    <button type="button" class="cta alt" id="editor-reset">원래대로</button>
+    <button type="button" class="cta" id="editor-copy">복사</button></div>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="who" id="who" role="dialog" aria-modal="true" aria-labelledby="who-title" hidden>
+  <form class="who-card" id="who-form">
+    <h3 id="who-title">이름을 입력해주세요</h3>
+    <input id="who-name" type="text" maxlength="20" autocomplete="off" aria-labelledby="who-title" required>
+    <button class="cta" type="submit">확인</button>
+  </form>
+</div>
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="사진 크게 보기" hidden>
+  <div class="bar"><span id="viewer-count"></span><button type="button" id="viewer-close" aria-label="닫기"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="stage" id="viewer-stage"></div>
+</div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+  <div class="grab"></div>
+  <div class="sheet-head">
+    <div class="t"><div id="sheet-meta" class="ag-sub" style="margin:0"></div><h3 id="sheet-title"></h3></div>
+    <button class="icon-btn" id="sheet-close" type="button" aria-label="닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="sheet-body" id="sheet-body"></div>
+</div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const IDEAS = /*__IDEAS__*/null;
+const OPINION = /*__OPINION__*/null; // 최근 3개월 댓글 여론 (opinion.json 이 있는 앱만) // 일상 콘텐츠 추천 (ideas.json 이 있는 앱만)
+const SRC = {trend: ["🔥", "유행"], search: ["🔎", "검색량"], fan: ["💬", "팔로워 관심"], perf: ["📈", "성과 검증"], season: ["🍂", "시즌"]};
+const srcChips = it => (it.src || []).map(k => SRC[k] ? `<span class="src ${k}">${SRC[k][0]} ${SRC[k][1]}</span>` : "").join("");
+const $ = s => document.querySelector(s);
+const DOW = ["일","월","화","수","목","금","토"];
+const FMT = {reel:"릴스", post:"피드", story:"스토리", qa:"무물", live:"라방", ad:"광고", meeting:"일정", free:"자유", etc:"기타"};
+const store = {get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+const LINK = /⟦([^|⟧]*)\|([^⟧]*)⟧/g;  // 시트 링크: ⟦문구|주소⟧
+const FX = /⟪([^⟫]*)⟫/g;               // 시트 글자 서식: ⟪b u c=FF0000 z=+1⟫ … ⟪/⟫
+const plain = s => String(s ?? "").replace(FX, "").replace(LINK, "$1");
+const escRaw = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const esc = s => escRaw(plain(s));
+const safeUrl = u => /^https?:\/\//i.test(u) ? u : "#";
+const autolink = t => escRaw(t).replace(/https?:\/\/[^\s<]+/g, u => `<a href="${u}" target="_blank" rel="noopener">${u.length > 42 ? u.slice(0, 40) + "…" : u}</a>`);
+function linkify(s) {
+  let out = "", last = 0;
+  for (const m of s.matchAll(LINK)) {
+    out += autolink(s.slice(last, m.index));
+    out += `<a class="ref" href="${escRaw(safeUrl(m[2]))}" target="_blank" rel="noopener">${escRaw(m[1] || "링크")}</a>`;
+    last = m.index + m[0].length;
+  }
+  return out + autolink(s.slice(last));
+}
+function fxOpen(tok) { // "b u c=FF0000 z=+1" → <span class=… style=…>
+  const cls = [], style = [];
+  tok.split(/\s+/).forEach(t => {
+    if (/^[bius]$/.test(t)) cls.push("fx-" + t);
+    else if (/^c=[0-9A-Fa-f]{6}$/.test(t)) { cls.push("fx-c"); style.push(`--fc:#${t.slice(2)}`); }
+    else if (t === "z=+1") cls.push("fx-z1");
+    else if (t === "z=+2") cls.push("fx-z2");
+    else if (t === "z=-1") cls.push("fx-zm");
+  });
+  return cls.length ? `<span class="${cls.join(" ")}"${style.length ? ` style="${style.join(";")}"` : ""}>` : "<span>";
+}
+function rich(s) { // 시트 서식·링크를 HTML 로 (짝이 안 맞는 표시는 무시)
+  s = String(s ?? ""); let out = "", last = 0, open = false;
+  for (const m of s.matchAll(FX)) {
+    out += linkify(s.slice(last, m.index));
+    if (open) { out += "</span>"; open = false; }
+    if (m[1] !== "/") { out += fxOpen(m[1]); open = true; }
+    last = m.index + m[0].length;
+  }
+  out += linkify(s.slice(last));
+  return open ? out + "</span>" : out;
+}
+const gallery = (imgs, label) => imgs && imgs.length ? `<div class="gallery">${label ? `<div class="lb">${esc(label)}</div>` : ""}${imgs.map((src, i) =>
+  `<button type="button" data-view-imgs="${escRaw(imgs.join("|"))}" data-i="${i}" aria-label="사진 ${i + 1} 크게 보기"><img src="${escRaw(src)}" alt="" loading="lazy" decoding="async"></button>`).join("")}</div>` : "";
+const pad = n => String(n).padStart(2, "0");
+const key = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parse = k => { const [y, m, d] = k.split("-").map(Number); return new Date(y, m - 1, d); };
+const md = k => { const d = parse(k); return `${d.getMonth() + 1}.${d.getDate()}`; };
+const mdDow = k => { const d = parse(k); return `${d.getMonth() + 1}월 ${d.getDate()}일 ${DOW[d.getDay()]}요일`; };
+const TODAY = key(new Date());
+const normT = s => plain(s || "").replace(/[\s\p{P}\p{S}]/gu, "");
+const similar = (a, b) => { a = normT(stripFmt(a)); b = normT(stripFmt(b)); if (a.length < 4 || b.length < 4) return a === b;
+  return a.includes(b.slice(0, 6)) || b.includes(a.slice(0, 6)); };
+
+function fmtOf(s) {
+  s = s || "";
+  if (/광고/.test(s)) return "ad";
+  if (/릴스/.test(s)) return "reel";
+  if (/캐러셀|게시글|게시물|피드/.test(s)) return "post";
+  if (/무물/.test(s)) return "qa";
+  if (/라이브|라방/.test(s)) return "live";
+  if (/자율|자유|일상/.test(s)) return "free";
+  if (/스토리/.test(s)) return "story";
+  return "etc";
+}
+const stripFmt = s => plain(s || "").replace(/^[\s🙏🎀]*\[(릴스|캐러셀|게시글|피드)\]\s*/u, "").trim();
+
+/* ---------------- index everything by date ---------------- */
+const P = Object.fromEntries(DATA.products.map(p => [p.id, p]));
+const byDate = {};
+const push = (k, e) => (byDate[k] ||= []).push(e);
+
+DATA.products.forEach(p => p.slots.forEach((s, i) => {
+  if (!s.date) return;
+  const fmt = fmtOf(s.format);
+  push(s.date, {src: "slot", pid: p.id, slot: s, fmt,
+    title: s.title || (fmt === "story" ? `${p.name} 스토리` : s.format),
+    sort: fmt === "story" ? 2 : 1});
+}));
+
+DATA.events.forEach(ev => {
+  const k = ev.date;
+  if (ev.end > ev.date && ev.kind === "content" && ev.sale) return; // 공구 기간 칸은 달력 막대·공구 현황으로만 표시
+  if (ev.end > ev.date && ev.kind === "content") { // 여러 날에 걸친 칸 = 여행·출장 같은 일정
+    for (let d = parse(ev.date); key(d) <= ev.end; d.setDate(d.getDate() + 1))
+      push(key(d), {src: "event", ev, fmt: "meeting", title: ev.text.replace(/\n/g, " "), sort: 0});
+    return;
+  }
+  if (ev.kind !== "content") {
+    push(k, {src: "event", ev, fmt: "meeting", title: ev.text.replace(/\n/g, " "), sort: 0, holiday: ev.kind === "holiday"});
+    return;
+  }
+  const list = byDate[k] || [];
+  const isStory = ev.text.trim() === "스토리";
+  const match = list.find(e => e.src === "slot" && !e.matched && (e.pid === ev.product || !ev.product) &&
+    (isStory ? e.fmt === "story" : similar(e.title, ev.text)));
+  if (match) { match.matched = true; return; }
+  // 제목을 캘린더 칸 두 줄에 나눠 적은 경우("지금까지 세수 방법이" / "잘못됐다면?"): 같은 날 콘텐츠 제목의 일부면 따로 띄우지 않음
+  const part = normT(ev.text);
+  if (!isStory && part.length >= 2 && list.some(e => e.src === "slot" && (e.pid === ev.product || !ev.product) && normT(stripFmt(e.title)).includes(part))) return;
+  if (!ev.product && /커머스|공구/.test(ev.text)) {
+    const hit = DATA.products.find(p => p.slots.some(s => s.title && similar(s.title, ev.text)));
+    if (hit) ev.product = hit.id;
+  }
+  push(k, {src: "event", ev, pid: ev.product, fmt: isStory ? "story" : fmtOf(ev.text) === "etc" ? (ev.product && !/진행|기획전/.test(ev.text) ? "reel" : "meeting") : fmtOf(ev.text),
+    title: isStory ? `${P[ev.product]?.name || ""} 스토리`.trim() : ev.text.replace(/\n/g, " "), sort: isStory ? 2 : 1});
+});
+
+const isTopic = l => l === "주제" || l === "콘텐츠";
+const topicTitle = t => { // "[릴스]" 한 줄 + 제목 줄로 나뉜 경우 합치기
+  const ls = plain(t).split("\n").map(x => x.trim()).filter(Boolean);
+  return /^\[[^\]]+\]$/.test(ls[0] || "") && ls[1] ? `${ls[0]} ${ls[1]}` : (ls[0] || "");
+};
+const storyTitle = t => plain(t).replace(/^[✔\s]+/, "").replace(/^\[스토리\]\s*>?\s*/, "").split("\n")[0] || "스토리";
+function dayGroups(d) { // 하루 칸을 콘텐츠 단위로 묶기: 주제/콘텐츠 행마다 새 묶음, 스토리는 따로
+  const topics = [], stories = [];
+  d.fields.forEach(x => {
+    if (x.label === "스토리") stories.push(x);
+    else if (isTopic(x.label) || !topics.length) topics.push([x]);
+    else topics[topics.length - 1].push(x);
+  });
+  return {topics: topics.filter(g => isTopic(g[0].label)), stories};
+}
+DATA.months.filter(m => m.kind === "grid").forEach(m => m.days.forEach(d => {
+  const {topics, stories} = dayGroups(d);
+  topics.forEach((g, gi) => {
+    const first = topicTitle(g[0].text);
+    const entry = {src: "month", mid: m.id, day: d, fmt: fmtOf(first), title: stripFmt(first) || first, sort: 1, fields: g,
+      images: gi === 0 ? d.images : undefined};
+    const list = byDate[d.date] || [];
+    if (/커머스|공구/.test(first) && list.some(e => e.src === "slot" && e.fmt !== "story")) return;
+    const dup = list.findIndex(e => e.src === "event" && !e.holiday && similar(e.title, first));
+    if (dup >= 0) { entry.pid = list[dup].pid; list[dup] = entry; } else push(d.date, entry);
+  });
+  stories.forEach(x => push(d.date, {src: "month", mid: m.id, day: d, fmt: "story", title: storyTitle(x.text), sort: 2, fields: [x]}));
+  if (d.holiday) push(d.date, {src: "event", fmt: "meeting", title: d.holiday, sort: 0, holiday: true, ev: {text: d.holiday}});
+}));
+Object.values(byDate).forEach(l => l.sort((a, b) => a.sort - b.sort));
+
+const periods = DATA.products.filter(p => p.period).map(p => ({pid: p.id, s: p.period[0], e: p.period[1]}));
+const periodsOn = k => periods.filter(r => r.s <= k && k <= r.e);
+const colorOf = pid => P[pid]?.color || "var(--muted)";
+const pname = pid => P[pid] ? `${P[pid].name}${P[pid].round ? " " + P[pid].round : ""}` : "";
+const mdS = k => { const d = parse(k); return `${d.getMonth() + 1}/${d.getDate()}`; };
+const BAR_COLORS = ["#A4C2F4", "#FFE599", "#EA9999", "#B6D7A8", "#D9D2E9", "#F9CB9C", "#D5A6BD", "#A2C4C9"];
+// 달력 안에 막대로 그릴 기간: 제품 공구 기간 + 캘린더 탭의 여러 날 일정(제품 탭이 아직 없는 공구, 여행 등)
+const spans = periods.map(r => ({s: r.s, e: r.e, color: colorOf(r.pid), label: pname(r.pid), pid: r.pid}));
+DATA.events.forEach(ev => {
+  if (ev.end <= ev.date || P[ev.product]?.period || periods.some(r => r.s === ev.date && r.e === ev.end)) return;
+  const t = ev.text.replace(/\s+/g, " ").trim();
+  if (/^(\d+년\s*)?\d+월\s*스케줄$/.test(t)) return; // 달 제목 칸은 일정이 아님
+  const sale = ev.sale || /공구|진행|기획전|\d+차/.test(t);
+  spans.push({s: ev.date, e: ev.end, label: t,
+    color: sale ? BAR_COLORS[[...t].reduce((h, c) => (h * 31 + c.charCodeAt(0)) >>> 0, 7) % BAR_COLORS.length] : null});
+});
+spans.sort((a, b) => a.s < b.s ? -1 : a.s > b.s ? 1 : 0);
+
+/* ---------------- 공구 현황: 진행 중 공구 마감 카운트다운 + 다음 공구 D-day ---------------- */
+const sales = spans.filter(r => r.color).map(r => {
+  // 시트의 '오픈시간'(예: 오전 10시)을 읽어 오픈 시각으로, 마감은 마지막 날 밤 12시로 봄
+  const info = P[r.pid]?.info.find(x => /오픈\s*시간/.test(x.label));
+  const openText = info ? plain(info.text).split("\n")[0].replace(/^\d+\/\d+\s*(\([^)]*\))?\s*/, "").trim() : "";
+  const m = openText.match(/(오전|오후)?\s*(\d{1,2})\s*시(?:\s*(\d{1,2})\s*분)?/);
+  const start = parse(r.s), end = parse(r.e);
+  if (m) start.setHours((+m[2] % 12) + (m[1] === "오후" ? 12 : 0), +(m[3] || 0));
+  end.setDate(end.getDate() + 1);
+  // 시트에 결제창 마감 시각이 따로 적혀 있고 공구 마감(마지막 날 밤 12시)과 다르면 따로 카운트
+  const sc = P[r.pid]?.saleClose ? new Date(P[r.pid].saleClose) : null; // 시트에 공구 마감 시각이 적혀 있으면 그 시각
+  const closeAt = sc && !isNaN(sc) && sc > start;
+  if (closeAt) end.setTime(+sc);
+  const pc = P[r.pid]?.payClose ? new Date(P[r.pid].payClose) : null;
+  const pay = pc && !isNaN(pc) && Math.abs(pc - end) > 60000 ? pc : null;
+  return {...r, start, end, pay, closeAt, openText: m && openText.length <= 16 ? openText : ""};
+});
+const pad2 = n => String(n).padStart(2, "0");
+const leftText = ms => { // 남은 시간 → "3일 08:12:45"
+  const t = Math.max(0, Math.floor(ms / 1000)), d = Math.floor(t / 86400);
+  return `${d ? d + "일 " : ""}${pad2(Math.floor(t % 86400 / 3600))}:${pad2(Math.floor(t % 3600 / 60))}:${pad2(t % 60)}`;
+};
+const mdDowS = d => `${d.getMonth() + 1}/${d.getDate()}(${DOW[d.getDay()]})`;
+function renderSale() {
+  const now = new Date(), today0 = parse(key(now));
+  const live = sales.filter(r => r.start <= now && (now < r.end || (r.pay && now < r.pay)));
+  const coming = sales.filter(r => now < r.start);
+  const next = coming.filter(r => r.s === coming[0].s);
+  const row = (r, isLive) => {
+    const n = Math.round((parse(r.s) - today0) / 864e5);
+    const hm = d => `${mdDowS(d)} ${d.getHours()}:${pad2(d.getMinutes())}`;
+    if (isLive && now >= r.end) // 공구 기간은 끝났고 결제창만 열려 있는 동안
+      return `<div class="sale-row live" style="--c:${r.color}">
+        <div class="t"><div class="k">● 결제창 마감 전</div><div class="nm">${esc(r.label)}</div></div>
+        <div class="v"><b data-until="${+r.pay}">${leftText(r.pay - now)}</b><small>${esc(`결제창 ${hm(r.pay)} 마감까지`)}</small></div></div>`;
+    const payLine = isLive && r.pay && now < r.pay
+      ? `<small class="pay">결제창 마감까지 <span data-until="${+r.pay}">${leftText(r.pay - now)}</span> · ${esc(hm(r.pay))}</small>` : "";
+    const until = isLive ? r.end : r.start;
+    const last = parse(r.e);
+    const value = isLive || n === 0 ? `<b data-until="${+until}">${leftText(until - now)}</b>` : `<b>D-${n}</b>`;
+    const sub = isLive ? (r.closeAt ? `${hm(r.end)} 마감까지` : `${mdDowS(last)} 밤 12시 마감까지`) : n === 0 ? `오늘 ${r.openText} 오픈까지`.replace("  ", " ")
+      : `${mdDowS(parse(r.s))} ${r.openText} 오픈`.replace("  ", " ");
+    return `<div class="sale-row${isLive ? " live" : ""}" style="--c:${r.color}">
+      <div class="t"><div class="k">${isLive ? "● 진행 중인 공구" : "다음 공구"}</div><div class="nm">${esc(r.label)}</div></div>
+      <div class="v">${value}<small>${esc(sub)}</small>${payLine}</div></div>`;
+  };
+  $("#sale").innerHTML = live.map(r => row(r, true)).join("") + next.map(r => row(r, false)).join("");
+}
+renderSale();
+setInterval(() => { // 1초마다 남은 시간 갱신, 0이 되면(마감·오픈) 다시 그림
+  const now = Date.now();
+  let done = false;
+  document.querySelectorAll("#sale [data-until]").forEach(b => {
+    const ms = +b.dataset.until - now;
+    if (ms <= 0) done = true; else b.textContent = leftText(ms);
+  });
+  if (done) renderSale();
+}, 1000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) renderSale(); });
+
+/* ---------------- calendar ---------------- */
+let cur = parse(TODAY); cur.setDate(1);
+let sel = TODAY;
+const dataYearOk = cur.getFullYear() === DATA.year;
+if (!dataYearOk) { cur = new Date(DATA.year, 8, 1); sel = key(cur); }
+
+function renderCal() {
+  const y = cur.getFullYear(), m = cur.getMonth();
+  $("#cal-year").textContent = `${y}년 · __SELLER__`;
+  $("#cal-title").textContent = `${m + 1}월`;
+  const first = new Date(y, m, 1);
+  const start = new Date(y, m, 1 - ((first.getDay() + 6) % 7));
+  const cells = [];
+  const weeks = Math.ceil((((first.getDay() + 6) % 7) + new Date(y, m + 1, 0).getDate()) / 7);
+  // 기간 막대: 주마다 잘라서 겹치면 줄(lane)을 나눠 쌓기
+  const bars = [], weekLanes = [];
+  const cellW = ($("#cal-grid").clientWidth || 340) / 7;
+  const textW = t => [...t].reduce((n, c) => n + (c.charCodeAt(0) > 0x2E7F ? 10 : c === " " ? 3 : 5.6), 0);
+  for (let w = 0; w < weeks; w++) {
+    const ws = new Date(start); ws.setDate(start.getDate() + w * 7);
+    const we = new Date(ws); we.setDate(ws.getDate() + 6);
+    const wsK = key(ws), weK = key(we), laneEnd = [];
+    spans.filter(r => r.s <= weK && r.e >= wsK).forEach(r => {
+      const a = r.s > wsK ? r.s : wsK, b = r.e < weK ? r.e : weK;
+      const ca = Math.round((parse(a) - ws) / 864e5), cb = Math.round((parse(b) - ws) / 864e5);
+      let j = laneEnd.findIndex(x => x < a); if (j < 0) j = laneEnd.length;
+      laneEnd[j] = b;
+      const cls = ["pbar"]; if (a === r.s) cls.push("s"); if (b === r.e) cls.push("e"); if (!r.color) cls.push("plain");
+      const full = `${r.label} ${mdS(r.s)}–${mdS(r.e)}`;
+      const fits = textW(full) <= (cb - ca + 1) * cellW - 16;
+      const text = fits ? full : cb - ca >= 2 ? `${mdS(r.s)}–${mdS(r.e)} ${r.label}` : r.label; // 좁으면 날짜를 앞에, 더 좁으면 이름만
+      bars.push(`<i class="${cls.join(" ")}" style="grid-row:${w + 1};grid-column:${ca + 1}/${cb + 2};--lane:${j}${r.color ? `;--c:${r.color}` : ""}">${esc(text)}</i>`);
+    });
+    weekLanes.push(laneEnd.length);
+  }
+  for (let i = 0; i < weeks * 7; i++) {
+    const d = new Date(start); d.setDate(start.getDate() + i);
+    const k = key(d), list = byDate[k] || [];
+    const cls = ["day"];
+    if (d.getMonth() !== m) cls.push("out");
+    if (d.getDay() === 6) cls.push("sat");
+    if (d.getDay() === 0 || list.some(e => e.holiday)) cls.push("sun");
+    if (k === TODAY) cls.push("today");
+    if (k === sel) cls.push("sel");
+    const marks = list.filter(e => !e.holiday);
+    const shape = e => !e.pid ? "other" : e.fmt === "story" ? "story" : "feed"; // 제품 콘텐츠 = 커머스
+    const shown = marks.slice(0, 4).map(e => `<i class="mk ${shape(e)}" style="--c:${e.pid ? colorOf(e.pid) : "var(--muted)"}"></i>`).join("");
+    const more = marks.length > 4 ? `<i class="mk more">+${marks.length - 4}</i>` : "";
+    const open = sales.some(r => r.s === k) ? `<span class="open-tag">OPEN</span>` : "";
+    const on = spans.filter(r => r.s <= k && k <= r.e).map(r => `${r.label} ${mdS(r.s)}–${mdS(r.e)}`).join(", ");
+    cells.push(`<button type="button" class="${cls.join(" ")}" data-k="${k}" style="grid-row:${Math.floor(i / 7) + 1};grid-column:${i % 7 + 1};--lanes:${weekLanes[Math.floor(i / 7)]}" aria-label="${esc(mdDow(k) + (marks.length ? `, 콘텐츠 ${marks.length}개` : "") + (on ? `, ${on}` : ""))}"><span class="n">${d.getDate()}</span><span class="marks">${shown}${more}</span>${open}</button>`);
+  }
+  $("#cal-grid").innerHTML = cells.join("") + bars.join("");
+  renderAgenda();
+}
+
+function entryHTML(e, idx, opts = {}) {
+  const p = e.pid ? P[e.pid] : null;
+  const meta = [];
+  if (p && !opts.noProduct) meta.push(`<span><i class="dotc" style="--c:${p.color}"></i> ${esc(pname(e.pid))}</span>`);
+  if (e.src === "slot" && e.slot.label) meta.push(`<span>${esc(e.slot.label)}</span>`);
+  if (e.src === "slot" && e.fmt === "story" && e.slot.items.length > 1) meta.push(`<span>컷 ${e.slot.items.length}개</span>`);
+  const nImg = e.src === "slot" ? e.slot.items.reduce((n, it) => n + (it.__images || []).length, 0)
+    : e.src === "month" ? (e.images || []).length : 0;
+  if (nImg) meta.push(`<span>사진 ${nImg}</span>`);
+  if (e.src === "month") meta.push(`<span>${esc(DATA.months.find(m => m.id === e.mid).name)} 월간 기획</span>`);
+  if (e.src === "event" && !p && !e.holiday) meta.push(`<span>일정</span>`);
+  if (e.src === "event" && p) meta.push(`<span>캘린더 메모</span>`);
+  let prev = "";
+  if (e.src === "slot") {
+    const notes = e.slot.notes.join(" · ");
+    const first = e.slot.items.map(it => Object.entries(it).find(([k]) => !k.startsWith("__") && !k.includes("기한"))?.[1]).find(Boolean) || "";
+    prev = notes.length > 24 ? notes : first || notes; // 짧은 메모는 아래 표시줄에
+    if (notes && prev !== notes) meta.push(`<span>${esc(notes)}</span>`);
+  }
+  const label = e.holiday ? "휴일" : FMT[e.fmt];
+  return `<button type="button" class="entry" data-idx="${idx}">
+    <span class="fmt ${e.fmt}">${label}</span>
+    <span class="e-body"><span class="e-title">${esc(e.title)}</span>
+      ${prev ? `<span class="e-prev">${esc(prev.replace(/\n+/g, " "))}</span>` : ""}
+      ${meta.length ? `<span class="e-meta">${meta.join("")}</span>` : ""}</span>
+    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>
+  </button>`;
+}
+
+/* ---------------- 일상 콘텐츠 주제 추천 (ideas.json 이 있는 앱만) ----------------
+   커머스·제품과는 연결하지 않음. 계절·요일·그날 업로드 양만 봄.
+   이 휴대폰에서 이미 본 주제는 다시 보여주지 않고(다 보면 처음부터), '다른 주제'는 매번 새로 고름. */
+const GOAL_ORDER = ["image", "grow", "talk", "bench"];
+const TREND_DAYS = IDEAS?.analysis?.trendWindow || 31; // 유행·검색량 기획은 기준일(asof)로부터 한 달 안에만 보여줌
+const isFresh = it => !(it.src || []).some(k => k === "trend" || k === "search") || !it.asof || (Date.now() - parse(it.asof)) / 864e5 <= TREND_DAYS;
+/* 추천은 '속 내용이 충분한' 기획만: 기획 의도·타깃·목표 지표·셀러 이미지·후킹(2개+)·상황 예시(4컷+)·촬영 가이드·스토리 연계·행동 유도 문구가 모두 있어야 함 */
+const IDEA_REQ = ["intent", "target", "kpi", "image", "shoot", "story", "cta"];
+const isFull = it => IDEA_REQ.every(k => it[k]) && (it.hooks || []).length >= 2 && (it.scene || it.steps || []).length >= 4;
+/* 셀러별 규칙(ideas.json): avoid = 이 셀러에게 기획하지 않을 주제어, srcBoost = 출처별 가중치(예: 팔로워 관심·성과 검증 위주),
+   genShare = 시즌 자동 기획이 나올 비율, combos = 레시피 대신 '음식 조합'으로 보여줄 제철 음식별 조합 예시 */
+const AVOID = IDEAS?.avoid?.length ? new RegExp(IDEAS.avoid.join("|")) : null;
+const avoided = it => AVOID && AVOID.test([it.t, ...(it.hooks || []), it.intent || ""].join(" "));
+const srcW = it => (it.src || []).reduce((m, k) => m * (IDEAS.srcBoost?.[k] ?? 1), 1);
+const IDEA_POOL = !IDEAS ? [] : [
+  ...IDEAS.items.filter(isFresh).map(it => ({...it, w: (it.src?.length ? 4 : it.ref ? 3 : 2) * srcW(it)})),
+  ...seasonPool(),
+].filter(it => isFull(it) && !avoided(it));
+function josa(w, withF, noF) { // 받침에 따라 조사 고르기 (로는 ㄹ받침도 '로')
+  const c = w.replace(/[^가-힣]+$/, "").slice(-1).charCodeAt(0) - 0xAC00;
+  if (c < 0 || c > 11171) return noF;
+  const f = c % 28;
+  return !f || (noF === "로" && f === 8) ? noF : withF;
+}
+function seasonPool() { // 월별 시즌 키워드(제철 음식·계절 루틴·명절·시즌 행사) 중 이 계정 핏(fitTags)에 맞는 것만 기획 틀과 조합
+  if (!IDEAS.seasons || !IDEAS.seasonAngles) return [];
+  const fit = new Set(IDEAS.fitTags || []), skip = new Set(IDEAS.seasonSkip || []), out = []; // seasonSkip: 이 셀러에게 안 맞는 키워드, seasonExtra: 셀러 전용 키워드
+  const months = {...IDEAS.seasons};
+  for (const [m, list] of Object.entries(IDEAS.seasonExtra || {})) months[m] = [...(months[m] || []), ...list];
+  for (const [m, list] of Object.entries(months)) for (const kw of list) {
+    if (skip.has(kw.k) || (fit.size && !kw.tags.some(x => fit.has(x))) || (IDEAS.seasonTypes && !IDEAS.seasonTypes.includes(kw.type))) continue; // seasonTypes: 이 셀러에게 쓸 시즌 유형만(예: 뽕커벨은 제철 음식 제외)
+    for (const a of IDEAS.seasonAngles[kw.type] || []) {
+      const ex = IDEAS.combos?.[kw.k] || (IDEAS.noMake ? [] : kw.make || []); // 조합형 셀러는 레시피 대신 조합 예시
+      const needM = a.t.includes("{m}");
+      if (needM && !ex.length) continue;
+      for (const mk of needM ? ex : [ex[0] || ""]) {
+        const fill = x => x.replaceAll("{k}{로}", kw.k + josa(kw.k, "으로", "로")).replaceAll("{k}{은}", kw.k + josa(kw.k, "은", "는"))
+          .replaceAll("{k}", kw.k).replaceAll("{m}", mk).replace(/ — 예: $/, "");
+        const o = {g: a.g, f: a.f, t: fill(a.t), hooks: a.hooks.map(fill), scene: a.steps.map(fill), why: a.why,
+          months: [+m], src: ["season"], tags: kw.tags, make: IDEAS.combos || IDEAS.noMake ? null : kw.make, examples: ex.length ? ex : null, season: kw.k, gen: true, w: 2 * srcW({src: ["season"]})};
+        IDEA_REQ.forEach(k => { if (a[k]) o[k] = fill(a[k]); });
+        out.push(o);
+      }
+    }
+  }
+  return out;
+}
+const IDEA_NS = ":" + "__SELLER__"; // 모든 셀러 앱이 같은 주소(github.io)를 써서, 휴대폰 기록을 셀러별로 나눠 저장
+const IDEA_SEEN_KEY = "ideasSeen" + IDEA_NS;
+let ideaSeen = new Set((() => { try { return JSON.parse(store.get(IDEA_SEEN_KEY) || "[]"); } catch (e) { return []; } })());
+const ideaCache = {}; // 날짜별로 지금 보여주는 주제 (날짜를 오가도 그대로)
+function ideaCtx(k) {
+  const d = parse(k);
+  const weekend = d.getDay() === 0 || d.getDay() === 6;
+  const busy = (byDate[k] || []).filter(e => !e.holiday && e.fmt !== "meeting").length;
+  return {month: d.getMonth() + 1, weekend, busy,
+    line: `${d.getMonth() + 1}월 ${weekend ? "주말" : "평일"}`};
+}
+/* 좋아요/싫어요 학습: 형식(f)·목표(g)·주제 태그·출처마다 점수를 쌓아 비슷한 기획을 더(덜) 고름.
+   이 휴대폰의 평가(ideaVotes) + 모든 담당자 평가를 매주 모은 IDEAS.learn.keys 를 함께 씀 */
+const VOTE_KEY = "ideaVotes" + IDEA_NS; // 좋아요/별로예요도 셀러별로 따로 쌓임
+let ideaVotes = (() => { try { return JSON.parse(store.get(VOTE_KEY) || "{}"); } catch (e) { return {}; } })();
+const ideaKeys = it => [`g:${it.g}`, `f:${it.f}`, ...(it.tags || []).map(x => `tag:${x}`), ...(it.src || []).map(x => `src:${x}`)];
+function learnMap() {
+  const m = {...(IDEAS?.learn?.keys || {})};
+  for (const v of Object.values(ideaVotes)) for (const k of v.keys) m[k] = (m[k] || 0) + v.v;
+  return m;
+}
+let LEARN = learnMap();
+function prefMult(it) {
+  const ks = ideaKeys(it);
+  const sum = ks.reduce((a, k) => a + (LEARN[k] || 0), 0) / Math.sqrt(ks.length);
+  return Math.min(4, Math.max(0.2, Math.exp(0.45 * sum)));
+}
+function ideaScore(it, ctx) {
+  if (it.months && !it.months.includes(ctx.month)) return [0];
+  const mine = ideaVotes[it.t]?.v, team = IDEAS.learn?.titles?.[it.t] || 0;
+  if (mine === -1 || team <= -2) return [0]; // 싫어요한 기획은 다시 안 보여줌
+  const why = [];
+  let s = it.w;
+  const pm = prefMult(it);
+  s *= pm;
+  if (pm >= 1.4) why.push("좋아요한 기획과 비슷");
+  if (it.months) { s += 2; why.push(`${ctx.month}월 시즌`); }
+  const w = it.when || [];
+  if (w.includes(ctx.weekend ? "weekend" : "weekday")) { s += 1.5; why.push(ctx.weekend ? "주말" : "평일"); }
+  else if (w.length) { if (it.w === 1) return [0]; s *= 0.25; } // 조합 주제는 요일이 안 맞으면 빼기
+  if (ctx.busy && (it.f === "스토리")) { s += 1.5; why.push("가볍게 올리기 좋음"); }
+  else if (ctx.busy && it.f === "라방") s *= 0.3;
+  return [s, why];
+}
+function pickIdeas(k, avoid = []) {
+  const ctx = ideaCtx(k);
+  const picks = GOAL_ORDER.map(g => {
+    let pool = IDEA_POOL.filter(it => it.g === g && !avoid.includes(it.t)).map(it => ({it, r: ideaScore(it, ctx)})).filter(x => x.r[0] > 0);
+    let fresh = pool.filter(x => !ideaSeen.has(x.it.t));
+    if (!fresh.length) { // 이 목표의 주제를 다 봤으면 본 기록을 비우고 처음부터
+      pool.forEach(x => ideaSeen.delete(x.it.t));
+      fresh = pool;
+    }
+    // 손으로 자세히 쓴 기획 70% → 이달 시즌 키워드 기획 30%
+    const tiers = [fresh.filter(x => !x.it.gen), fresh.filter(x => x.it.gen)];
+    const gs = IDEAS.genShare ?? 0.3, odds = [1 - gs, gs].map((o, i) => tiers[i].length ? o : 0), sum = odds[0] + odds[1];
+    if (sum) fresh = tiers[Math.random() * sum < odds[0] ? 0 : 1];
+    let t = fresh.reduce((a, x) => a + x.r[0], 0) * Math.random();
+    const hit = fresh.find(x => (t -= x.r[0]) <= 0) || fresh[0];
+    if (!hit) return null;
+    ideaSeen.add(hit.it.t);
+    return {...hit.it, whyText: hit.it.why, why: hit.r[1]};
+  }).filter(Boolean);
+  store.set(IDEA_SEEN_KEY, JSON.stringify([...ideaSeen].slice(-600)));
+  return {ctx, picks};
+}
+function ideaIntro() { // ideas.json 의 analysis 로 안내 문장을 만듦 → 분석을 새로 하면 문장도 자동으로 바뀜
+  const a = IDEAS.analysis; if (!a) return "";
+  const f = parse(a.from), t = parse(a.to);
+  const months = Math.max(1, Math.round((t - f) / (30.4 * 864e5)));
+  const parts = [`게시글 ${a.count}개의 성과`, a.comments ? "팔로워 댓글" : "", a.trends ? "최근 한 달 유행·검색 키워드" : ""].filter(Boolean);
+  const what = parts.length > 1 ? `${parts[0]}와 ${parts.slice(1).join(", ")}` : parts[0];
+  const vs = Object.values(ideaVotes), up = vs.filter(v => v.v > 0).length, dn = vs.filter(v => v.v < 0).length, team = IDEAS.learn?.votes || 0;
+  const learnLine = up || dn || team ? `<small class="idea-learn">👍 ${up} · 👎 ${dn}${team ? ` · 팀 평가 ${team}개` : ""} 반영 중 — 좋아요한 건 더, 싫어요한 건 덜, 그냥 넘긴 건 '무난'으로 다시 추천해요</small>` : `<small class="idea-learn">마음에 들면 👍, 별로면 👎 를 눌러주세요. 그냥 넘긴 기획은 '무난'으로 보고 나중에 다시 추천해요</small>`;
+  return `<p class="idea-intro">최근 ${months}개월(${f.getMonth() + 1}/${f.getDate()}~${t.getMonth() + 1}/${t.getDate()}) ${what}를 분석해, 셀러 이미지·계정 성장·팔로워 소통에 도움 되는 주제를 추천드려요!${a.at ? ` <small class="idea-at">· ${+a.at.slice(5, 7)}/${+a.at.slice(8, 10)} 업데이트</small>` : ""}</p>${learnLine}`;
+}
+let ideaShown = [];
+function logShown(picks) { // 추천으로 보여준 기획 기록 → 평가 없이 넘긴 것은 '무난'으로 집계
+  logView("idea_shown", picks.map(x => x.t).join(" / ").slice(0, 200), "shown|" + picks.map(x => x.g).join(","));
+}
+function ideasHTML() {
+  if (!IDEAS) return "";
+  if (!ideaCache[sel]) { ideaCache[sel] = pickIdeas(sel); logShown(ideaCache[sel].picks); }
+  const got = ideaCache[sel];
+  const {ctx, picks} = got;
+  ideaShown = picks;
+  return `<div class="up-head idea-head"><span>💡 일상 콘텐츠 추천</span><button type="button" class="today-btn" id="idea-more">다른 주제</button></div>
+    ${ideaIntro()}
+    <div class="idea-ctx">${esc(ctx.line)}</div>
+    <div class="list">${picks.map((it, i) => {
+      const ref = it.ref && IDEAS.refs[it.ref];
+      const meta = [it.f, `🎯 ${it.kpi}`, ...it.why];
+      const v = ideaVotes[it.t]?.v || 0;
+      return `<div class="idea-card"><button type="button" class="entry idea" data-idea="${i}">
+      <span class="fmt idea-g ${it.g}">${esc(IDEAS.short[it.g])}</span>
+      <span class="e-body">${it.src?.length ? `<span class="srcs">${srcChips(it)}</span>` : ""}<span class="e-title">${esc(it.t)}</span><span class="e-prev">${esc(it.hooks ? it.hooks[0] : ref ? ref.point : it.whyText)}</span>
+      ${it.make?.length ? `<span class="e-make">🍳 만들어보기: ${esc(it.make.slice(0, 2).join(", "))}</span>` : it.examples?.length ? `<span class="e-make">📌 예시: ${esc(it.examples.slice(0, 2).join(", "))}</span>` : ""}
+      <span class="e-meta">${meta.map(w => `<span>${esc(w)}</span>`).join("")}</span></span>
+      <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+      ${voteBtns(i, v)}</div>`;
+    }).join("")}</div>`;
+}
+const voteBtns = (i, v) => `<div class="votes"><button type="button" class="vote up${v > 0 ? " on" : ""}" data-vote="${i}" data-v="1" aria-pressed="${v > 0}" aria-label="좋아요">👍 좋아요</button><button type="button" class="vote down${v < 0 ? " on" : ""}" data-vote="${i}" data-v="-1" aria-pressed="${v < 0}" aria-label="싫어요">👎 별로예요</button></div>`;
+function voteIdea(i, val) { // 같은 버튼을 다시 누르면 취소
+  const it = ideaShown[i]; if (!it) return;
+  const prev = ideaVotes[it.t]?.v || 0, v = prev === val ? 0 : val;
+  if (v) ideaVotes[it.t] = {v, keys: ideaKeys(it), at: Date.now()}; else delete ideaVotes[it.t];
+  store.set(VOTE_KEY, JSON.stringify(ideaVotes));
+  LEARN = learnMap();
+  logView("idea_vote", it.t, `v=${v}|${ideaKeys(it).join("|")}`.slice(0, 200)); // 담당자 평가를 모아 매주 기획에 반영
+  if (v === -1) { // 싫어요: 그 자리에 다른 기획으로 바꿔 줌
+    const repl = pickIdeas(sel, ideaShown.map(x => x.t)).picks.find(x => x.g === it.g);
+    if (repl) { ideaShown[i] = repl; ideaCache[sel].picks[i] = repl; }
+    toast("비슷한 형식·주제는 덜 추천할게요");
+  } else if (v === 1) toast("비슷한 형식·주제를 더 추천할게요");
+  renderAgenda();
+}
+function moreIdeas() { // '다른 주제': 지금 보이는 주제는 빼고 새로 고름 (넘긴 주제는 '무난' — 벌점 없이 나중에 다시 나옴)
+  ideaCache[sel] = pickIdeas(sel, ideaShown.map(x => x.t));
+  logShown(ideaCache[sel].picks);
+  renderAgenda();
+  document.querySelector(".idea-head")?.scrollIntoView({block: "nearest"});
+}
+function openIdea(it) {
+  const ref = it.ref && IDEAS.refs[it.ref];
+  const goal = IDEAS.goals[it.g] || "";
+  const hooks = it.hooks || [];
+  const scene = it.scene || it.steps || [];
+  const ex = it.examples || it.make || [];
+  const exText = x => it.make?.includes(x) ? `🍳 ${x} 만들어보기` : `📌 ${x}`;
+  const lines = [`[${goal} · ${it.f}] ${it.t}`,
+    `핵심 기획 의도: ${it.intent}`, `저격 타깃: ${it.target}`, `목표 지표: ${it.kpi}`, `목표 셀러 이미지: ${it.image}`,
+    `후킹 문구:\n${hooks.map(h => `- ${h}`).join("\n")}`,
+    `상황 예시(컷 구성):\n${scene.map((x, i) => `${i + 1}) ${x}`).join("\n")}`,
+    `촬영 가이드: ${it.shoot}`,
+    ...(ex.length ? [`구체 예시${it.make?.length ? " · 이번 시즌 만들어보기" : ""}:\n${ex.map(x => `- ${exText(x)}`).join("\n")}`] : []),
+    `스토리 연계: ${it.story}`, `행동 유도 문구: ${it.cta}`,
+    ...(it.caption ? [`캡션 첫 문단:\n${it.caption}`] : []), ...(it.tip ? [`제작 팁: ${it.tip}`] : []),
+    ...(it.basis ? [`기획 근거: ${it.basis}`] : []),
+    ...(it.srcLink ? [`유행 출처: ${it.srcLink.label} ${it.srcLink.url}`] : []),
+    ...(ref ? [`참고 게시물: ${ref.label} (${ref.stat}) ${ref.url}`] : [])];
+  const field = (lb, html, cls = "") => `<div class="field${cls}"><div class="lb">${lb}</div><div class="tx">${html}</div></div>`;
+  openSheet(`<span class="pill">${esc(goal)}</span><span class="pill ghost">${esc(it.f)}</span>`, it.t,
+    (it.src?.length ? `<div class="srcs big">${srcChips(it)}</div>` : "") +
+    `<div class="idea-brief">
+      <div><b>🎯 핵심 기획 의도</b>${esc(it.intent)}</div>
+      <div><b>👥 저격 타깃</b>${esc(it.target)}</div>
+      <div><b>📊 목표 지표</b>${esc(it.kpi)}</div>
+      <div><b>✨ 목표 셀러 이미지</b>${esc(it.image)}</div>
+    </div>` +
+    field("후킹 문구", hooks.map(h => `• ${esc(h)}`).join("\n")) +
+    field("상황 예시 · 컷 구성", scene.map((x, i) => `${i + 1}) ${esc(x)}`).join("\n")) +
+    field("촬영 가이드", esc(it.shoot)) +
+    (ex.length ? field(it.make?.length ? "구체 예시 · 이번 시즌 만들어보기" : "구체 예시", ex.map(x => esc(exText(x))).join("\n")) : "") +
+    field("스토리 연계", esc(it.story)) +
+    field("행동 유도 문구", esc(it.cta)) +
+    (it.caption ? field("캡션 첫 문단", esc(it.caption)) : "") +
+    (it.tip ? field("제작 팁", esc(it.tip)) : "") +
+    (it.basis ? field("기획 근거", esc(it.basis)) : "") +
+    (it.srcLink ? field("유행 출처", `<a href="${safeUrl(it.srcLink.url)}" target="_blank" rel="noopener">${esc(it.srcLink.label)}</a>`) : "") +
+    (ref ? field("참고한 게시물", `<a href="${safeUrl(ref.url)}" target="_blank" rel="noopener">${esc(ref.label)}</a>\n${esc(ref.stat)}\n${esc(ref.point)}`) : "") +
+    (Array.isArray(it.why) && it.why.length ? field("오늘 추천한 이유", esc(it.why.join(" · "))) : "") +
+    `<div class="cap-tools"><button type="button" class="cap-btn" id="idea-copy">기획 메모 복사</button></div>` +
+    (ideaShown.includes(it) ? `<div class="sheet-votes">${voteBtns(ideaShown.indexOf(it), ideaVotes[it.t]?.v || 0)}</div>` : ""));
+  $("#idea-copy").onclick = () => copyText(lines.join("\n\n"));
+  document.querySelectorAll(".sheet-votes .vote").forEach(b => b.onclick = () => { closeSheet(); voteIdea(+b.dataset.vote, +b.dataset.v); });
+}
+
+let agendaList = [];
+const UPCOMING = +"__UPCOMING__" || 3; // 날짜 아래 '다가오는 N일' (config.json upcoming_days)
+function renderAgenda() {
+  const dayList = byDate[sel] || [];
+  agendaList = dayList.slice();
+  const d = parse(sel);
+  const soon = []; // 뒤따르는 며칠(기본 3일, 셀러별 설정) 안의 콘텐츠
+  for (let i = 1; i <= UPCOMING; i++) {
+    const nd = new Date(d); nd.setDate(d.getDate() + i);
+    const l = byDate[key(nd)] || [];
+    if (!l.length) continue;
+    const base = agendaList.length;
+    agendaList.push(...l);
+    const when = sel === TODAY ? (i === 1 ? "내일" : i === 2 ? "모레" : `${i}일 뒤`) : `${i}일 뒤`;
+    soon.push(`<div class="up-date"><b>${nd.getMonth() + 1}월 ${nd.getDate()}일 ${DOW[nd.getDay()]}요일</b>${when}</div>
+      <div class="list">${l.map((e, j) => entryHTML(e, base + j)).join("")}</div>`);
+  }
+  const dday = [];
+  sales.filter(r => r.s <= sel && sel <= r.e).forEach(r => dday.push(`<span class="pill" style="--c:${r.color}">${esc(r.label)} 공구 ${mdS(r.s)}–${mdS(r.e)}</span>`));
+  sales.forEach(r => {
+    if (sel >= r.s) return;
+    const n = Math.round((parse(r.s) - d) / 864e5);
+    if (n > 0 && n <= 30) dday.push(`<span class="pill line">${esc(r.label)} 오픈 D-${n}</span>`);
+  });
+  const counts = {};
+  dayList.forEach(e => { if (!e.holiday && e.fmt !== "meeting") counts[e.fmt] = (counts[e.fmt] || 0) + 1; });
+  const sum = Object.entries(counts).map(([f, n]) => `${FMT[f]} ${n}`).join(" · ");
+  $("#agenda").innerHTML = `
+    <div class="ag-date"><span class="big">${d.getMonth() + 1}월 ${d.getDate()}일</span><span class="dow">${DOW[d.getDay()]}요일${sel === TODAY ? " · 오늘" : ""}</span></div>
+    <div class="ag-sub">${dday.join("")}${sum ? `<span class="pill ghost">${sum}</span>` : ""}</div>
+    ${dayList.length ? `<div class="list">${dayList.map((e, i) => entryHTML(e, i)).join("")}</div>`
+      : `<div class="empty">이 날은 시트에 잡힌 콘텐츠가 없어요.</div>`}
+    <div class="up-head">${sel === TODAY ? `다가오는 ${UPCOMING}일` : `이후 ${UPCOMING}일`}</div>
+    ${soon.length ? soon.join("") : `<div class="empty sm">${UPCOMING}일 안에 잡힌 콘텐츠가 없어요.</div>`}
+    ${ideasHTML()}
+    <p class="foot">시트 기준 ${esc(DATA.updated)} 업데이트 · <a href="${DATA.sheetUrl}" target="_blank" rel="noopener">원본 시트 열기</a></p>`;
+}
+
+$("#cal-grid").addEventListener("click", ev => {
+  const b = ev.target.closest(".day"); if (!b) return;
+  sel = b.dataset.k;
+  const d = parse(sel);
+  if (d.getMonth() !== cur.getMonth()) { cur = new Date(d.getFullYear(), d.getMonth(), 1); }
+  renderCal();
+});
+$("#agenda").addEventListener("click", ev => {
+  if (ev.target.closest("#idea-more")) return moreIdeas();
+  const vb = ev.target.closest("[data-vote]"); if (vb) return voteIdea(+vb.dataset.vote, +vb.dataset.v);
+  const ib = ev.target.closest("[data-idea]"); if (ib) return openIdea(ideaShown[+ib.dataset.idea]);
+  const b = ev.target.closest(".entry"); if (b) openEntry(agendaList[+b.dataset.idx]);
+});
+const shift = n => { cur = new Date(cur.getFullYear(), cur.getMonth() + n, 1); renderCal(); };
+$("#btn-prev").onclick = () => shift(-1);
+$("#btn-next").onclick = () => shift(1);
+$("#btn-today").onclick = () => { sel = TODAY; cur = parse(TODAY); cur.setDate(1); if (!dataYearOk) cur = new Date(DATA.year, 8, 1); renderCal(); };
+(() => { // 달력 좌우 스와이프로 월 이동
+  let x0 = null, y0 = null;
+  const card = $("#cal-card");
+  card.addEventListener("touchstart", e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, {passive: true});
+  card.addEventListener("touchend", e => {
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.4) shift(dx < 0 ? 1 : -1);
+    x0 = null;
+  });
+})();
+
+/* ---------------- sheet ---------------- */
+/* 캡션 칸: 복사 · 수정하기 버튼 */
+const CAPTION_RE = /캡션|피드글|피드\s*포인트/;
+const CAPTIONS = [];  // 버튼이 가리키는 캡션 원문 [{label, text}]
+const isCaption = (label, text) => CAPTION_RE.test(label) && plain(text).trim().length >= 10;
+function captionTools(label, text) {
+  const i = CAPTIONS.push({ label, text: plain(text).trim() }) - 1;
+  const edited = draftOf(CAPTIONS[i]) !== null;
+  return `<div class="cap-tools"><button type="button" class="cap-btn" data-cap-copy="${i}">복사</button>` +
+    `<button type="button" class="cap-btn" data-cap-edit="${i}">${edited ? "수정한 캡션 보기" : "수정하기"}</button>` +
+    `<button type="button" class="cap-btn" data-cap-check="${i}">맞춤법 검사</button></div>`;
+}
+const fieldHTML = (label, text) => `<div class="field"><div class="lb">${esc(label)}</div><div class="tx">${rich(text)}</div>${isCaption(label, text) ? captionTools(label, text) : ""}</div>`;
+function openSheet(meta, title, body) {
+  $("#sheet-meta").innerHTML = meta; $("#sheet-title").textContent = plain(title); $("#sheet-body").innerHTML = body;
+  logView("view", plain(title), [...$("#sheet-meta").children].map(x => x.textContent.trim()).filter(Boolean).join(" · "));
+  const sh = $("#sheet"), sc = $("#scrim");
+  sh.hidden = sc.hidden = false;
+  $("#sheet-body").scrollTop = 0;
+  requestAnimationFrame(() => { sh.classList.add("show"); sc.classList.add("show"); });
+  $("#sheet-close").focus({preventScroll: true});
+}
+function closeSheet() {
+  const sh = $("#sheet"), sc = $("#scrim");
+  if (sh.hidden) return;
+  sh.classList.remove("show"); sc.classList.remove("show");
+  setTimeout(() => { sh.hidden = sc.hidden = true; }, 230);
+}
+$("#scrim").onclick = closeSheet; $("#sheet-close").onclick = closeSheet;
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+(() => { // 시트 아래로 끌어 닫기
+  let y0 = null; const head = $(".sheet-head"), grab = $(".grab");
+  [head, grab].forEach(el => {
+    el.addEventListener("touchstart", e => { y0 = e.touches[0].clientY; }, {passive: true});
+    el.addEventListener("touchend", e => { if (y0 !== null && e.changedTouches[0].clientY - y0 > 60) closeSheet(); y0 = null; });
+  });
+})();
+
+/* ---------------- 휴대폰 캘린더 구독 (알림) ---------------- */
+const ALARM_CHOICES = [ // 알림 시점: [구독 파일, 버튼 문구, 설명, 구글 캘린더 기본 알림]
+  ["calendar-3d.ics", "3일 전에 알려드릴게요", "업로드 <b>3일 전 오전 9시</b>", "'3일 전 오전 9시'"],
+  ["calendar-1d.ics", "하루 전에 알려드릴게요", "업로드 <b>하루 전 오전 9시</b>", "'1일 전 오전 9시'"],
+  ["calendar.ics", "당일 오전에 알려드릴게요", "업로드 <b>당일 오전 9시</b>", "'당일 오전 9시'"],
+];
+function openAlarmSheet() { // 먼저 알림 받을 시점을 고르게 함
+  const body = `<div class="field"><div class="tx">업로드 일정을 언제 알려드릴까요?</div>
+    ${ALARM_CHOICES.map((c, i) => `<button type="button" class="cta${i ? " alt" : ""}" data-alarm="${i}">${c[1]}</button>`).join("")}</div>`;
+  openSheet(`<span class="pill ghost">알림 받기</span>`, "휴대폰 캘린더로 알림 받기", body);
+  $("#sheet-body").querySelectorAll("[data-alarm]").forEach(b => b.onclick = () => openAlarmSubscribe(+b.dataset.alarm));
+}
+function openAlarmSubscribe(choice) {
+  const [file, , when, googleWhen] = ALARM_CHOICES[choice];
+  const ics = new URL(file, location.href).href;
+  const webcal = ics.replace(/^https?:/, "webcal:");
+  const google = "https://calendar.google.com/calendar/render?cid=" + encodeURIComponent(webcal);
+  const body = `
+    <div class="field"><div class="tx">업로드 일정이 휴대폰 캘린더에 들어가고, ${when}에 알림이 와요. 시트가 바뀌면 캘린더도 자동으로 바뀝니다.</div>
+      <a class="cta" href="${escRaw(webcal)}">아이폰 캘린더에 추가</a>
+      <a class="cta alt" href="${escRaw(google)}" target="_blank" rel="noopener">구글 캘린더에 추가</a></div>
+    <div class="field"><div class="lb">아이폰</div><ol class="steps">
+      <li>위 <b>아이폰 캘린더에 추가</b> → <b>구독</b> → <b>추가</b></li>
+      <li>알림이 안 오면: <b>설정 → 캘린더 → 계정 → 구독 캘린더</b>에서 이 캘린더의 <b>'알림 제거'를 끄기</b></li>
+      <li>같은 화면의 <b>새로 고침</b>을 '매시간'으로 두면 시트 변경이 빨리 반영돼요</li></ol></div>
+    <div class="field"><div class="lb">안드로이드 · 구글 캘린더</div><ol class="steps">
+      <li>위 <b>구글 캘린더에 추가</b> → 구글 계정으로 <b>추가</b></li>
+      <li>구글 캘린더는 구독 일정에 알림을 따로 설정해야 해요: 캘린더 설정에서 이 캘린더의 <b>기본 알림</b>(종일 일정)을 ${googleWhen}로</li>
+      <li>구글 캘린더는 시트 변경이 반영되기까지 몇 시간 ~ 하루 걸릴 수 있어요</li></ol></div>
+    <div class="field"><div class="lb">직접 추가할 때 쓰는 주소</div>
+      <span class="url-box" id="ics-url">${escRaw(ics)}</span>
+      <button type="button" class="cta alt" id="copy-ics">주소 복사</button></div>
+    <div class="field"><button type="button" class="pill line" id="alarm-back">← 알림 시점 다시 고르기</button></div>`;
+  openSheet(`<span class="pill ghost">알림 받기</span>`, ALARM_CHOICES[choice][1], body);
+  $("#alarm-back").onclick = openAlarmSheet;
+  $("#copy-ics").onclick = async () => {
+    try { await navigator.clipboard.writeText(ics); $("#copy-ics").textContent = "복사했어요"; }
+    catch (e) { const r = document.createRange(); r.selectNodeContents($("#ics-url")); getSelection().removeAllRanges(); getSelection().addRange(r); $("#copy-ics").textContent = "주소를 길게 눌러 복사하세요"; }
+  };
+}
+$("#btn-alarm").onclick = openAlarmSheet;
+
+/* ---------------- ? 사용 설명서 (셀러용) ---------------- */
+function openHelp() { // 캘린더마다 있는 기능만 골라서 설명
+  const sec = (title, items, open = false) => items.length ? `<details class="fold"${open ? " open" : ""}><summary>${title}</summary><div class="fold-body"><ul>${items.filter(Boolean).map(x => `<li>${x}</li>`).join("")}</ul></div></details>` : "";
+  const k = t => `<span class="kbd">${t}</span>`;
+  const raw = JSON.stringify(DATA);
+  const hasMonth = DATA.months.length > 0;
+  const nProd = DATA.products.length;
+  const hasSale = sales.length > 0, hasBar = spans.length > 0;
+  const hasCap = /"[^"]*(캡션|피드글|피드\s*포인트)[^"]*"\s*:/.test(raw) || /"label"\s*:\s*"[^"]*(캡션|피드글|피드\s*포인트)/.test(raw);
+  const hasImg = /\.(jpe?g|png|webp|gif)\b/i.test(raw);
+  const items = IDEAS ? IDEAS.items || [] : [];
+  const used = new Set(items.flatMap(i => i.src || []));
+  if (IDEAS && Object.values(IDEAS.seasons || {}).some(l => l.length)) used.add("season");
+  const SRC_HELP = {trend: "요즘 뜨는 콘텐츠", search: "많이 찾는 키워드", fan: "댓글에서 나온 이야기", perf: "반응이 좋았던 콘텐츠", season: "지금 계절·행사"};
+  const srcLine = Object.keys(SRC_HELP).filter(x => used.has(x)).map(x => `<b>${SRC[x][0]} ${SRC[x][1]}</b> ${SRC_HELP[x]}`).join(" · ");
+  const hasMake = !IDEAS?.noMake && items.some(i => i.make?.length);
+  const hasEx = items.some(i => i.examples?.length);
+  const goals = IDEAS ? Object.values(IDEAS.goals || {}).map(g => `<b>${escRaw(g)}</b>`).join(" · ") : "";
+  const what = [`<b>올릴 콘텐츠 일정</b>을 한눈에 보고`, hasCap ? `<b>캡션 복사</b>` : "", IDEAS ? `<b>일상 콘텐츠 아이디어</b>` : ""].filter(Boolean);
+  const html = `<div class="help">
+    <p class="help-intro">이 캘린더에서 ${what[0]}${what.length > 1 ? `, ${what.slice(1).join("부터 ")}까지 휴대폰 하나로 챙기실 수 있어요` : ", 기획 내용까지 휴대폰 하나로 챙기실 수 있어요"}. 궁금한 항목을 눌러 펼쳐 보세요.</p>
+    ${sec("📅 캘린더 보는 법", [
+      `화면 아래 메뉴에서 <b>캘린더</b> · <b>제품별</b>${hasMonth ? " · <b>월별</b>" : ""}${OPINION ? " · <b>댓글 여론</b>" : ""} 화면을 오갈 수 있어요.`,
+      `날짜 아래 표시는 그날 올릴 콘텐츠예요.<br><span class="lg"><i class="mk feed"></i>공구 피드(릴스·캐러셀)</span> <span class="lg"><i class="mk story"></i>공구 스토리</span> <span class="lg"><i class="mk other" style="--c:var(--muted)"></i>그 외 일정</span><br>${nProd > 1 ? "표시 색깔은 제품마다 달라요. " : ""}4개가 넘으면 <b>+숫자</b>로 보여요.`,
+      hasBar ? `달력 위 <b>색 막대</b>는 공구 기간${hasSale ? ", 날짜 칸의 <b>OPEN</b>은 공구가 열리는 날" : ""}이에요.` : "",
+      `동그라미 친 날짜가 <b>오늘</b>이고, 빨간 날짜는 일요일·공휴일이에요.`,
+      `${k("‹")} ${k("›")} 로 지난달·다음 달을 보고, ${k("오늘")}을 누르면 오늘로 돌아와요.`
+    ], true)}
+    ${hasSale ? sec("⏰ 공구 현황 (달력 위 카드)", [
+      `<b>● 진행 중인 공구</b>: 마감까지 남은 시간이 실시간으로 줄어들어요. 결제창 마감 시간이 있으면 함께 보여요.`,
+      `<b>다음 공구</b>: 오픈까지 남은 날(D-day)과 오픈 시간을 알려드려요.`,
+      `날짜를 누르면 그날 진행 중인 공구와 곧 열릴 공구(D-30 이내)도 위에 표시돼요.`
+    ]) : ""}
+    ${sec("👆 날짜를 누르면", [
+      `달력 아래에 <b>그날 올릴 콘텐츠</b>가 나오고, 그 아래에 <b>다가오는 ${UPCOMING}일</b> 일정도 미리 보여요.`,
+      `각 콘텐츠 앞 라벨(릴스 · 피드 · 스토리 · 라방 등)로 형식을 바로 알 수 있어요.`,
+      `콘텐츠를 누르면 <b>기획 내용${hasCap ? " · 캡션" : ""}${hasImg ? " · 참고 사진" : ""}</b>이 담긴 상세 창이 열려요.`,
+      `창은 오른쪽 위 ✕ 를 누르거나, 창 윗부분을 <b>아래로 쓸어내리면</b> 닫혀요.`
+    ])}
+    ${sec(hasCap ? "✍️ 캡션 복사 · 수정 · 맞춤법" : hasImg ? "🖼 참고 사진 보기" : "", [
+      hasCap ? `${k("복사")}를 누르면 캡션이 복사돼요. 인스타그램 글쓰기 칸에 길게 눌러 붙여넣기 하세요.` : "",
+      hasCap ? `${k("수정하기")}로 내 말투에 맞게 고칠 수 있어요. 고친 캡션은 <b>이 휴대폰에 저장</b>되고, ${k("원래대로")}를 누르면 처음 캡션으로 돌아가요.` : "",
+      hasCap ? `${k("맞춤법 검사")}는 자주 틀리는 표현을 찾아 드려요. 더 꼼꼼히 보려면 ‘네이버 검사기로 더 검사’를 누르면 300자씩 나눠 복사할 수 있어요.` : "",
+      hasImg ? `사진을 누르면 크게 볼 수 있고, 옆으로 넘겨 다음 사진을 볼 수 있어요.` : ""
+    ].filter(Boolean))}
+    ${IDEAS ? sec("💡 일상 콘텐츠 추천", [
+      `날짜를 누른 화면 <b>맨 아래</b>에 공구 콘텐츠 사이사이 올리기 좋은 <b>일상 콘텐츠 아이디어</b>가 나와요. 날짜마다 다른 주제를 추천드려요.`,
+      `이 계정의 최근 게시물 반응${IDEAS.analysis?.comments ? "과 팔로워 댓글" : ""}${used.has("trend") || used.has("search") ? ", 요즘 유행" : ""}${used.has("season") ? "과 계절 키워드" : ""}를 바탕으로 <b>이 계정만을 위해</b> 기획한 주제예요. 매주 월요일에 새 기획이 추가돼요.`,
+      goals ? `왼쪽 라벨은 이 콘텐츠의 목표예요: ${goals}` : "",
+      srcLine ? `작은 표시는 추천 근거예요. ${srcLine}` : "",
+      IDEAS.srcBoost ? `이 계정은 ${Object.entries(IDEAS.srcBoost).filter(([, v]) => v > 1).map(([x]) => SRC[x] ? `<b>${SRC[x][0]} ${SRC[x][1]}</b>` : "").filter(Boolean).join(" · ")} 기획을 중심으로 추천드려요.` : "",
+      IDEAS.combos ? `음식 콘텐츠는 직접 만드는 레시피 대신, 바로 따라 할 수 있는 <b>음식 조합</b>으로 추천드려요.` : "",
+      hasMake ? `<b>🍳 만들어보기</b>는 이번 계절에 만들어 보기 좋은 메뉴 예시예요.` : "",
+      hasEx ? `<b>📌 예시</b>에는 바로 활용할 수 있는 구체적인 메뉴·장소·소재가 담겨 있어요.` : "",
+      `주제를 누르면 <b>기획 의도 · 타깃 · 후킹 문구 · 컷 구성 · 촬영 가이드 · 스토리 연계 · 행동 유도 문구</b>까지 담긴 기획서가 열려요. ${k("기획 메모 복사")}로 메모장에 옮겨 두실 수 있어요.`,
+      `다른 아이디어를 보고 싶으면 ${k("다른 주제")}를 눌러 주세요.`,
+      `마음에 들면 <b>👍 좋아요</b>, 별로면 <b>👎 별로예요</b>를 눌러 주세요. 좋아요한 것과 비슷한 주제는 더, 별로예요한 것은 덜 추천해 드려요. 같은 버튼을 한 번 더 누르면 취소돼요.`,
+      `아무것도 안 누르고 넘겨도 괜찮아요. ‘무난했다’로 보고 나중에 다시 추천해 드려요.`
+    ].filter(Boolean)) : ""}
+    ${OPINION ? sec("💬 댓글 여론", [
+      `화면 아래 <b>댓글 여론</b> 메뉴에서 최근 3개월 게시물에 달린 팔로워 댓글을 한눈에 정리해 볼 수 있어요.`,
+      `<b>한눈에 보기 · 주의 신호 · 좋아하는 점 · 자주 묻는 질문 · 요청</b> 순서로 보여드려요.`,
+      `<b>매월 초</b>에 새로 정리되고, 지난달과 비교해 새로 생기거나 더 짙어진 여론은 맨 위 <b>🆕 지난달 대비 달라진 여론</b>에 따로 표시돼요.`,
+      `맨 아래 <b>게시물별 댓글 요약</b>에서 일상 · 레시피 · 공구 · 이벤트별로 골라 보고, 눌러서 펼치면 그 게시물 댓글 요약과 원본 게시물 링크가 나와요.`
+    ]) : ""}
+    ${sec("🔔 휴대폰 알림 받기", [
+      `달력 오른쪽 위 <b>종 모양 버튼</b>을 눌러 주세요.`,
+      `알림 받을 시점(<b>3일 전 · 하루 전 · 당일 오전</b>)을 고르고, 아이폰 캘린더나 구글 캘린더에 추가하면 업로드 일정이 휴대폰 캘린더에 들어가요.`,
+      `일정이 바뀌면 휴대폰 캘린더에도 자동으로 반영돼요. 자세한 설정 방법은 종 버튼을 누르면 나와요.`
+    ])}
+    ${sec(hasMonth ? "📦 제품별 · 🗓 월별 화면" : "📦 제품별 화면", [
+      nProd > 1 ? `<b>제품별</b>: 위쪽 제품 이름을 누르거나 화면을 옆으로 넘기면, 제품마다 준비된 콘텐츠 기획을 모아 볼 수 있어요.`
+        : `<b>제품별</b>: 제품에 맞춰 준비된 콘텐츠 기획을 한곳에 모아 볼 수 있어요.`,
+      hasMonth ? `<b>월별</b>: 한 달 동안의 콘텐츠 기획을 달마다 모아 볼 수 있어요. 위쪽 달 이름을 누르거나 옆으로 넘겨 다른 달을 볼 수 있어요.` : ""
+    ].filter(Boolean))}
+    ${sec("📱 앱처럼 홈 화면에 두기", [
+      `<b>아이폰(사파리)</b>: 아래 가운데 공유 버튼 → <b>홈 화면에 추가</b>`,
+      `<b>안드로이드(크롬)</b>: 오른쪽 위 ⋮ → <b>홈 화면에 추가</b> 또는 <b>앱 설치</b>`,
+      `홈 화면 아이콘으로 열면 주소창 없이 앱처럼 깔끔하게 볼 수 있어요.`
+    ])}
+    ${sec("❓ 자주 묻는 질문", [
+      `<b>일정이 바뀌었다고 들었는데 그대로예요.</b><br>바뀐 내용은 보통 30분 안에 반영돼요. 앱을 완전히 닫았다가 다시 열어 보세요.`,
+      hasCap ? `<b>고친 캡션이 안 보여요.</b><br>고친 캡션은 그 휴대폰 브라우저에만 저장돼요. 다른 휴대폰이나 다른 브라우저에서는 보이지 않고, 방문 기록을 지우면 함께 지워져요.` : "",
+      `<b>그 밖에 궁금한 점</b>은 담당 매니저에게 편하게 물어봐 주세요 🙌`
+    ].filter(Boolean))}
+    <p class="note">이 설명은 언제든 화면 위 <b>?</b> 버튼을 눌러 다시 볼 수 있어요.</p>
+  </div>`;
+  openSheet(`<span class="pill ghost">사용 설명서</span>`, "캘린더 이렇게 쓰세요", html);
+}
+document.querySelectorAll(".help-btn").forEach(b => b.onclick = openHelp);
+
+/* ---------------- 사진 크게 보기 ---------------- */
+let viewerBack = null;
+function openViewer(imgs, i) {
+  const v = $("#viewer"), stage = $("#viewer-stage");
+  stage.innerHTML = imgs.map(src => `<div><img src="${escRaw(src)}" alt="" decoding="async"></div>`).join("");
+  v.hidden = false;
+  const count = () => { $("#viewer-count").textContent = `${Math.round(stage.scrollLeft / stage.clientWidth) + 1} / ${imgs.length}`; };
+  stage.onscroll = count;
+  requestAnimationFrame(() => { stage.scrollLeft = i * stage.clientWidth; count(); });
+  viewerBack = document.activeElement;
+  $("#viewer-close").focus({preventScroll: true});
+}
+function closeViewer() {
+  const v = $("#viewer"); if (v.hidden) return false;
+  v.hidden = true; $("#viewer-stage").innerHTML = "";
+  viewerBack?.focus?.({preventScroll: true});
+  return true;
+}
+document.addEventListener("click", ev => {
+  const b = ev.target.closest("[data-view-imgs]"); if (!b) return;
+  ev.stopPropagation();
+  openViewer(b.dataset.viewImgs.split("|"), +b.dataset.i);
+});
+$("#viewer-close").onclick = closeViewer;
+$("#viewer-stage").addEventListener("click", ev => { if (ev.target.tagName !== "IMG") closeViewer(); });
+document.addEventListener("keydown", ev => { if (ev.key === "Escape" && closeViewer()) ev.stopImmediatePropagation(); }, true);
+
+/* ---------------- 캡션 복사 · 수정 ---------------- */
+function draftKey(cap) { // 캡션 원문별로 이 휴대폰에 수정본 저장
+  let h = 5381; const s = cap.label + "\n" + cap.text;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+  return "cap:" + (h >>> 0).toString(36);
+}
+function draftOf(cap) { return store.get(draftKey(cap)); }
+let toastTimer;
+/* ---------------- 조회 기록 (담당자만 보는 비공개 시트로 전송) ---------------- */
+const LOG_URL = "https://script.google.com/macros/s/AKfycbxJOcpnkYX3SmMaJK03qEev2jVj8h1Mc6rwisc00nmQVPV92RP3CBVdgdw0wRbH20LXDg/exec"; // Apps Script 웹 앱 주소. 비어 있으면 기록도, 이름 묻기도 하지 않음
+const viewer = (() => { try { return JSON.parse(localStorage.getItem("viewer")) || {}; } catch (e) { return {}; } })();
+const deviceKind = () => { const u = navigator.userAgent; return /iPhone|iPod/.test(u) ? "아이폰" : /iPad/.test(u) ? "아이패드" : /Android/.test(u) ? "안드로이드" : "PC"; };
+function logView(type, title, context) {
+  if (!LOG_URL || !viewer.name) return;
+  try {
+    fetch(LOG_URL, {method: "POST", mode: "no-cors", keepalive: true, headers: {"Content-Type": "text/plain;charset=utf-8"},
+      body: JSON.stringify({seller: "__SELLER__", name: viewer.name, id: viewer.id, device: deviceKind(), type, title: title || "", context: context || ""})}).catch(() => {});
+  } catch (e) {}
+}
+let lastOpenLog = 0;
+function logOpen() { // 앱을 열었을 때, 그리고 30분 넘게 떠나 있다 돌아왔을 때 '접속' 1회
+  if (Date.now() - lastOpenLog < 30 * 60000) return;
+  lastOpenLog = Date.now();
+  logView("open");
+}
+function askViewer() {
+  if (!LOG_URL) return;
+  if (viewer.name) return logOpen();
+  $("#who").hidden = false;
+  setTimeout(() => $("#who-name").focus(), 50);
+}
+$("#who-form").addEventListener("submit", ev => {
+  ev.preventDefault();
+  const name = $("#who-name").value.trim();
+  if (!name) return;
+  viewer.name = name;
+  viewer.id = viewer.id || Math.random().toString(36).slice(2, 10);
+  try { localStorage.setItem("viewer", JSON.stringify(viewer)); } catch (e) {}
+  $("#who").hidden = true;
+  toast(`${name}님 환영합니다🥰`, true); // 이름을 처음 입력했을 때 한 번만
+  logOpen();
+});
+document.addEventListener("visibilitychange", () => { if (!document.hidden && viewer.name) logOpen(); });
+
+function toast(msg, big) {
+  const t = $("#toast"); t.textContent = msg; t.classList.toggle("big", !!big); t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), big ? 2400 : 1600);
+}
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); toast("복사했어요"); return; } catch (e) {}
+  const ta = document.createElement("textarea"); // 예전 방식으로 한 번 더 시도
+  ta.value = text; ta.setAttribute("readonly", ""); ta.style.cssText = "position:fixed;left:-9999px;top:0";
+  document.body.appendChild(ta); ta.select();
+  let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+  ta.remove();
+  toast(ok ? "복사했어요" : "복사가 안 됐어요. 글을 길게 눌러 복사해 주세요");
+}
+let editing = null, editorBack = null;
+const updateCount = () => {
+  const n = [...$("#editor-text").value].length, c = $("#editor-count");
+  c.textContent = `${n.toLocaleString()} / 2,200자`; c.classList.toggle("over", n > 2200);
+};
+function openEditor(cap, check = false) {
+  editing = cap; editorBack = document.activeElement;
+  $("#editor-title").textContent = `${cap.label.replace(/\s*\n.*/s, "")} 수정`;
+  $("#editor-text").value = draftOf(cap) ?? cap.text;
+  $("#spell-result").innerHTML = "";
+  $("#editor").hidden = false; updateCount();
+  if (check) runSpell(); else $("#editor-text").focus({ preventScroll: true });
+}
+
+/* ---------------- 맞춤법 검사 (자주 틀리는 표현) ---------------- */
+// [찾을 표현, 고칠 말, 이유]  — 셀러 말투(ㅋㅋ, 다욧트 등)는 건드리지 않도록 확실히 틀린 표기만
+const SPELL_RULES = [
+  [/되요/g, "돼요", "‘되어요’의 준말은 ‘돼요’"], [/되서/g, "돼서", "‘되어서’의 준말은 ‘돼서’"],
+  [/됬/g, "됐", "‘되었-’의 준말은 ‘됐-’"], [/몇\s?일/g, "며칠", "‘며칠’이 맞는 표기"],
+  [/오랫만/g, "오랜만", "‘오래간만’의 준말"], [/금새/g, "금세", "‘금시에’의 준말"],
+  [/설겆이/g, "설거지"], [/희안하/g, "희한하"], [/역활/g, "역할"], [/일일히/g, "일일이"],
+  [/깨끗히/g, "깨끗이"], [/곰곰히/g, "곰곰이"], [/틈틈히/g, "틈틈이"], [/번번히/g, "번번이"],
+  [/어의\s?없/g, "어이없"], [/어떻해/g, "어떡해", "‘어떻게 해’의 준말은 ‘어떡해’"], [/뵈요/g, "봬요", "‘뵈어요’의 준말"],
+  [/웬지/g, "왠지", "‘왜인지’의 준말"], [/왠만/g, "웬만"], [/왠일/g, "웬일"],
+  [/구지(?=[\s.!?,~]|$)/g, "굳이"], [/가르키/g, "가리키"], [/제작년/g, "재작년"], [/설레임/g, "설렘"],
+  [/내노라/g, "내로라"], [/연애인/g, "연예인"], [/댓가/g, "대가"], [/촛점/g, "초점"], [/문안하/g, "무난하"],
+  [/결재(?=하|해|했|창|수단|금액|가|를|는|\s)/g, "결제", "돈을 치르는 뜻이면 ‘결제’"],
+  [/던지\s?말던지/g, "든지 말든지", "고르는 뜻이면 ‘-든지’"], [/않\s?돼/g, "안 돼"], [/않\s?되/g, "안 되"],
+  [/할려고/g, "하려고"], [/갈려고/g, "가려고"], [/볼려고/g, "보려고"], [/줄려고/g, "주려고"],
+  [/할려면/g, "하려면"], [/갈려면/g, "가려면"], [/어짜피/g, "어차피"], [/뒤쳐지/g, "뒤처지"],
+  [/쉽상/g, "십상"], [/베게(?=[\s.!?,]|$|를|가|는|도|에)/g, "베개"], [/육계장/g, "육개장"], [/떡볶기/g, "떡볶이"],
+  [/안성마춤/g, "안성맞춤"], [/일부로/g, "일부러"], [/알맞는/g, "알맞은"], [/걸맞는/g, "걸맞은"],
+  [/예기(?=를|가|했|해|하|야)/g, "얘기"], [/궁시렁/g, "구시렁"], [/짜집기/g, "짜깁기"], [/곱배기/g, "곱빼기"],
+  [/닥달/g, "닦달"], [/바램(?=이|을|은|입|이에|[\s.!]|$)/g, "바람", "‘바라다’의 명사형은 ‘바람’"],
+];
+function spellFindings(text) {
+  const out = [];
+  SPELL_RULES.forEach(([re, fix, why]) => {
+    for (const m of text.matchAll(re)) out.push({ at: m.index, len: m[0].length, from: m[0], to: fix, why });
+  });
+  for (const m of text.matchAll(/([가-힣])께(?=요|[\s.!?~,)]|$)/g)) { // 할께·갈께요 → 할게·갈게요 (ㄹ 받침 뒤 '께')
+    const code = m[1].charCodeAt(0) - 0xAC00;  // '분들께'처럼 높임 조사 '께'는 제외
+    if (code >= 0 && code % 28 === 8 && m[1] !== "들") out.push({ at: m.index + 1, len: 1, from: m[0], to: m[1] + "게", why: "‘-ㄹ게’로 적어요", swap: "게" });
+  }
+  out.sort((a, b) => a.at - b.at);
+  return out.filter((f, i) => !out.slice(0, i).some(g => f.at < g.at + g.len));  // 겹치는 것 빼기
+}
+function runSpell() {
+  const text = $("#editor-text").value, found = spellFindings(text), box = $("#spell-result");
+  if (!found.length) { box.innerHTML = `<div class="spell-ok">자주 틀리는 맞춤법은 없어요. 띄어쓰기까지 꼼꼼히 보려면 ‘네이버 검사기로 더 검사’를 눌러 주세요.</div>`; return; }
+  box.innerHTML = `<div class="spell-head" style="margin-bottom:4px"><span style="flex:1">${found.length}곳을 찾았어요</span>` +
+    `<button type="button" class="cap-btn" data-spell-all>모두 고치기</button></div>` +
+    found.map((f, i) => `<div class="spell-item"><span class="w"><del>${escRaw(f.from)}</del> → <ins>${escRaw(f.swap ? f.to : f.to)}</ins>` +
+      `${f.why ? `<small>${escRaw(f.why)}</small>` : ""}</span><button type="button" class="cap-btn" data-spell-fix="${i}">고치기</button></div>`).join("");
+  box._found = found;
+}
+function applySpell(list) {
+  const ta = $("#editor-text");
+  let v = ta.value;
+  [...list].sort((a, b) => b.at - a.at).forEach(f => { v = v.slice(0, f.at) + (f.swap || f.to) + v.slice(f.at + f.len); });
+  ta.value = v;
+  ta.dispatchEvent(new Event("input"));
+  runSpell();
+}
+$("#spell-run").onclick = runSpell;
+/* 네이버 맞춤법 검사기는 한 번에 300자 → 줄·문장 단위로 300자 이내 조각으로 나눠 하나씩 복사 */
+const NAVER_LIMIT = 295;  // 줄바꿈 계산 차이를 감안해 조금 여유
+const NAVER_URL = "https://search.naver.com/search.naver?query=%EB%A7%9E%EC%B6%A4%EB%B2%95%EA%B2%80%EC%82%AC%EA%B8%B0";
+function splitLong(line) { // 한 줄이 너무 길면 문장 끝 → 띄어쓰기 → 글자 수 순으로 나눔
+  const out = [];
+  let rest = line;
+  while ([...rest].length > NAVER_LIMIT) {
+    const head = [...rest].slice(0, NAVER_LIMIT).join("");
+    let cut = Math.max(...[...head.matchAll(/[.!?~요다](?=\s)/g)].map(m => m.index + 1), -1);
+    if (cut < NAVER_LIMIT * 0.4) cut = head.lastIndexOf(" ");
+    if (cut < NAVER_LIMIT * 0.4) cut = head.length;
+    out.push(rest.slice(0, cut).trim());
+    rest = rest.slice(cut).trim();
+  }
+  if (rest) out.push(rest);
+  return out;
+}
+function naverChunks(text) {
+  const pieces = text.split("\n").flatMap(l => [...l].length > NAVER_LIMIT ? splitLong(l) : [l]);
+  const chunks = [];
+  let cur = "";
+  pieces.forEach(p => {
+    const next = cur ? cur + "\n" + p : p;
+    if ([...next].length > NAVER_LIMIT && cur.trim()) { chunks.push(cur.trim()); cur = p; }
+    else cur = next;
+  });
+  if (cur.trim()) chunks.push(cur.trim());
+  return chunks;
+}
+$("#spell-naver").addEventListener("click", () => {
+  const chunks = naverChunks($("#editor-text").value), box = $("#spell-result");
+  box._chunks = chunks;
+  box.innerHTML = `<div class="spell-ok">네이버 검사기는 한 번에 300자까지라 <b>${chunks.length}조각</b>으로 나눴어요. 검사기를 열어두고 조각을 하나씩 복사해 붙여넣으세요.</div>` +
+    `<a class="cta alt" style="margin:8px 0 4px" href="${NAVER_URL}" target="_blank" rel="noopener">네이버 맞춤법 검사기 열기</a>` +
+    chunks.map((c, i) => `<div class="spell-item"><span class="w">${escRaw([...c].slice(0, 42).join("").replace(/\n/g, " "))}…<small>${[...c].length}자</small></span>` +
+      `<button type="button" class="cap-btn" data-chunk="${i}">${i + 1}/${chunks.length} 복사</button></div>`).join("");
+});
+$("#spell-result").addEventListener("click", ev => {
+  const box = $("#spell-result"), fx = ev.target.closest("[data-spell-fix]");
+  if (fx) applySpell([box._found[+fx.dataset.spellFix]]);
+  const ch = ev.target.closest("[data-chunk]");
+  if (ch) {
+    copyText(box._chunks[+ch.dataset.chunk]);
+    ch.textContent = `✓ ${+ch.dataset.chunk + 1}/${box._chunks.length} 복사함`;
+  }
+  if (ev.target.closest("[data-spell-all]")) { const n = box._found.length; applySpell(box._found); toast(`${n}곳을 고쳤어요`); }
+});
+function closeEditor() {
+  if ($("#editor").hidden) return false;
+  $("#editor").hidden = true; editing = null;
+  document.querySelectorAll(".cap-btn[data-cap-edit]").forEach(b => { b.textContent = draftOf(CAPTIONS[+b.dataset.capEdit]) !== null ? "수정한 캡션 보기" : "수정하기"; });
+  editorBack?.focus?.({ preventScroll: true });
+  return true;
+}
+$("#editor-text").addEventListener("input", () => {
+  updateCount();
+  if (!editing) return;
+  const v = $("#editor-text").value;
+  if (v === editing.text) { try { localStorage.removeItem(draftKey(editing)); } catch (e) {} } else store.set(draftKey(editing), v);
+});
+$("#editor-close").onclick = closeEditor;
+$("#editor-copy").onclick = () => copyText($("#editor-text").value);
+$("#editor-reset").onclick = () => {
+  if (!editing) return;
+  $("#editor-text").value = editing.text;
+  try { localStorage.removeItem(draftKey(editing)); } catch (e) {}
+  updateCount(); toast("시트 원문으로 되돌렸어요");
+};
+document.addEventListener("click", ev => {
+  const c = ev.target.closest("[data-cap-copy]"), e = ev.target.closest("[data-cap-edit]"), k = ev.target.closest("[data-cap-check]");
+  if (c) { const cap = CAPTIONS[+c.dataset.capCopy]; copyText(draftOf(cap) ?? cap.text); }
+  if (e) openEditor(CAPTIONS[+e.dataset.capEdit]);
+  if (k) openEditor(CAPTIONS[+k.dataset.capCheck], true);
+});
+document.addEventListener("keydown", ev => { if (ev.key === "Escape" && closeEditor()) ev.stopImmediatePropagation(); }, true);
+
+/* 번호 붙은 내용(#1. / 1. / ①)과 사진을 순서대로 짝지어 사이사이에 배치 */
+const CIRCLED = "①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳";
+function numberedStarts(text) { // 번호가 1, 2, 3 … 차례로 시작하는 줄 위치
+  const lines = String(text).split("\n"), starts = [];
+  let want = 1;
+  lines.forEach((ln, i) => {
+    const t = plain(ln).trim();
+    const m = t.match(/^#?\s*(\d{1,2})\s*(?:[~\-]\s*\d{1,2}\s*)?[.)]/) || (CIRCLED.includes(t[0]) ? [t[0], String(CIRCLED.indexOf(t[0]) + 1)] : null);
+    if (m && +m[1] === want) { starts.push(i); want++; }
+  });
+  return starts;
+}
+function shotHTML(src, all, i) {
+  return `<button type="button" class="inline-shot" data-view-imgs="${escRaw(all.join("|"))}" data-i="${i}" aria-label="사진 ${i + 1} 크게 보기"><img src="${escRaw(src)}" alt="" loading="lazy" decoding="async"></button>`;
+}
+function interleaved(label, text, imgs, place) { // 시트에서 사진이 놓인 높이의 번호 항목 뒤에 사진
+  const lines = String(text).split("\n"), starts = numberedStarts(text);
+  const shotsAt = k => { const idx = imgs.map((_, i) => i).filter(i => place[i] === k);
+    return idx.length ? `<div class="shots">${idx.map(i => shotHTML(imgs[i], imgs, i)).join("")}</div>` : ""; };
+  let h = "";
+  const head = lines.slice(0, starts[0]).join("\n").trim();
+  if (head) h += `<div class="tx">${rich(head)}</div>`;
+  h += shotsAt(-1);
+  starts.forEach((st, k) => {
+    const block = lines.slice(st, starts[k + 1] ?? lines.length).join("\n").replace(/\s+$/, "");
+    h += `<div class="tx">${rich(block)}</div>` + shotsAt(k);
+  });
+  return `<div class="field"><div class="lb">${esc(label)}</div>${h}</div>`;
+}
+function pickNumberedField(it) {
+  const ok = it.__field && Array.isArray(it.__place) && it.__place.length === (it.__images || []).length
+    && typeof it[it.__field] === "string" && numberedStarts(it[it.__field]).length >= 2;
+  return ok ? it.__field : null;
+}
+
+/* 참고 사진은 제작 가이드 칸 바로 아래에 (가이드 칸이 없으면 맨 끝) */
+const GUIDE_RANK = [/비주얼\s*(가이드|설명)/, /가이드/, /흐름|시놉시스|플로우|구성/, /비주얼/, /내용/];
+function guideKey(keys) {
+  for (const re of GUIDE_RANK) { const k = keys.find(x => re.test(x)); if (k) return k; }
+  return null;
+}
+function fieldsWithPhotos(pairs, imgs, label, render = fieldHTML) {
+  const g = imgs && imgs.length ? guideKey(pairs.map(p => p[0])) : null;
+  return pairs.map(([k, v]) => render(k, v) + (k === g ? gallery(imgs, label) : "")).join("") + (g ? "" : gallery(imgs, label));
+}
+
+function slotBody(p, s) {
+  let h = "";
+  if (s.notes.length) h += fieldHTML("메모", s.notes.join("\n"));
+  const many = s.items.length > 1;
+  s.items.forEach((it, i) => {
+    const imgs = it.__images || [];
+    const target = pickNumberedField(it);
+    const pairs = Object.entries(it).filter(([k]) => !k.startsWith("__"));
+    const inner = target
+      ? pairs.map(([k, v]) => k === target ? interleaved(k, v, imgs, it.__place) : fieldHTML(k, v)).join("")
+      : fieldsWithPhotos(pairs, imgs, "비주얼 예시");
+    h += many ? `<div class="cut"><div class="lb">컷 ${i + 1}</div>${inner}</div>` : inner;
+  });
+  return h || `<div class="empty">상세 내용이 없어요.</div>`;
+}
+function openSlot(p, s) {
+  const meta = `<span class="pill" style="--c:${p.color}">${esc(pname(p.id))}</span><span class="pill ghost">${esc(s.label)}${s.date ? " · " + md(s.date) + " " + DOW[parse(s.date).getDay()] : ""}</span><span class="pill line">${FMT[fmtOf(s.format)]}</span>`;
+  openSheet(meta, s.title || `${s.format}${s.items.length > 1 ? ` · 컷 ${s.items.length}개` : ""}`, slotBody(p, s));
+}
+function openEntry(e) {
+  if (!e) return;
+  if (e.src === "slot") return openSlot(P[e.pid], e.slot);
+  if (e.src === "month") {
+    const m = DATA.months.find(x => x.id === e.mid);
+    const meta = `<span class="pill ghost">${esc(m.name)} 월간 기획</span><span class="pill line">${FMT[e.fmt]}</span>${e.day.holiday ? `<span class="pill line">${esc(e.day.holiday)}</span>` : ""}`;
+    return openSheet(meta, e.title, fieldsWithPhotos(e.fields.map(f => [f.label, f.text]), e.images, "사진"));
+  }
+  const p = e.pid ? P[e.pid] : null;
+  const meta = (p ? `<span class="pill" style="--c:${p.color}">${esc(pname(p.id))}</span>` : "") + `<span class="pill ghost">${mdDow(e.ev.date || sel)}</span>`;
+  const body = fieldHTML("캘린더 메모", e.ev.text) + (p ? `<div class="field"><div class="tx"><button type="button" class="pill line" data-goto="${p.id}">${esc(pname(p.id))} 기획 전체 보기 →</button></div></div>` : "");
+  openSheet(meta, e.title, body);
+}
+$("#sheet-body").addEventListener("click", ev => {
+  const g = ev.target.closest("[data-goto]"); if (!g) return;
+  closeSheet(); showView("v-prod"); prodPager.go(DATA.products.findIndex(p => p.id === g.dataset.goto));
+});
+
+/* ---------------- pager helper ---------------- */
+function makePager(tabsEl, pagerEl, items, tabHTML, pageHTML, storeKey) {
+  tabsEl.innerHTML = items.map((it, i) => `<button type="button" class="tab" role="tab" data-i="${i}" aria-selected="false">${tabHTML(it)}</button>`).join("");
+  pagerEl.innerHTML = items.map((it, i) => `<article class="page" data-i="${i}" role="tabpanel">${pageHTML(it)}</article>`).join("");
+  let idx = 0;
+  const mark = i => {
+    idx = i;
+    tabsEl.querySelectorAll(".tab").forEach((t, j) => t.setAttribute("aria-selected", j === i));
+    const t = tabsEl.children[i];
+    if (t) tabsEl.scrollTo({left: t.offsetLeft - 16, behavior: "smooth"});
+    store.set(storeKey, i);
+  };
+  const go = (i, smooth = true) => { pagerEl.scrollTo({left: i * pagerEl.clientWidth, behavior: smooth ? "smooth" : "auto"}); mark(i); };
+  tabsEl.addEventListener("click", e => { const t = e.target.closest(".tab"); if (t) go(+t.dataset.i); });
+  let tm;
+  pagerEl.addEventListener("scroll", () => {
+    clearTimeout(tm);
+    tm = setTimeout(() => { const i = Math.round(pagerEl.scrollLeft / pagerEl.clientWidth); if (i !== idx) mark(i); }, 80);
+  }, {passive: true});
+  window.addEventListener("resize", () => pagerEl.scrollTo({left: idx * pagerEl.clientWidth}));
+  return {go, get idx() { return idx; }, init(i) { mark(i); requestAnimationFrame(() => go(i, false)); }};
+}
+
+/* ---------------- products ---------------- */
+function statusOf(p) {
+  if (!p.period) return "";
+  if (TODAY < p.period[0]) {
+    const n = Math.round((parse(p.period[0]) - parse(TODAY)) / 864e5);
+    return `<span class="status soon">오픈 D-${n}</span>`;
+  }
+  if (TODAY <= p.period[1]) return `<span class="status live">공구 진행 중</span>`;
+  return `<span class="status done">종료</span>`;
+}
+function productPage(p) {
+  const pi = DATA.products.indexOf(p);
+  const tops = p.info.filter(x => x.top != null).sort((a, b) => a.top - b.top); // 공구 제품 → 공구 일정 → 이벤트 → 상단 배치 표시
+  const rest = p.info.filter(x => x.top == null);
+  const short = rest.filter(x => plain(x.text).length < 260 && !/소구점|키워드/.test(x.label));
+  const long = rest.filter(x => !short.includes(x) && x.label !== "공구상품");
+  const kv = [...tops, ...short.filter(x => x.label !== "공구상품")].map(x => `<dt>${esc(x.label)}</dt><dd>${rich(x.text)}</dd>`).join("");
+  const byDay = [];
+  p.slots.forEach((s, si) => {
+    const last = byDay[byDay.length - 1];
+    if (last && last.label === s.label && last.date === s.date) last.slots.push([s, si]);
+    else byDay.push({label: s.label, date: s.date, slots: [[s, si]]});
+  });
+  const reels = p.slots.filter(s => ["reel", "post"].includes(fmtOf(s.format))).length;
+  const stories = p.slots.filter(s => fmtOf(s.format) === "story").reduce((n, s) => n + Math.max(1, s.items.length), 0);
+  const tl = byDay.map(g => {
+    const d = g.date ? parse(g.date) : null;
+    const cls = ["tl-d"]; if (/OPEN/i.test(g.label)) cls.push("open"); if (g.date === TODAY) cls.push("today");
+    return `<div class="tl-row"><div class="${cls.join(" ")}"><b>${esc(g.label)}</b>${d ? `<span>${d.getMonth() + 1}.${d.getDate()} ${DOW[d.getDay()]}</span>` : ""}</div>
+      <div class="tl-items">${g.slots.map(([s, si]) => {
+        const e = {src: "slot", pid: p.id, slot: {...s, label: ""}, fmt: fmtOf(s.format), title: s.title || (fmtOf(s.format) === "story" ? "스토리" : s.format)};
+        return entryHTML(e, `${pi}:${si}`, {noProduct: true});
+      }).join("")}</div></div>`;
+  }).join("");
+  return `<div class="hero" style="--c:${p.color}"><span class="swatch"></span>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:4px">${statusOf(p)}${p.round ? `<span class="pill ghost">${esc(p.round)}</span>` : ""}</div>
+      <h2>${esc(p.name)}</h2>${p.fullName ? `<div class="full">${esc(p.fullName)}</div>` : ""}
+      <dl class="kv">${kv}</dl>${gallery(p.images)}</div>
+    ${long.map(x => `<details class="fold"><summary>${esc(x.label.length > 24 ? "참고" : x.label)}</summary><div class="fold-body">${rich(x.label.length > 24 ? x.label + "\n" + x.text : x.text)}</div></details>`).join("")}
+    <div class="sec-h"><h3>업로드 타임라인</h3><small>피드 ${reels} · 스토리 ${stories}</small></div>
+    <div class="tl" data-pid="${p.id}">${tl}</div>`;
+}
+const prodPager = makePager($("#prod-tabs"), $("#prod-pager"), DATA.products,
+  p => `<i class="dotc" style="--c:${p.color}"></i>${esc(p.name)}${p.round && DATA.products.filter(x => x.name === p.name).length > 1 ? " " + esc(p.round) : ""}`,
+  productPage, "prodIdx");
+$("#prod-pager").addEventListener("click", ev => {
+  const b = ev.target.closest(".entry"); if (!b) return;
+  const [pi, si] = b.dataset.idx.split(":").map(Number);
+  openSlot(DATA.products[pi], DATA.products[pi].slots[si]);
+});
+
+/* ---------------- months ---------------- */
+function noteFolds(notes) {
+  return notes.map((n, i) => {
+    const cut = n.search(/\n/);  // 첫 줄은 접는 제목, 나머지는 서식 그대로 본문
+    const head = plain(cut < 0 ? n : n.slice(0, cut)).trim().replace(/^[💡🚩\s]+/u, "").slice(0, 30);
+    const body = cut < 0 ? n : n.slice(cut + 1).replace(/^\s*\n/, "");
+    return `<details class="fold"${i === 0 ? " open" : ""}><summary>${esc(head)}</summary><div class="fold-body">${rich(body.trim() ? body : n)}</div></details>`;
+  }).join("");
+}
+function monthPage(m) {
+  const mi = DATA.months.indexOf(m);
+  let body = "";
+  if (m.kind === "grid") {
+    body = `<div class="sec-h"><h3>날짜별 기획</h3><small>${m.days.length}일</small></div><div class="tl">` + m.days.map((d, di) => {
+      const dt = parse(d.date);
+      const {topics, stories} = dayGroups(d);
+      const chev = `<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>`;
+      const items = topics.map((g, gi) => {
+        const t = topicTitle(g[0].text);
+        const why = g.find(x => /기획 의도|기대 효과/.test(x.label));
+        return `<button type="button" class="entry" data-m="${mi}:${di}:t${gi}"><span class="fmt ${fmtOf(t)}">${FMT[fmtOf(t)]}</span><span class="e-body"><span class="e-title">${esc(stripFmt(t) || t)}</span>${why ? `<span class="e-prev">${esc(why.text.replace(/\n+/g, " "))}</span>` : ""}</span>${chev}</button>`;
+      }).concat(stories.map((x, si) => `<button type="button" class="entry" data-m="${mi}:${di}:s${si}"><span class="fmt story">스토리</span><span class="e-body"><span class="e-title">${esc(storyTitle(x.text))}</span></span>${chev}</button>`));
+      const cls = ["tl-d"]; if (d.date === TODAY) cls.push("today");
+      return `<div class="tl-row"><div class="${cls.join(" ")}"><b>${dt.getDate()}일</b><span>${DOW[dt.getDay()]}${d.holiday ? " · " + esc(d.holiday) : ""}</span></div><div class="tl-items">${items.join("") || `<span class="pill line">${esc(d.holiday || "")}</span>`}</div></div>`;
+    }).join("") + `</div>`;
+    if (m.extra.length) body += m.extra.map(x => `<details class="fold"><summary>${esc(x.label)}</summary><div class="fold-body">${rich(x.text)}</div></details>`).join("");
+  } else {
+    body = m.sections.map((s, si) => {
+      const done = s.items.filter(x => x.done).length;
+      return `<div class="sec-h"><h3>${esc(s.title || "기획")}</h3><small>이행 ${done}/${s.items.length}</small></div>
+        ${s.sub ? `<p class="sec-sub">${esc(s.sub)}</p>` : ""}
+        <div class="list">${s.items.map((it, ii) => {
+          const f = it.story ? "story" : fmtOf(it.title);
+          return `<button type="button" class="entry" data-m="${mi}:${si}:${ii}"><span class="fmt ${f}">${FMT[f]}</span>
+            <span class="e-body"><span class="e-title">${esc(stripFmt(it.title.replace(/\n/g, " ")) || it.title)}</span>
+            ${(it.fields["기획 의도"] || it.fields["기획 의도 & 팔로워 예상 반응"]) ? `<span class="e-prev">${esc((it.fields["기획 의도"] || it.fields["기획 의도 & 팔로워 예상 반응"]).replace(/\n+/g, " "))}</span>` : ""}</span>
+            <span class="check${it.done ? " on" : ""}" aria-label="${it.done ? "이행 완료" : "미이행"}">${it.done ? `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>` : ""}</span></button>`;
+        }).join("")}</div>`;
+    }).join("");
+  }
+  return `<div class="hero" style="--c:var(--accent)"><span class="swatch"></span><h2>${esc(m.name)} 콘텐츠 캘린더</h2>
+      <div class="full">${m.kind === "grid" ? "날짜별 스토리 · 피드 기획" : "기획 콘텐츠 목록 · 체크는 시트의 이행 체크박스"}</div></div>
+    ${noteFolds(m.notes)}${body}`;
+}
+if (!DATA.months.length) document.querySelector('.nav [data-view="v-month"]').hidden = true;
+if (OPINION) document.querySelector('.nav [data-view="v-op"]').hidden = false;
+document.querySelector(".nav").style.gridTemplateColumns = `repeat(${document.querySelectorAll(".nav button:not([hidden])").length},1fr)`;
+const monthPager = makePager($("#month-tabs"), $("#month-pager"), DATA.months, m => esc(m.name), monthPage, "monthIdx");
+$("#month-pager").addEventListener("click", ev => {
+  const b = ev.target.closest(".entry[data-m]"); if (!b) return;
+  const [mi, a, c] = b.dataset.m.split(":");
+  const m = DATA.months[+mi];
+  if (m.kind === "grid") {
+    const d = m.days[+a];
+    const {topics, stories} = dayGroups(d);
+    const fields = c[0] === "s" ? [stories[+c.slice(1)]] : topics[+c.slice(1)];
+    const t = c[0] === "s" ? storyTitle(fields[0].text) : topicTitle(fields[0].text);
+    openSheet(`<span class="pill ghost">${esc(m.name)} ${parse(d.date).getDate()}일 ${DOW[parse(d.date).getDay()]}</span>${d.holiday ? `<span class="pill line">${esc(d.holiday)}</span>` : ""}`,
+      stripFmt(t) || t, fieldsWithPhotos(fields.map(f => [f.label, f.text]), c === "t0" ? d.images : [], "사진"));
+  } else {
+    const it = m.sections[+a].items[+c];
+    const f = it.story ? "story" : fmtOf(it.title);
+    const meta = `<span class="pill ghost">${esc(m.name)} · ${esc(m.sections[+a].title)}</span><span class="pill line">${FMT[f]}</span>${it.done ? `<span class="pill" style="--c:var(--accent-soft)">이행 완료</span>` : ""}`;
+    openSheet(meta, stripFmt(it.title.replace(/\n/g, " ")) || it.title,
+      fieldsWithPhotos([...Object.entries(it.fields), ...(it.reaction ? [["기대 팔로워 반응", it.reaction]] : [])], it.images, "사진"));
+  }
+});
+
+/* ---------------- 댓글 여론 (최근 3개월) ---------------- */
+let opFilter = "전체", opDone = false;
+const OP_LV = {"높음": "high", "중간": "mid", "낮음": "low"};
+function renderOpinion() {
+  if (!OPINION || opDone) return; opDone = true;
+  const O = OPINION, md = s => { const d = parse(s); return `${d.getMonth() + 1}/${d.getDate()}`; };
+  const sec = (title, sub, body) => `<section class="op-sec"><h3>${title}${sub ? `<small>${sub}</small>` : ""}</h3>${body}</section>`;
+  const card = (t, d, extra = "") => `<div class="op-card"><b>${escRaw(t)}</b><p>${escRaw(d)}</p>${extra}</div>`;
+  const IQ = O.iq;
+  const MOOD = IQ && IQ.counted ? O.mood.map(m => ({...m, n: IQ.mood[m.k] || 0, v: Math.round((IQ.mood[m.k] || 0) / IQ.counted * 100)})) : O.mood;
+  const moodNote = IQ && IQ.counted ? `${md(IQ.from)}~${md(IQ.to)} 팔로워 댓글 ${IQ.counted.toLocaleString()}개 전체를 성격별로 나눈 비율이에요${IQ.entries ? ` (이벤트 응모 댓글 ${IQ.entries.toLocaleString()}개는 따로 뺐어요)` : ""}` : O.moodNote;
+  const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
+  const iqReply = !IQ ? "" : (() => {
+    const r = IQ.replies, got = pct(r.got, r.users), tp = pct(r.template, r.seller);
+    const tiles = [["셀러 답글", `${r.seller.toLocaleString()}개`], ["답글 받은 팔로워", `${got}%`], ["같은 문구 답글", `${tp}%`]];
+    return `<div class="op-card"><div class="op-stats">${tiles.map(([k, v]) => `<div><b>${v}</b><span>${k}</span></div>`).join("")}</div>
+      <p style="margin-top:10px">댓글을 단 팔로워 100명 중 ${got}명이 셀러 답글을 받았어요.${r.template ? ` 셀러 답글 ${r.seller.toLocaleString()}개 중 ${r.template.toLocaleString()}개(${tp}%)는 같은 안내 문구를 여러 번 붙여 넣은 답글이에요.` : ""}</p></div>`;
+  })();
+  const iqQ = !IQ ? "" : (() => {
+    const q = IQ.questions;
+    return `<div class="op-card"><p>팔로워 질문 ${q.total.toLocaleString()}개 중 <b style="display:inline">${q.unanswered.toLocaleString()}개(${pct(q.unanswered, q.total)}%)</b>에 댓글 답글이 달리지 않았어요. DM이나 스토리로 답했을 수도 있어요.</p></div>` +
+      (q.examples || []).map(e => `<div class="op-card"><div class="op-head"><b style="font-weight:500">${escRaw(e.q)}</b><span>${escRaw(e.d)}</span></div>${e.url ? `<a class="src2" href="${escRaw(e.url)}" target="_blank" rel="noopener">${escRaw(e.post || "게시물 보기")} ↗</a>` : ""}</div>`).join("");
+  })();
+  const total = MOOD.reduce((n, m) => n + m.v, 0);
+  const maxF = O.flavors ? Math.max(...O.flavors.v.map(x => x[1])) : 1;
+  const ymd = x => x.replace(/-/g, ".");
+  const ch = O.changes || {}, chItem = (x, tag) => `<div class="op-card"><div class="op-head"><b>${escRaw(x.t)}</b><span class="op-tag ${tag === "NEW" ? "new" : "up"}">${tag}</span></div><p>${escRaw(x.d)}</p>${x.src ? `<span class="src2">근거: ${escRaw(x.src)}</span>` : ""}</div>`;
+  const chBody = (ch.new || []).length || (ch.deeper || []).length
+    ? (ch.new || []).map(x => chItem(x, "NEW")).join("") + (ch.deeper || []).map(x => chItem(x, "심화")).join("")
+    : `<div class="op-card"><p style="color:var(--muted);font-size:13px">${ch.since ? "지난 정리와 비교해 새로 생기거나 짙어진 여론은 없었어요." : "다음 달 초 업데이트부터 지난 정리와 비교해 새로 생기거나 더 짙어진 여론을 여기에 따로 보여드려요."}</p></div>`;
+  const kinds = ["전체", ...new Set(O.posts.map(p => p.kind))];
+  $("#op-scroll").innerHTML = `
+    <p class="op-upd">최근 업데이트 ${ymd(O.at)} · 매월 초에 업데이트돼요</p>
+    <div class="hero" style="--c:var(--accent)"><span class="swatch"></span>
+      <h2>팔로워는 이렇게 말해요</h2>
+      <div class="full">${md(O.from)}~${md(O.to)} 게시물 ${O.count}개 · 팔로워 댓글 ${O.read.toLocaleString()}개를 직접 읽고 정리했어요</div>
+      <p class="idea-intro" style="margin-top:8px">${escRaw(O.note)} ${md(O.at)} 정리.</p></div>
+    ${sec("🆕 지난달 대비 달라진 여론", ch.since ? `${md(ch.since)} 정리와 비교해 최근 한 달 새로 보이거나 더 짙어진 여론이에요` : "", chBody)}
+    ${sec("한눈에 보기", "", `<ol class="op-hl">${O.headline.map(h => `<li>${escRaw(h)}</li>`).join("")}</ol>`)}
+    ${sec("댓글 분위기", escRaw(moodNote), `<div class="op-card"><div class="op-stack" role="img" aria-label="${escRaw(MOOD.map(m => `${m.k} ${m.v}%`).join(", "))}">${MOOD.map(m => `<i style="--c:${m.c};width:${m.v / total * 100}%"></i>`).join("")}</div>
+      <div class="op-legend">${MOOD.map(m => `<div style="--c:${m.c}"><i></i><span>${escRaw(m.k)}${m.n != null ? ` <small style="display:inline;color:var(--muted)">${m.n.toLocaleString()}개</small>` : ""}</span><em>${m.v}%</em><small>${escRaw(m.ex)}</small></div>`).join("")}</div></div>`)}
+    ${IQ ? sec("💬 답글 소통", `${md(IQ.from)}~${md(IQ.to)} 게시물 ${IQ.posts}개의 전체 댓글 기준`, iqReply) : ""}
+    ${IQ ? sec("🙋 답을 기다리는 질문", "셀러 답글이 달리지 않은 팔로워 질문이에요. 콘텐츠나 Q&A 소재로 쓰기 좋아요", iqQ) : ""}
+    ${sec("⚠️ 주의 신호", "놓치면 신뢰가 깎일 수 있는 댓글이에요", O.warns.map(w => `<div class="op-card"><div class="op-head"><b>${escRaw(w.t)}</b><span class="op-lv ${OP_LV[w.lv] || "low"}">${escRaw(w.lv)}</span></div><p>${escRaw(w.d)}</p></div>`).join(""))}
+    ${sec("❤️ 팔로워가 좋아하는 점", "", O.loves.map(l => card(l.t, l.d, `<span class="src2">근거: ${escRaw(l.src)}</span>`)).join(""))}
+    ${sec("❓ 자주 묻는 질문", "답을 미리 콘텐츠에 넣으면 저장·신뢰가 올라가요", O.asks.map(a => `<div class="op-card"><div class="op-head"><b>${escRaw(a.t)}</b><span>${escRaw(a.n)}</span></div><p>${escRaw(a.d)}</p>${a.tip ? `<span class="tip">💡 ${escRaw(a.tip)}</span>` : ""}</div>`).join(""))}
+    ${sec("🙋 팔로워 요청", "", O.wants.map(w => card(w.t, w.d)).join(""))}
+    ${sec("📊 콘텐츠 유형별 반응", "", O.kinds.map(k => `<div class="op-card"><div class="op-head"><b>${escRaw(k.k)}</b><span>${escRaw(k.r)}</span></div><p>${escRaw(k.d)}</p></div>`).join(""))}
+    ${sec("👥 어떤 팔로워인가요", "댓글에 직접 밝힌 상황 기준", `<div class="op-card"><ul class="op-who">${O.who.map(w => `<li>${escRaw(w)}</li>`).join("")}</ul></div>`)}
+    ${!O.flavors ? "" : sec((O.flavors.icon || "📊") + " " + escRaw(O.flavors.h || "선호 조사"), escRaw(O.flavors.t), `<div class="op-card"><div class="op-bars">${O.flavors.v.map(([k, v]) => `<div><span>${escRaw(k)}</span><span class="b" style="width:${v / maxF * 100}%"></span><em>${v}</em></div>`).join("")}</div><p style="margin-top:10px;font-size:13px;color:var(--muted)">${escRaw(O.flavors.d)}</p></div>`)}
+    ${sec("💡 일상 콘텐츠 힌트", "댓글 반응에서 나온 기획 방향", `<ol class="op-hl">${O.ideas.map(h => `<li>${escRaw(h)}</li>`).join("")}</ol>`)}
+    ${sec("🗂 게시물별 댓글 요약", `게시물 ${O.count}개 · 눌러서 펼쳐 보세요`, `<div class="op-chips" role="group" aria-label="게시물 종류">${kinds.map(k => `<button type="button" data-k="${escRaw(k)}" aria-pressed="${k === opFilter}">${escRaw(k)}${k === "전체" ? "" : ` ${O.posts.filter(p => p.kind === k).length}`}</button>`).join("")}</div><div id="op-posts"></div>`)}`;
+  const list = () => {
+    const ps = O.posts.filter(p => opFilter === "전체" || p.kind === opFilter).slice().reverse();
+    $("#op-posts").innerHTML = ps.map(p => `<details class="op-post"><summary><span class="dt">${escRaw(p.d)}</span><span class="tt">${escRaw(p.t)}</span><span class="nn">💬 ${p.n}</span></summary>
+      <div class="bd"><div class="meta"><span class="pill ghost">${escRaw(p.kind)}</span><span class="pill line">${escRaw(p.type)}</span><span class="pill line">읽은 댓글 ${p.n}개${p.total > p.n ? ` / 전체 ${p.total.toLocaleString()}개` : ""}</span></div>${escRaw(p.s)}<br><a href="https://www.instagram.com/p/${encodeURIComponent(p.code)}/" target="_blank" rel="noopener">게시물 보기 ↗</a></div></details>`).join("");
+  };
+  list();
+  $("#op-scroll").querySelector(".op-chips").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    opFilter = b.dataset.k;
+    b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+    list();
+  });
+}
+
+/* ---------------- views ---------------- */
+const VIEWS = {"v-cal": "calendar", "v-prod": "products", "v-month": "months", "v-op": "opinion"};
+function showView(id) {
+  document.querySelectorAll(".view").forEach(v => v.hidden = v.id !== id);
+  document.querySelectorAll(".nav button").forEach(b => b.dataset.view === id ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
+  store.set("view", id);
+  if (id === "v-prod") prodPager.go(prodPager.idx, false);
+  if (id === "v-month") monthPager.go(monthPager.idx, false);
+  if (id === "v-op") renderOpinion();
+}
+document.querySelector(".nav").addEventListener("click", e => { const b = e.target.closest("button"); if (b) showView(b.dataset.view); });
+
+renderCal();
+askViewer();
+const upcoming = DATA.products.filter(p => p.period && p.period[1] >= TODAY).sort((a, b) => a.period[0] < b.period[0] ? -1 : 1)[0];
+const defaultProd = upcoming ? DATA.products.indexOf(upcoming) : 0;
+prodPager.init(+(store.get("prodIdx") ?? defaultProd) || 0);
+monthPager.init(+(store.get("monthIdx") ?? 0) || 0);
+const hashView = Object.entries(VIEWS).find(([, h]) => location.hash === "#" + h)?.[0];
+const wanted = hashView || store.get("view") || "v-cal";
+showView((wanted === "v-month" && !DATA.months.length) || (wanted === "v-op" && !OPINION) ? "v-cal" : wanted);
+</script>
