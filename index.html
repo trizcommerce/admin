@@ -485,7 +485,7 @@ html,body{margin:0}
 <div class="who" id="admgate" role="dialog" aria-modal="true" aria-labelledby="pw-title" style="background:var(--bg)">
   <form class="who-card" id="pw-form" autocomplete="off">
     <h3 id="pw-title">비밀번호를 입력해 주세요</h3>
-    <input id="adm-name" type="text" placeholder="이름 (조회 기록에 남아요)" aria-label="이름" style="margin-bottom:8px" hidden>
+    <input id="adm-name" type="text" placeholder="이름" aria-label="이름" style="margin-bottom:8px" hidden>
     <input id="pw" type="password" inputmode="text" placeholder="비밀번호" aria-label="비밀번호">
     <p id="pw-err" style="margin:8px 2px 0;font-size:13px;color:var(--sun);min-height:18px"></p>
     <button type="submit" style="width:100%;height:48px;margin-top:6px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px">확인</button>
@@ -944,8 +944,8 @@ window.__admin = {SELLERS, loadSeller, unlock, route};
 
 <script>
 // 항상 최신 화면: 서버 버전과 다르면(옛 화면이 남아 있으면) 저장해 둔 것을 지우고 새로 불러옴
-const APPVER = "159897eccd";
-if ("serviceWorker" in navigator) navigator.serviceWorker.register(new URL("sw.js?v=159897eccd", location.href).href).catch(() => {});
+const APPVER = "b92ea7f5bd";
+if ("serviceWorker" in navigator) navigator.serviceWorker.register(new URL("sw.js?v=b92ea7f5bd", location.href).href).catch(() => {});
 async function checkVer() {
   try {
     const v = (await (await fetch(new URL("version.txt?t=" + Date.now(), location.href).href, {cache: "no-store"})).text()).trim();
