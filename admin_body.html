@@ -73,6 +73,7 @@ html,body{margin:0}
 </div>
 
 <script>
+(function () {   // admin 화면 코드는 따로 감싸서, 같은 페이지에 그리는 셀러 화면 코드와 이름이 겹치지 않게
 const SELLERS = [
   {team:"A팀", name:"방효선", repo:"imxux9",       c:"#E07A5F"},
   {team:"A팀", name:"초아",   repo:"minjinchoa",   c:"#F2B134"},
@@ -283,4 +284,6 @@ SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.now()}`, {cache: "no
 // 5분마다 새로 불러오기 (셀러 시트가 바뀌면 반영)
 setInterval(() => SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.now()}`, {cache: "no-store"}).then(r => r.json()).then(D => { ALL[s.repo] = digest(s, D); renderAll(); }).catch(() => {})), 5 * 60 * 1000);
 }
+window.__admin = {SELLERS, loadSeller, unlock, route};
+})();
 </script>

@@ -521,6 +521,7 @@ html,body{margin:0}
 </div>
 
 <script>
+(function () {   // admin 화면 코드는 따로 감싸서, 같은 페이지에 그리는 셀러 화면 코드와 이름이 겹치지 않게
 const SELLERS = [
   {team:"A팀", name:"방효선", repo:"imxux9",       c:"#E07A5F"},
   {team:"A팀", name:"초아",   repo:"minjinchoa",   c:"#F2B134"},
@@ -731,6 +732,8 @@ SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.now()}`, {cache: "no
 // 5분마다 새로 불러오기 (셀러 시트가 바뀌면 반영)
 setInterval(() => SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.now()}`, {cache: "no-store"}).then(r => r.json()).then(D => { ALL[s.repo] = digest(s, D); renderAll(); }).catch(() => {})), 5 * 60 * 1000);
 }
+window.__admin = {SELLERS, loadSeller, unlock, route};
+})();
 </script>
 <!-- '앱 설치하기' 창: 브라우저로 캘린더를 열면 뜬다. 앱(APK·아이폰 프로필)으로 열었거나 이미 설치했으면 뜨지 않는다.
      pwa_build.py 가 index.html 끝에 붙인다. 파일은 downloads/app.apk, downloads/app.mobileconfig (pwa_build.py 가 복사). -->
@@ -941,8 +944,8 @@ setInterval(() => SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.no
 
 <script>
 // 항상 최신 화면: 서버 버전과 다르면(옛 화면이 남아 있으면) 저장해 둔 것을 지우고 새로 불러옴
-const APPVER = "31291b9e7b";
-if ("serviceWorker" in navigator) navigator.serviceWorker.register(new URL("sw.js?v=31291b9e7b", location.href).href).catch(() => {});
+const APPVER = "159897eccd";
+if ("serviceWorker" in navigator) navigator.serviceWorker.register(new URL("sw.js?v=159897eccd", location.href).href).catch(() => {});
 async function checkVer() {
   try {
     const v = (await (await fetch(new URL("version.txt?t=" + Date.now(), location.href).href, {cache: "no-store"})).text()).trim();
