@@ -1,0 +1,201 @@
+<style>
+/* ---- admin 전용 ---- */
+.filters{display:flex;gap:6px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.chip{flex:none;height:32px;padding:0 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--c);display:inline-block}
+.chip.team{background:var(--surface-2)}
+.chip.team[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.sdot{width:7px;height:7px;border-radius:50%;background:var(--c);display:inline-block;flex:none}
+.day .marks{flex-wrap:wrap;justify-content:center;height:auto;max-width:34px;row-gap:2px}
+.day{height:auto;min-height:60px;padding-bottom:6px}
+.day .cnt{font-size:9px;color:var(--muted);line-height:1}
+.sel-group{margin-top:14px}
+.sel-head{display:flex;align-items:center;gap:8px;margin:0 2px 8px}
+.sel-head b{font-size:16px}
+.sel-head .team-badge{font-size:11px;font-weight:700;color:var(--muted);background:var(--surface-2);border-radius:999px;padding:1px 8px}
+.sel-head a{margin-left:auto;font-size:12.5px;font-weight:600;color:var(--accent);text-decoration:none}
+.sel-head .sw{width:10px;height:10px;border-radius:50%;background:var(--c)}
+.mini{display:flex;flex-direction:column;gap:6px}
+.mini .entry{grid-template-columns:auto 1fr;padding:11px 13px}
+.mini .fmt{width:40px;height:40px;font-size:10.5px}
+.e-prod{display:inline-flex;align-items:center;gap:5px}
+.load-note{margin:10px 2px;font-size:12px;color:var(--muted)}
+.sale-row .who{font-size:11px;font-weight:700;color:var(--muted);margin-right:4px}
+.sales-wrap{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+.sales-wrap h4{margin:6px 2px 0;font-size:12.5px;color:var(--muted)}
+.empty-day{padding:18px;text-align:center;color:var(--muted);background:var(--surface);border-radius:16px;font-size:14px}
+</style>
+
+<div class="app" id="app">
+  __BRAND__
+  <section class="view" aria-label="전체 셀러 캘린더">
+    <div class="topbar">
+      <div><div class="eyebrow" id="eyebrow">admin · 전체 셀러</div><div class="h-title" id="mtitle">11월</div></div>
+      <div class="cal-head">
+        <button class="today-btn" type="button" id="today">오늘</button>
+        <button class="icon-btn" type="button" id="prev" aria-label="이전 달"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
+        <button class="icon-btn" type="button" id="next" aria-label="다음 달"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
+      </div>
+    </div>
+    <div class="filters" id="teams"></div>
+    <div class="filters" id="sellers"></div>
+    <div class="scroll" id="scroll" style="padding-bottom:40px">
+      <div class="sales-wrap" id="sales"></div>
+      <div class="cal-card">
+        <div class="wk"><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span><span>일</span></div>
+        <div class="grid" id="grid"></div>
+        <div class="mk-legend" id="legend"></div>
+      </div>
+      <div class="load-note" id="note">셀러 캘린더를 불러오는 중이에요…</div>
+      <div class="agenda" id="agenda"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const SELLERS = [
+  {team:"A팀", name:"방효선", repo:"imxux9",       c:"#E07A5F"},
+  {team:"A팀", name:"초아",   repo:"minjinchoa",   c:"#F2B134"},
+  {team:"A팀", name:"미자",   repo:"mija_uni",     c:"#81B29A"},
+  {team:"B팀", name:"베르베르", repo:"berberlog",  c:"#5B8DEF"},
+  {team:"B팀", name:"덕덕",   repo:"duckduck0613", c:"#9B6FD3"},
+  {team:"B팀", name:"한기솔", repo:"___solvely___",c:"#E86A9E"},
+  {team:"C팀", name:"뽕커벨", repo:"paorang73",    c:"#C0392B"},
+  {team:"C팀", name:"스미홈트", repo:"smitruti1010",c:"#2A9D8F"},
+  {team:"C팀", name:"에나스쿨", repo:"shinyoung_h", c:"#8D6E63"},
+];
+const TEAMS = ["전체", "A팀", "B팀", "C팀"];
+const DOW = ["일","월","화","수","목","금","토"];
+const $ = s => document.querySelector(s);
+const pad = n => String(n).padStart(2, "0");
+const key = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parse = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const md = s => { const d = parse(s); return `${d.getMonth()+1}/${d.getDate()}`; };
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const plain = s => String(s ?? "").replace(/⟪[^⟫]*⟫/g, "").replace(/⟦([^|⟧]*)\|[^⟧]*⟧/g, "$1").replace(/\s+/g, " ").trim();
+const FMT = f => /릴스|reel/i.test(f) ? ["릴스","reel"] : /스토리|story/i.test(f) ? ["스토리","story"] : /캐러셀|carousel/i.test(f) ? ["캐러셀",""] : /피드|게시물|post/i.test(f) ? ["피드","post"] : [f ? String(f).slice(0,3) : "일정", ""];
+
+function load(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } }
+function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+let team = load("adm.team", "전체");
+let off = new Set(load("adm.off", []));          // 끈 셀러
+const today = key(new Date());
+let sel = today;
+let cur = new Date(); cur.setDate(1);
+const ALL = {};                                     // repo -> {uploads, events, sales}
+
+function shown() { return SELLERS.filter(s => (team === "전체" || s.team === team) && !off.has(s.repo) && ALL[s.repo]); }
+
+function firstText(slot) {
+  if (slot.title) return plain(slot.title);
+  for (const it of slot.items || []) for (const [k, v] of Object.entries(it)) if (!k.startsWith("__") && typeof v === "string" && plain(v)) return plain(v).slice(0, 60);
+  return "";
+}
+
+function digest(s, D) {
+  const uploads = [], events = [], sales = [];
+  for (const p of D.products || []) {
+    const pname = p.name + (p.round ? " " + p.round : "");
+    if (p.period && p.period[0]) sales.push({s: p.period[0], e: p.period[1] || p.period[0], name: pname, color: p.color});
+    for (const sl of p.slots || []) if (sl.date) uploads.push({date: sl.date, prod: pname, pc: p.color, format: sl.format, label: sl.label, text: firstText(sl)});
+  }
+  for (const e of D.events || []) events.push({date: e.date, end: e.end || e.date, text: plain(e.text), kind: e.kind, prod: e.product});
+  return {uploads, events, sales, updated: D.updated};
+}
+
+function renderFilters() {
+  $("#teams").innerHTML = TEAMS.map(t => `<button class="chip team" type="button" data-t="${t}" aria-pressed="${t === team}">${t}</button>`).join("");
+  const list = SELLERS.filter(s => team === "전체" || s.team === team);
+  $("#sellers").innerHTML = list.map(s => `<button class="chip" type="button" data-s="${s.repo}" aria-pressed="${!off.has(s.repo)}" style="--c:${s.c}"><i></i>${esc(s.name)}${ALL[s.repo] ? "" : " …"}</button>`).join("");
+  $("#teams").onclick = ev => { const b = ev.target.closest("[data-t]"); if (!b) return; team = b.dataset.t; save("adm.team", team); renderAll(); };
+  $("#sellers").onclick = ev => { const b = ev.target.closest("[data-s]"); if (!b) return; const r = b.dataset.s; off.has(r) ? off.delete(r) : off.add(r); save("adm.off", [...off]); renderAll(); };
+}
+
+function renderSales() {
+  const live = [], soon = [];
+  const in14 = key(new Date(Date.now() + 14 * 864e5));
+  for (const s of shown()) for (const r of ALL[s.repo].sales) {
+    if (r.s <= today && today <= r.e) live.push({s, r});
+    else if (r.s > today && r.s <= in14) soon.push({s, r});
+  }
+  soon.sort((a, b) => a.r.s.localeCompare(b.r.s));
+  const row = ({s, r}, isLive) => {
+    const dd = Math.round((parse(r.s) - parse(today)) / 864e5);
+    return `<a class="sale-row${isLive ? " live" : ""}" href="../${s.repo}/" style="--c:${s.c};text-decoration:none;color:inherit"><div class="t"><div class="k"><span class="who">${esc(s.name)}</span>${isLive ? "진행 중 공구" : "다음 공구"}</div><div class="nm">${esc(r.name)}</div></div><div class="v"><b>${isLive ? "~" + md(r.e) : "D-" + dd}</b><small>${md(r.s)}–${md(r.e)}</small></div></a>`;
+  };
+  $("#sales").innerHTML = (live.length ? `<h4>진행 중 공구 ${live.length}</h4>` + live.map(x => row(x, true)).join("") : "")
+    + (soon.length ? `<h4>2주 안에 열리는 공구 ${soon.length}</h4>` + soon.map(x => row(x, false)).join("") : "");
+}
+
+function dayItems(k) {
+  const out = [];
+  for (const s of shown()) {
+    const A = ALL[s.repo];
+    const ups = A.uploads.filter(u => u.date === k);
+    const evs = A.events.filter(e => e.date <= k && k <= e.end && e.kind !== "holiday" && !(e.kind === "content" && ups.length));
+    const opens = A.sales.filter(r => r.s === k);
+    if (ups.length || evs.length || opens.length) out.push({s, ups, evs, opens});
+  }
+  return out;
+}
+
+function renderGrid() {
+  const y = cur.getFullYear(), m = cur.getMonth();
+  $("#mtitle").textContent = `${m + 1}월`;
+  $("#eyebrow").textContent = `${y}년 · admin 전체 셀러`;
+  const first = new Date(y, m, 1), start = new Date(first); start.setDate(1 - ((first.getDay() + 6) % 7));
+  const cells = [];
+  for (let i = 0; i < 42; i++) {
+    const d = new Date(start); d.setDate(start.getDate() + i);
+    const k = key(d), items = dayItems(k);
+    const cls = ["day"]; if (d.getMonth() !== m) cls.push("out"); if (k === today) cls.push("today"); if (k === sel) cls.push("sel");
+    if (d.getDay() === 6) cls.push("sat"); if (d.getDay() === 0) cls.push("sun");
+    const dots = items.slice(0, 6).map(x => `<i class="sdot" style="--c:${x.s.c}"></i>`).join("") + (items.length > 6 ? `<span class="cnt">+${items.length - 6}</span>` : "");
+    const open = items.some(x => x.opens.length) ? `<span class="open-tag">OPEN</span>` : "";
+    cells.push(`<button type="button" class="${cls.join(" ")}" data-k="${k}"><span class="n">${d.getDate()}</span><span class="marks">${dots}</span>${open}</button>`);
+  }
+  $("#grid").innerHTML = cells.join("");
+  $("#grid").onclick = ev => { const b = ev.target.closest("[data-k]"); if (!b) return; sel = b.dataset.k; renderGrid(); renderAgenda(); };
+  $("#legend").innerHTML = shown().map(s => `<span><i class="sdot" style="--c:${s.c}"></i>${esc(s.name)}</span>`).join("");
+}
+
+function renderAgenda() {
+  const d = parse(sel);
+  const groups = dayItems(sel);
+  let h = `<div class="ag-date"><span class="big">${d.getMonth() + 1}월 ${d.getDate()}일</span><span class="dow">${DOW[d.getDay()]}요일${sel === today ? " · 오늘" : ""}</span></div>`;
+  if (!groups.length) h += `<div class="empty-day">이날은 등록된 일정이 없어요.</div>`;
+  for (const g of groups) {
+    h += `<div class="sel-group"><div class="sel-head" style="--c:${g.s.c}"><span class="sw"></span><b>${esc(g.s.name)}</b><span class="team-badge">${g.s.team}</span><a href="../${g.s.repo}/">캘린더 열기 →</a></div><div class="mini">`;
+    for (const r of g.opens) h += `<div class="entry"><div class="fmt" style="background:${r.color || "var(--accent-soft)"};color:#2E2520">OPEN</div><div class="e-body"><div class="e-title">${esc(r.name)} 공구 오픈</div><div class="e-meta">${md(r.s)}–${md(r.e)}</div></div></div>`;
+    for (const u of g.ups) { const [f, fc] = FMT(u.format);
+      h += `<div class="entry"><div class="fmt ${fc}">${esc(f)}</div><div class="e-body"><div class="e-title">${esc(u.text || u.prod + " " + (u.label || ""))}</div><div class="e-meta"><span class="e-prod"><i class="dotc" style="--c:${u.pc || g.s.c}"></i>${esc(u.prod)}</span>${u.label ? `<span>${esc(u.label)}</span>` : ""}</div></div></div>`; }
+    for (const e of g.evs) h += `<div class="entry"><div class="fmt meeting">${e.kind === "meeting" ? "미팅" : "일정"}</div><div class="e-body"><div class="e-title">${esc(e.text)}</div>${e.end !== e.date ? `<div class="e-meta">${md(e.date)}–${md(e.end)}</div>` : ""}</div></div>`;
+    h += `</div></div>`;
+  }
+  $("#agenda").innerHTML = h;
+}
+
+function renderAll() { renderFilters(); renderSales(); renderGrid(); renderAgenda(); }
+
+$("#prev").onclick = () => { cur.setMonth(cur.getMonth() - 1); renderGrid(); };
+$("#next").onclick = () => { cur.setMonth(cur.getMonth() + 1); renderGrid(); };
+$("#today").onclick = () => { cur = new Date(); cur.setDate(1); sel = today; renderGrid(); renderAgenda(); };
+
+renderAll();
+let done = 0, failed = [];
+SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.now()}`, {cache: "no-store"})
+  .then(r => { if (!r.ok) throw 0; return r.json(); })
+  .then(D => { ALL[s.repo] = digest(s, D); })
+  .catch(() => failed.push(s.name))
+  .finally(() => {
+    done++;
+    renderAll();
+    $("#note").textContent = done < SELLERS.length ? `셀러 캘린더를 불러오는 중이에요… (${done}/${SELLERS.length})`
+      : failed.length ? `불러오지 못한 셀러: ${failed.join(", ")} — 잠시 후 다시 열어 주세요.` : `셀러 ${SELLERS.length}명의 캘린더를 모두 불러왔어요. 셀러를 눌러 켜고 끌 수 있어요.`;
+  }));
+// 5분마다 새로 불러오기 (셀러 시트가 바뀌면 반영)
+setInterval(() => SELLERS.forEach(s => fetch(`../${s.repo}/data.json?t=${Date.now()}`, {cache: "no-store"}).then(r => r.json()).then(D => { ALL[s.repo] = digest(s, D); renderAll(); }).catch(() => {})), 5 * 60 * 1000);
+</script>

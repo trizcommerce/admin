@@ -1,0 +1,48 @@
+"""admin(전체 셀러) 캘린더 만들기: 테스트 캘린더의 디자인(글꼴·색·카드 스타일·로고)을 그대로 가져와
+admin_body.html 과 합쳐 index.html 을 만든다. 데이터는 화면이 열릴 때 각 셀러 사이트의 data.json 을 바로 불러온다.
+python build_admin.py  →  index.html, manifest.webmanifest, sw.js"""
+import json, hashlib, re
+from pathlib import Path
+
+HERE = Path(__file__).parent
+SRC = (HERE.parent / "berberlog_test_calendar_app/template.html").read_text(encoding="utf-8")
+head = SRC[:SRC.index("</style>") + len("</style>")]
+head = head.replace("__APP_NAME__", "admin · 셀러 전체 캘린더")
+brand = next(l for l in SRC.splitlines() if 'class="brand"' in l)
+body = (HERE / "admin_body.html").read_text(encoding="utf-8").replace("__BRAND__", brand)
+install = (HERE.parent / "berberlog_test_calendar_app/install_prompt.html").read_text(encoding="utf-8")
+# admin 은 APK·아이폰 프로필이 없으니 바로가기만
+install = install.replace('id="inst-apk" hidden', 'id="inst-apk" hidden data-off').replace(
+    'if (isAndroid) document.getElementById("inst-apk").hidden = false;', "")
+install = install.replace('document.getElementById("inst-prof").hidden = false;', "")
+
+ver = hashlib.sha256((head + body + install).encode()).hexdigest()[:10]
+iv = hashlib.sha256((HERE / "icons/icon-512.png").read_bytes()).hexdigest()[:8]
+pwa_head = f'''<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="theme-color" content="#F6F1EA">
+'''
+html = "<!doctype html>\n<html lang=\"ko\">\n<head>\n" + head.replace("<title>", pwa_head + "<title>", 1) + "\n</head>\n<body>\n" + body + install + f'''
+<script>if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js?v={ver}").catch(() => {{}});</script>
+</body>
+</html>
+'''
+(HERE / "index.html").write_text(html, encoding="utf-8")
+for n in (180, 192, 512):
+    (HERE / f"icon-{n}.png").write_bytes((HERE / f"icons/icon-{n}.png").read_bytes())
+manifest = {"id": "./", "name": "admin · 셀러 전체 캘린더", "short_name": "admin 캘린더", "lang": "ko",
+            "start_url": "./", "scope": "./", "display": "standalone", "background_color": "#F6F1EA", "theme_color": "#F6F1EA",
+            "icons": [{"src": f"icon-192.png?v={iv}", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+                      {"src": f"icon-512.png?v={iv}", "sizes": "512x512", "type": "image/png", "purpose": "any"}]}
+(HERE / "manifest.webmanifest").write_text(json.dumps(manifest, ensure_ascii=False, indent=1), encoding="utf-8")
+(HERE / "sw.js").write_text(f'''// admin 캘린더: 항상 최신을 먼저(인터넷 우선), 안 되면 저장해 둔 화면
+const C = "admin-{ver}";
+self.addEventListener("install", e => self.skipWaiting());
+self.addEventListener("activate", e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k)))).then(() => self.clients.claim())));
+self.addEventListener("fetch", e => {{
+  if (e.request.method !== "GET" || new URL(e.request.url).origin !== location.origin) return;
+  e.respondWith(fetch(e.request).then(r => {{ const c = r.clone(); caches.open(C).then(x => x.put(e.request, c)); return r; }}).catch(() => caches.match(e.request)));
+}});
+''', encoding="utf-8")
+print("built admin", ver, len(html))
