@@ -1,5 +1,5 @@
 // admin 캘린더: 항상 최신을 먼저(인터넷 우선), 안 되면 저장해 둔 화면
-const C = "admin-6738df125c";
+const C = "admin-b5124db364";
 self.addEventListener("install", e => self.skipWaiting());
 self.addEventListener("activate", e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== C).map(k => caches.delete(k)))).then(() => self.clients.claim())));
 self.addEventListener("fetch", e => {

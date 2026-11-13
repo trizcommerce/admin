@@ -18,6 +18,7 @@
 .rv-it input,.rv-all input{width:17px;height:17px;flex:none;margin-top:1px;accent-color:var(--accent)}
 .rv-same{color:#9a8a76;font-size:11px}
 .rv-go{display:block;width:100%;margin-top:10px;padding:12px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:15px}
+.rv-saved{color:#2f7d4a;font-weight:600;margin-left:2px}
 .rv-status{margin:6px 0 0;font-size:12.5px;color:#6b5434;min-height:16px}
 #sellerUI{height:100%}
 .adm-bar{position:fixed;top:6px;right:8px;z-index:60;display:flex;gap:6px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 10px;box-shadow:var(--shadow);font-size:12.5px}
@@ -324,7 +325,7 @@ async function reviewPanel(s, draft, live) {
   box.innerHTML = `<b>검토 대기 중인 새 댓글 여론이에요</b>
     <span>${esc(draft.from || "")}~${esc(draft.to || "")} · ${esc(draft.at || "")} 정리. 아래 화면은 새 내용 전체예요. 셀러 캘린더에는 아직 적용되지 않았어요 (지금 셀러 화면: ${esc(liveAt)}).</span>
     <details class="rv"><summary>셀러 캘린더에 보낼 항목 고르기 <em id="rv-count"></em></summary>
-      <p class="rv-help">체크한 항목만 셀러 캘린더에 들어가요. 체크가 하나도 없는 묶음은 지금 셀러 화면 내용을 그대로 둬요.</p>
+      <p class="rv-help">체크한 항목만 셀러 캘린더에 들어가요. 체크가 하나도 없는 묶음은 지금 셀러 화면 내용을 그대로 둬요. 체크는 바로 저장돼서 다른 기기에서 열어도 똑같이 보여요. <small class="rv-saved" id="rv-saved"></small></p>
       ${secs.map(([sec, v]) => Array.isArray(v)
         ? `<div class="rv-sec"><label class="rv-all"><input type="checkbox" data-all="${sec}" checked> <b>${esc(SEC_LABEL[sec] || sec)}</b> <small>${v.length}개</small></label>
             <div class="rv-items">${v.map((it, i) => `<label class="rv-it"><input type="checkbox" data-k="${sec}:${i}" checked><span>${esc(itemLabel(sec, it).slice(0, 160))}${same(sec, it) ? ` <small class="rv-same">지금과 같음</small>` : ""}</span></label>`).join("")}</div></div>`
@@ -336,8 +337,42 @@ async function reviewPanel(s, draft, live) {
   const boxes = () => [...box.querySelectorAll("input[data-k]")];
   const count = () => { const on = boxes().filter(b => b.checked).length; box.querySelector("#rv-count").textContent = `${on}/${boxes().length}개 체크`; };
   box.querySelectorAll("input[data-all]").forEach(a => a.onchange = () => { box.querySelectorAll(`input[data-k^="${a.dataset.all}:"]`).forEach(b => b.checked = a.checked); count(); });
-  box.addEventListener("change", ev => { const k = ev.target.dataset.k; if (k && k.includes(":")) { const sec = k.split(":")[0]; const all = box.querySelector(`input[data-all="${sec}"]`); const its = [...box.querySelectorAll(`input[data-k^="${sec}:"]`)]; if (all) all.checked = its.some(b => b.checked); } count(); });
+  box.addEventListener("change", ev => { const k = ev.target.dataset.k; if (k && k.includes(":")) { const sec = k.split(":")[0]; const all = box.querySelector(`input[data-all="${sec}"]`); const its = [...box.querySelectorAll(`input[data-k^="${sec}:"]`)]; if (all) all.checked = its.some(b => b.checked); } count(); saveChecks(); });
   count();
+  // 체크 상태 공유: 바꿀 때마다 시트('여론체크')에 저장, 열 때·화면으로 돌아올 때 불러옴 → 기기가 달라도 같은 체크
+  const day = v => String(v || "").replace("at:", "").slice(0, 10);
+  const saved = box.querySelector("#rv-saved");
+  const applyKeys = keys => {
+    const on = new Set(keys);
+    boxes().forEach(b => b.checked = on.has(b.dataset.k));
+    box.querySelectorAll("input[data-all]").forEach(a => a.checked = boxes().some(b => b.dataset.k.startsWith(a.dataset.all + ":") && b.checked));
+    count();
+  };
+  let saveT = 0, dirtyAt = 0, serverOK = false;   // 조회기록 Apps Script 가 체크 저장을 지원할 때만 저장
+  function saveChecks() {
+    if (!serverOK) { saved.textContent = "(체크 저장 준비 중 — 이 기기에서만 적용)"; return; }
+    clearTimeout(saveT); dirtyAt = Date.now(); saved.textContent = "저장 중…";
+    saveT = setTimeout(() => {
+      if (!window.LOG_URL_ADM) return;
+      const keys = boxes().filter(b => b.checked).map(b => b.dataset.k);
+      fetch(window.LOG_URL_ADM, {method: "POST", mode: "no-cors", headers: {"Content-Type": "text/plain;charset=utf-8"},
+        body: JSON.stringify({type: "opinion_check", seller: "admin", repo: s.repo, draftAt: "at:" + draft.at, keys, name: VIEWER.name || ""})})
+        .then(() => { saved.textContent = "✓ 저장됨"; })
+        .catch(() => { saved.textContent = "저장 못 함 — 인터넷 연결을 확인해 주세요"; });
+    }, 700);
+  }
+  async function loadChecks() {
+    if (!window.LOG_URL_ADM || !box.isConnected || Date.now() - dirtyAt < 8000) return;
+    try {
+      const r = await fetch(`${window.LOG_URL_ADM}?action=opinion_check&repo=${encodeURIComponent(s.repo)}&t=${Date.now()}`);
+      const c = await r.json();
+      serverOK = true;
+      if (Date.now() - dirtyAt < 8000) return;            // 불러오는 사이에 이 기기에서 바꿨으면 그대로 둠
+      if (c && Array.isArray(c.keys) && day(c.draftAt) === day(draft.at)) applyKeys(c.keys);
+    } catch (e) {}
+  }
+  await loadChecks();
+  document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") loadChecks(); });
   // 마지막 연동 상태
   try {
     const r = await fetch(`${window.LOG_URL_ADM}?action=opinion_sync&repo=${encodeURIComponent(s.repo)}`);
