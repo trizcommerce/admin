@@ -1,7 +1,11 @@
 <style>
 /* ---- admin 전용 ---- */
+#sellerUI{height:100%}
+.adm-bar{position:fixed;top:6px;right:8px;z-index:60;display:flex;gap:6px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 6px 4px 10px;box-shadow:var(--shadow);font-size:12.5px}
+.adm-bar a{color:var(--accent);font-weight:700;text-decoration:none}
+.adm-bar select{border:0;background:var(--surface-2);border-radius:999px;padding:4px 8px;font:inherit;font-size:12.5px;color:var(--ink);max-width:140px}
 html,body{margin:0}
-.who[hidden],.app[hidden]{display:none!important}
+.who[hidden],.app[hidden],#sellerUI[hidden]{display:none!important}
 .filters{display:flex;gap:6px;overflow-x:auto;padding:0 16px 8px;scrollbar-width:none}
 .filters::-webkit-scrollbar{display:none}
 .chip{flex:none;height:32px;padding:0 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
@@ -30,16 +34,18 @@ html,body{margin:0}
 .empty-day{padding:18px;text-align:center;color:var(--muted);background:var(--surface);border-radius:16px;font-size:14px}
 </style>
 
-<div class="who" id="who" role="dialog" aria-modal="true" aria-labelledby="pw-title" style="background:var(--bg)">
+<div class="who" id="admgate" role="dialog" aria-modal="true" aria-labelledby="pw-title" style="background:var(--bg)">
   <form class="who-card" id="pw-form" autocomplete="off">
     <h3 id="pw-title">비밀번호를 입력해 주세요</h3>
+    <input id="adm-name" type="text" placeholder="이름 (조회 기록에 남아요)" aria-label="이름" style="margin-bottom:8px" hidden>
     <input id="pw" type="password" inputmode="text" placeholder="비밀번호" aria-label="비밀번호">
     <p id="pw-err" style="margin:8px 2px 0;font-size:13px;color:var(--sun);min-height:18px"></p>
     <button type="submit" style="width:100%;height:48px;margin-top:6px;border-radius:12px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:16px">확인</button>
   </form>
 </div>
 
-<div class="app" id="app" hidden>
+<div id="sellerUI" hidden></div>
+<div class="app" id="adm" hidden>
   __BRAND__
   <section class="view" aria-label="전체 셀러 캘린더">
     <div class="topbar">
@@ -52,6 +58,7 @@ html,body{margin:0}
     </div>
     <div class="filters" id="teams"></div>
     <div class="filters" id="sellers"></div>
+    <div class="filters" id="opens"></div>
     <div class="scroll" id="scroll" style="padding-bottom:40px">
       <div class="sales-wrap" id="sales"></div>
       <div class="cal-card">
@@ -121,6 +128,7 @@ function renderFilters() {
   $("#teams").innerHTML = TEAMS.map(t => `<button class="chip team" type="button" data-t="${t}" aria-pressed="${t === team}">${t}</button>`).join("");
   const list = SELLERS.filter(s => team === "전체" || s.team === team);
   $("#sellers").innerHTML = list.map(s => `<button class="chip" type="button" data-s="${s.repo}" aria-pressed="${!off.has(s.repo)}" style="--c:${s.c}"><i></i>${esc(s.name)}${ALL[s.repo] ? "" : " …"}</button>`).join("");
+  $("#opens").innerHTML = `<span style="flex:none;font-size:12px;color:var(--muted);align-self:center">셀러 화면 열기</span>` + list.map(s => `<a class="chip" href="?s=${s.repo}" style="--c:${s.c};text-decoration:none;color:inherit"><i></i>${esc(s.name)} →</a>`).join("");
   $("#teams").onclick = ev => { const b = ev.target.closest("[data-t]"); if (!b) return; team = b.dataset.t; save("adm.team", team); renderAll(); };
   $("#sellers").onclick = ev => { const b = ev.target.closest("[data-s]"); if (!b) return; const r = b.dataset.s; off.has(r) ? off.delete(r) : off.add(r); save("adm.off", [...off]); renderAll(); };
 }
@@ -135,7 +143,7 @@ function renderSales() {
   soon.sort((a, b) => a.r.s.localeCompare(b.r.s));
   const row = ({s, r}, isLive) => {
     const dd = Math.round((parse(r.s) - parse(today)) / 864e5);
-    return `<a class="sale-row${isLive ? " live" : ""}" href="../${s.repo}/" style="--c:${s.c};text-decoration:none;color:inherit"><div class="t"><div class="k"><span class="sname">${esc(s.name)}</span>${isLive ? "진행 중 공구" : "다음 공구"}</div><div class="nm">${esc(r.name)}</div></div><div class="v"><b>${isLive ? "~" + md(r.e) : "D-" + dd}</b><small>${md(r.s)}–${md(r.e)}</small></div></a>`;
+    return `<a class="sale-row${isLive ? " live" : ""}" href="?s=${s.repo}" style="--c:${s.c};text-decoration:none;color:inherit"><div class="t"><div class="k"><span class="sname">${esc(s.name)}</span>${isLive ? "진행 중 공구" : "다음 공구"}</div><div class="nm">${esc(r.name)}</div></div><div class="v"><b>${isLive ? "~" + md(r.e) : "D-" + dd}</b><small>${md(r.s)}–${md(r.e)}</small></div></a>`;
   };
   $("#sales").innerHTML = (live.length ? `<h4>진행 중 공구 ${live.length}</h4>` + live.map(x => row(x, true)).join("") : "")
     + (soon.length ? `<h4>2주 안에 열리는 공구 ${soon.length}</h4>` + soon.map(x => row(x, false)).join("") : "");
@@ -179,7 +187,7 @@ function renderAgenda() {
   let h = `<div class="ag-date"><span class="big">${d.getMonth() + 1}월 ${d.getDate()}일</span><span class="dow">${DOW[d.getDay()]}요일${sel === today ? " · 오늘" : ""}</span></div>`;
   if (!groups.length) h += `<div class="empty-day">이날은 등록된 일정이 없어요.</div>`;
   for (const g of groups) {
-    h += `<div class="sel-group"><div class="sel-head" style="--c:${g.s.c}"><span class="sw"></span><b>${esc(g.s.name)}</b><span class="team-badge">${g.s.team}</span><a href="../${g.s.repo}/">캘린더 열기 →</a></div><div class="mini">`;
+    h += `<div class="sel-group"><div class="sel-head" style="--c:${g.s.c}"><span class="sw"></span><b>${esc(g.s.name)}</b><span class="team-badge">${g.s.team}</span><a href="?s=${g.s.repo}">전체 화면 보기 →</a></div><div class="mini">`;
     for (const r of g.opens) h += `<div class="entry"><div class="fmt" style="background:${r.color || "var(--accent-soft)"};color:#2E2520">OPEN</div><div class="e-body"><div class="e-title">${esc(r.name)} 공구 오픈</div><div class="e-meta">${md(r.s)}–${md(r.e)}</div></div></div>`;
     for (const u of g.ups) { const [f, fc] = FMT(u.format);
       h += `<div class="entry"><div class="fmt ${fc}">${esc(f)}</div><div class="e-body"><div class="e-title">${esc(u.text || u.prod + " " + (u.label || ""))}</div><div class="e-meta"><span class="e-prod"><i class="dotc" style="--c:${u.pc || g.s.c}"></i>${esc(u.prod)}</span>${u.label ? `<span>${esc(u.label)}</span>` : ""}</div></div></div>`; }
@@ -198,15 +206,64 @@ $("#today").onclick = () => { cur = new Date(); cur.setDate(1); sel = today; ren
 // ---- 비밀번호 (해시로만 비교; 맞히면 이 기기에서는 다시 묻지 않음) ----
 const PW_HASH = "e581acc52af1a4d99f19a45731f3dc4eaaa8e3a7cb940bbd117480ad40907e29";
 async function sha(s) { const b = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, "0")).join(""); }
-function unlock() { $("#who").hidden = true; $("#app").hidden = false; start(); }
-if (load("adm.ok", "") === PW_HASH) unlock();
-else setTimeout(() => $("#pw").focus(), 50);
+function unlock() { $("#admgate").hidden = true; route(); }
+const VIEWER = load("viewer", {});            // 셀러 캘린더와 같은 이름 기록(같은 기기면 같이 씀)
+if (load("adm.ok", "") === PW_HASH && VIEWER.name) unlock();
+else {
+  if (load("adm.ok", "") === PW_HASH) { $("#pw").hidden = true; $("#pw-title").textContent = "이름을 입력해 주세요"; }
+  if (!VIEWER.name) $("#adm-name").hidden = false;
+  setTimeout(() => (VIEWER.name ? $("#pw") : $("#adm-name")).focus(), 50);
+}
 $("#pw-form").addEventListener("submit", async ev => {
   ev.preventDefault();
+  if (!VIEWER.name) {
+    const nm = $("#adm-name").value.trim();
+    if (!nm) { $("#pw-err").textContent = "이름을 입력해 주세요."; return $("#adm-name").focus(); }
+    VIEWER.name = nm; VIEWER.id = VIEWER.id || Math.random().toString(36).slice(2, 10); save("viewer", VIEWER);
+  }
+  if (load("adm.ok", "") === PW_HASH) return unlock();
   const h = await sha($("#pw").value.trim());
   if (h === PW_HASH) { save("adm.ok", PW_HASH); unlock(); }
   else { $("#pw-err").textContent = "비밀번호가 맞지 않아요. 다시 입력해 주세요."; $("#pw").select(); }
 });
+
+// ---- 조회 기록 (셀러 캘린더와 같은 비공개 시트, 셀러 이름은 'admin') ----
+function admLog(type, title, context) {
+  if (!window.LOG_URL_ADM || !VIEWER.name) return;
+  const u = navigator.userAgent, device = /iPhone|iPod/.test(u) ? "아이폰" : /iPad/.test(u) ? "아이패드" : /Android/.test(u) ? "안드로이드" : "PC";
+  try { fetch(window.LOG_URL_ADM, {method: "POST", mode: "no-cors", keepalive: true, headers: {"Content-Type": "text/plain;charset=utf-8"},
+    body: JSON.stringify({seller: "admin", name: VIEWER.name, id: VIEWER.id, device, type, title: title || "", context: context || ""})}).catch(() => {}); } catch (e) {}
+}
+
+// ---- 어떤 화면을 열지: 주소에 ?s=셀러 가 있으면 그 셀러의 전체 캘린더, 없으면 전체 보기 ----
+function route() {
+  const repo = new URLSearchParams(location.search).get("s");
+  const s = SELLERS.find(x => x.repo === repo);
+  if (s) return loadSeller(s);
+  $("#adm").hidden = false;
+  admLog("open", "전체 보기");
+  start();
+}
+async function loadSeller(s) {
+  const base = new URL(`../${s.repo}/`, location.href).href;
+  const get = async f => { try { const r = await fetch(base + f + "?t=" + Date.now(), {cache: "no-store"}); return r.ok ? await r.json() : null; } catch (e) { return null; } };
+  const ui = $("#sellerUI"); ui.hidden = false;
+  ui.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--muted)">${esc(s.name)}님 캘린더를 불러오는 중이에요…</div>`;
+  const [cfg, data, ideas, opinion] = await Promise.all([get("config.json"), get("data.json"), get("ideas.json"), get("opinion.json")]);
+  if (!data) { ui.innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--muted)">${esc(s.name)}님 캘린더를 불러오지 못했어요. <a href="./">전체 보기로</a></div>`; return; }
+  window.__ADM = {data, ideas, opinion};
+  const seller = (cfg && cfg.seller) || (s.name + "님");
+  const fill = x => x.split("__SELLER__").join(seller).split("__APP_NAME__").join((cfg && cfg.app_name) || seller + " 콘텐츠 캘린더").split("__UPCOMING__").join(String((cfg && cfg.upcoming_days) || 3));
+  document.title = `admin · ${seller}`;
+  const b = document.createElement("base"); b.href = base; document.head.prepend(b);   // 사진·캘린더 구독 주소는 셀러 사이트 기준
+  ui.innerHTML = fill(window.ADM_TBODY);
+  // 위쪽 작은 막대: 전체 보기로 / 다른 셀러로
+  const bar = document.createElement("div"); bar.className = "adm-bar";
+  bar.innerHTML = `<a href="${new URL("./", location.href).href}">← 전체</a><select aria-label="셀러 바꾸기">${SELLERS.map(x => `<option value="${x.repo}"${x.repo === s.repo ? " selected" : ""}>${x.team} · ${esc(x.name)}</option>`).join("")}</select>`;
+  bar.querySelector("select").onchange = ev => { location.href = new URL("./?s=" + ev.target.value, location.href.split("?")[0]).href; };
+  document.body.appendChild(bar);
+  const sc = document.createElement("script"); sc.textContent = fill(window.ADM_TJS); document.body.appendChild(sc);
+}
 
 let started = false;
 function start() {
